@@ -1,6 +1,6 @@
 {
-  "name": "react-weekly-calendar",
-  "version": "1.0.13",
+  "name": "react-weekly-planning",
+  "version": "1.0.12",
   "main": "index.js",
   "scripts": {
     "test": "jest",
