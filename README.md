@@ -165,9 +165,10 @@ Props for the Calendar component.
 
 - **Description**: Checks if a new task overlaps with any existing tasks in the schedule. This function helps prevent overlapping tasks when scheduling.
 - **Parameters**:
-  - `tasks` (TasksType): An array of existing tasks. Each task should have `taskStart` and `taskEnd` properties representing the start and end times of the task.
+  - `tasks` (TasksType): An array of existing tasks. Each task should have `groupId`,`taskStart` and `taskEnd` properties representing the groupId of new task, the start and end times of the task.
   - `taskStart` (number): The start time in milliseconds of the new task to be checked.
   - `taskEnd` (number): The end time in milliseconds of the new task to be checked.
+  - `groupId` (string): The groupId of new task.
 - **Returns**: `boolean` - Returns `true` if there is an overlap with any existing task, otherwise returns `false`.
 
 

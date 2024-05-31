@@ -594,17 +594,20 @@ export const millisecondsToHours = (milliseconds: number) => {
 export const checkDuplicates = (
   tasks: TasksType,
   taskStart: number,
-  taskEnd: number
+  taskEnd: number,
+  groupId: string
 ) => {
-  const findDuplicates = tasks?.filter(
-    (task) =>
-      (taskStart >= task.taskStart && taskStart < task.taskEnd) ||
-      (taskEnd > task.taskStart && taskEnd < task.taskEnd) ||
-      (taskStart <= task.taskStart &&
-        taskEnd > task.taskStart &&
-        taskEnd >= task.taskEnd &&
-        taskStart <= task.taskEnd)
-  );
+  const findDuplicates = tasks
+    ?.filter(
+      (task) =>
+        (taskStart >= task.taskStart && taskStart < task.taskEnd) ||
+        (taskEnd > task.taskStart && taskEnd < task.taskEnd) ||
+        (taskStart <= task.taskStart &&
+          taskEnd > task.taskStart &&
+          taskEnd >= task.taskEnd &&
+          taskStart <= task.taskEnd)
+    )
+    .filter((task) => task.groupId === groupId);
   return findDuplicates.length > 0;
 };
 export default Calendar;
