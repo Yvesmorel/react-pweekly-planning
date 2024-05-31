@@ -8,6 +8,14 @@
     "build": "tsc",
     "doc": "jsdoc -c jsdoc.json"
   },
+   "repository": {
+    "type": "git",
+    "url": "https://github.com/Yvesmorel/react-pweekly-planning.git"
+  },
+  "homepage": "https://github.com/Yvesmorel/react-pweekly-planning.git#readme",
+  "bugs": {
+    "url": "https://github.com/Yvesmorel/react-pweekly-planning/issues"
+  },
   "keywords": [
     "react",
     "react-weekly-planning",
