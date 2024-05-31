@@ -221,4 +221,13 @@ export const updateOffsetWithDateCalendar = (calendarDate) => {
 export const millisecondsToHours = (milliseconds) => {
     return millisecondsToDate(milliseconds).formattedDate;
 };
+export const checkDuplicates = (tasks, taskStart, taskEnd) => {
+    const findDuplicates = tasks === null || tasks === void 0 ? void 0 : tasks.filter((task) => (taskStart >= task.taskStart && taskStart < task.taskEnd) ||
+        (taskEnd > task.taskStart && taskEnd < task.taskEnd) ||
+        (taskStart <= task.taskStart &&
+            taskEnd > task.taskStart &&
+            taskEnd >= task.taskEnd &&
+            taskStart <= task.taskEnd));
+    return findDuplicates.length > 0;
+};
 export default Calendar;
