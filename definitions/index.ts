@@ -152,13 +152,8 @@ export type CalendarPropsType = {
   /** Custom render function for a task. */
   taskRender?: ({
     currentTask,
-    handleDragTask,
   }: {
     currentTask: TaskFeildsType;
-    handleDragTask?: (
-      event: React.DragEvent<HTMLDivElement>,
-      currentTask: TaskFeildsType
-    ) => void;
   }) => React.ReactNode;
   /** Additional styles for the rows. */
   rowsStyle?: React.CSSProperties | undefined;
@@ -333,13 +328,8 @@ export type TaskContainerPropsType = {
   /** Custom render function for a task. */
   taskRender?: ({
     currentTask,
-    handleDragTask,
   }: {
     currentTask: TaskFeildsType;
-    handleDragTask?: (
-      event: React.DragEvent<HTMLDivElement>,
-      currentTask: TaskFeildsType
-    ) => void;
   }) => React.ReactNode;
   /** Handler function for ending the drag of a task. */
   handleDragTaskEnd?: (event: React.DragEvent<HTMLDivElement>) => void;

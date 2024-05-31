@@ -83,7 +83,7 @@ Props for the Calendar component.
 | `date`                       | Date                                                                                  | The current date to display in the calendar.                                                      |
 | `groupRender`                | ({ currentGroup }: { currentGroup: GroupFeildsType }) => React.ReactNode              | Custom render function for a group.                                                               |
 | `dayRender`                  | ({ dayIndex, day, dayOfTheMonth, dayMonth, dayYear }: { dayIndex: number; day: string; dayOfTheMonth: number; dayMonth: string; dayYear: number; }) => React.ReactNode | Custom render function for a day.                                                                 |
-| `taskRender`                 | ({ currentTask, handleDragTask }: { currentTask: TaskFeildsType; handleDragTask?: (event: React.DragEvent<HTMLDivElement>, currentTask: TaskFeildsType) => void; }) => React.ReactNode | Custom render function for a task. |
+| `taskRender`                 | ({ currentTask, handleDragTask }: { currentTask: TaskFeildsType}) => React.ReactNode             | Custom render function for a task. |
 | `rowsStyle`                  | React.CSSProperties \| undefined                                                      | Additional styles for the rows.                                                                   |
 | `rowsClassName`              | string                                                                                | Additional class names for the rows.                                                              |
 | `groupsColsStyle`            | React.CSSProperties \| undefined                                                      | Additional styles for the group columns.                                                          |
@@ -161,6 +161,15 @@ Props for the Calendar component.
   const formattedTime = millisecondsToHours(1716905215397);
   console.log(formattedTime); // Logs the formatted time for 14h06
   ```
+### `checkDuplicates`
+
+- **Description**: Checks if a new task overlaps with any existing tasks in the schedule. This function helps prevent overlapping tasks when scheduling.
+- **Parameters**:
+  - `tasks` (TasksType): An array of existing tasks. Each task should have `taskStart` and `taskEnd` properties representing the start and end times of the task.
+  - `taskStart` (number): The start time in milliseconds of the new task to be checked.
+  - `taskEnd` (number): The end time in milliseconds of the new task to be checked.
+- **Returns**: `boolean` - Returns `true` if there is an overlap with any existing task, otherwise returns `false`.
+
 
 ---
 

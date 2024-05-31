@@ -9,6 +9,9 @@ import {
   GroupsHeadContainerPropsType,
   SumHoursContainerPropsType,
   SumHoursHeadContainerPropsType,
+  TaskType,
+  TaskFeildsType,
+  TasksType,
 } from "./definitions";
 import {
   getWeekDays,
@@ -588,4 +591,20 @@ export const millisecondsToHours = (milliseconds: number) => {
   return millisecondsToDate(milliseconds).formattedDate;
 };
 
+export const checkDuplicates = (
+  tasks: TasksType,
+  taskStart: number,
+  taskEnd: number
+) => {
+  const findDuplicates = tasks?.filter(
+    (task) =>
+      (taskStart >= task.taskStart && taskStart < task.taskEnd) ||
+      (taskEnd > task.taskStart && taskEnd < task.taskEnd) ||
+      (taskStart <= task.taskStart &&
+        taskEnd > task.taskStart &&
+        taskEnd >= task.taskEnd &&
+        taskStart <= task.taskEnd)
+  );
+  return findDuplicates.length > 0;
+};
 export default Calendar;
