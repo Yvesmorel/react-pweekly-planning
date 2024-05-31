@@ -1,0 +1,51 @@
+.addPlanStyle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+ flex:1;
+  background-color: #f2f8fb;
+  opacity: 0;
+  border-radius: 5px;
+  color: #0f5173;
+  transition: background-color 0.3s, opacity 0.3s;
+}
+
+.addPlanStyle:hover {
+  background-color: #c6dbe159;
+  opacity: 1;
+}
+.taskContainer {
+  box-shadow: 0px 7px 18px 0px rgba(15, 105, 115, 0.03),
+    0px 6px 10px 0px rgba(15, 105, 115, 0.04),
+    0px 3px 5px 0px rgba(15, 105, 115, 0.05);
+  display: flex;
+  justify-content: center;
+  column-gap: 10px;
+  flex-direction: column;
+  height: 60px;
+  border-left: 5px solid #457993;
+  background-color: #f4ffff;
+  color: #457993;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  font-size: 13px;
+  overflow: auto;
+}
+
+.tasklabel {
+  color: #55585d;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
+.taskhour {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  margin-left: 5px;
+}
+td{ -moz-box-sizing: border-box;}

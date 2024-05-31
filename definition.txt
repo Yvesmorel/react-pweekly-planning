@@ -1,0 +1,318 @@
+definition
+export type GroupPropsType = {
+  label?: string;
+  imageUrl?: string;
+  id?: string;
+  groupRender?: GroupRenderType;
+  className?: string;
+  style?: React.CSSProperties | undefined;
+  currentGroup: GroupFeildsType;
+  handleClickGroup?: (currentGroup: GroupFeildsType) => void;
+};
+
+type GroupRiquiredFieldsType = {
+  label?: string;
+  imageUrl?: string;
+  id: string;
+};
+
+type GroupAdditionalFieldsType = Record<any, unknown>;
+export type GroupFeildsType = GroupRiquiredFieldsType &
+  GroupAdditionalFieldsType;
+
+export type GroupRenderType = ({
+  id,
+  label,
+  imageUrl,
+  currentGroup,
+}: {
+  id?: string;
+  label?: string;
+  imageUrl?: string;
+  currentGroup?: GroupFeildsType;
+}) => React.ReactNode;
+export type GroupComponentPropsType = {
+  groupRender?: GroupRenderType;
+  className?: string;
+  style?: React.CSSProperties | undefined;
+};
+
+export type TaskRenderType = ({
+  taskId,
+  taskStart,
+  taskEnd,
+  task,
+  taskDate,
+  groupId,
+  dayIndex,
+  handleDragTask,
+}: {
+  taskStart: number;
+  taskEnd: number;
+  task: string;
+  taskDate: Date;
+  groupId: string;
+  dayIndex: number;
+  taskId: string;
+  currentTask?: TaskFeildsType;
+  handleDragTask?: (
+    event: React.DragEvent<HTMLDivElement>,
+    taskId: string,
+    taskStart: number,
+    taskEnd: number,
+    task: string,
+    taskDate: Date,
+    groupId: string,
+    dayIndex: number
+  ) => void;
+}) => React.ReactNode;
+
+export type DayRenderType = ({
+  dayIndex,
+  day,
+  dayOfTheMonth,
+  dayMonth,
+  dayYear,
+}: {
+  dayIndex?: number;
+  day?: string;
+  dayOfTheMonth?: number;
+  dayMonth?: string;
+  dayYear?: number;
+}) => React.ReactNode;
+
+export type DaysPropsType = {
+  dayRender: DayRenderType;
+  className?: string;
+  style?: React.CSSProperties | undefined;
+};
+
+export type DayPropsType = {
+  dayIndex?: number;
+  day?: string;
+  dayOfTheMonth?: number;
+  dayRender?: DayRenderType;
+  dayMonth?: string;
+  dayYear?: number;
+  className?: string;
+  style?: React.CSSProperties | undefined;
+};
+
+export type AddTaskRenderType = ({
+  dayIndex,
+  groupId,
+  dayInfo,
+}: {
+  dayIndex?: number;
+  groupId?: string;
+  dayInfo: dayInfoType;
+}) => React.ReactNode;
+
+export type CalendarPropsType = {
+  /**
+   * Props for the Calendar component.
+   */
+  /** Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week). */
+  weekOffset: number;
+  /** Array of group data to be displayed in the calendar. [{id*:string,label:string,imageUrl:string,...the fields of your choice}] id field is required */
+  groups: GroupFeildsType[];
+  /** Additional class names for the calendar component. */
+  className?: string;
+  /** Additional styles for the calendar component. */
+  style?: React.CSSProperties | undefined;
+  /** The current date to display in the calendar. */
+  date: Date;
+  /** Custom render function for a group. 
+   * const GroupRender=({
+  id,
+  label,
+  imageUrl,
+  currentGroup,
+   })=> {
+  your render
+  }
+  */
+  groupRender?: GroupRenderType;
+  /** Custom render function for a day. 
+   * const DayRender=(dayIndex,
+  day,
+  dayOfTheMonth,
+  dayMonth,
+  dayYear)=> {
+  your render
+  }
+  */
+  dayRender?: DayRenderType;
+  /** Custom render function for a task. 
+   * const TasKRender=({
+  taskId,
+  taskStart,
+  taskEnd,
+  task,
+  taskDate,
+  groupId,
+  dayIndex,
+  handleDragTask,
+})=> {
+  your render
+  }
+  */
+  taskRender?: TaskRenderType;
+  /** Additional styles for the rows. */
+  rowsStyle?: React.CSSProperties | undefined;
+  /** Additional class names for the rows. */
+  rowsClassName?: string;
+  /** Additional styles for the group columns. */
+  groupsColsStyle?: React.CSSProperties | undefined;
+   /** Additional class names for the group columns. */
+  groupsColsClassName?: string;
+  /** Additional styles for the day columns. */
+  daysColsStyle?: React.CSSProperties | undefined;
+  daysColsClassName?: string;
+  addTaskClassName?: string;
+  addTaskStyle?: React.CSSProperties | undefined;
+   /** Additional class names for the groups. */
+  groupClassName?: string;
+  groupStyle?: React.CSSProperties | undefined;
+  dayClassName?: string;
+  dayStyle?: React.CSSProperties | undefined;
+  taskContainerStyle?: React.CSSProperties | undefined;
+  taskContainerClassName?: string;
+  groupHeadContainerStyle?: React.CSSProperties | undefined;
+  groupHeadContainerClassName?: string;
+  sumHoursContainerStyle?: React.CSSProperties | undefined;
+  sumHoursContainerClassName?: string;
+  sumHoursHeadStyle?: React.CSSProperties | undefined;
+  sumHoursHeadClassName?: string;
+
+  handleAddTask?: (
+    dayIndex: number,
+    groupId: string,
+    dayInfo: dayInfoType
+  ) => void;
+  addTaskRender?: AddTaskRenderType;
+  tasks?: TasksType;
+  handleDragTask?: (
+    event: React.DragEvent<HTMLDivElement>,
+    taskId: string,
+    taskStart: number,
+    taskEnd: number,
+    task: string,
+    taskDate: Date,
+    groupId: string,
+    dayIndex: number
+  ) => void;
+  handleDropTask?: (
+    event: React.DragEvent<HTMLTableDataCellElement>,
+    taskStart: number,
+    taskEnd: number,
+    taskDate: Date,
+    groupId: string,
+    dayIndex: number,
+    newTask: TaskFeildsType,
+    newTasts: TasksType
+  ) => void;
+  handleDragTaskEnd?: handleDragTaskEndType;
+  groupsHeadRender?: GroupsHeadRenderType;
+  sumHoursRender?: SumHoursRenderType;
+  sumHoursHeadRender?: SumHoursHeadRenderType;
+  handleClickTask?: (currentTask: TaskFeildsType) => void;
+  handleClickGroup?: (currentGroup: GroupFeildsType) => void;
+};
+export type StyleType = React.CSSProperties | undefined;
+export type AddTaskPropsType = {
+  dayIndex: number;
+  groupId: string;
+  addTaskStyle?: StyleType;
+  addTaskClassName?: string;
+  addTaskRender?: AddTaskRenderType;
+  dayInfo: dayInfoType;
+  handleAddTask?: (
+    dayIndex: number,
+    groupId: string,
+    dayInfo: dayInfoType
+  ) => void;
+};
+export type dayInfoType = {
+  positionDay: number;
+  day: Date;
+  start: number;
+  end: number;
+};
+export type TaskType = {
+  taskStart: number;
+  taskEnd: number;
+  task: string;
+  taskDate: Date;
+  groupId: string;
+  dayIndex: number;
+  taskId: string;
+};
+export type TaskContainerPropsType = {
+  taskStart: number;
+  taskEnd: number;
+  task: string;
+  taskDate: Date;
+  groupId: string;
+  dayIndex: number;
+  taskId: string;
+  className?: string;
+  style?: React.CSSProperties | undefined;
+  handleDragTask?: (
+    event: React.DragEvent<HTMLDivElement>,
+    taskId: string,
+    taskStart: number,
+    taskEnd: number,
+    task: string,
+    taskDate: Date,
+    groupId: string,
+    dayIndex: number
+  ) => void;
+  taskRender?: TaskRenderType;
+  handleDragTaskEnd?: handleDragTaskEndType;
+  currentTask: TaskFeildsType;
+  handleClickTask?: (currentTask: TaskFeildsType) => void;
+};
+type GroupsHeadRenderType = () => React.ReactNode;
+export type GroupsHeadContainerPropsType = {
+  groupsHeadRender?: GroupsHeadRenderType;
+  style?: React.CSSProperties | undefined;
+  className?: string;
+};
+type SumHoursHeadRenderType = () => React.ReactNode;
+export type SumHoursHeadContainerPropsType = {
+  sumHoursHeadRender?: SumHoursHeadRenderType;
+  style?: React.CSSProperties | undefined;
+  className?: string;
+};
+type TaskAdditionalFieldsType = Record<any, unknown>;
+export type TaskFeildsType = TaskType & TaskAdditionalFieldsType;
+
+export type TasksType = TaskFeildsType[];
+export type handleDragTaskEndType = (
+  event: React.DragEvent<HTMLDivElement>
+) => void;
+export type SumHoursRenderType = ({
+  groupId,
+  tasks,
+  weekOffset,
+  calendarDate,
+  sumHoursByGroups,
+}: {
+  groupId: string;
+  tasks: TasksType | any;
+  weekOffset: number;
+  calendarDate: Date;
+  sumHoursByGroups: number;
+}) => React.ReactNode;
+
+export type SumHoursContainerPropsType = {
+  groupId: string;
+  tasks: TasksType | any;
+  weekOffset: number;
+  calendarDate: Date;
+  sumHoursByGroups: number;
+  sumHoursRender?: SumHoursRenderType;
+  style?: React.CSSProperties | undefined;
+  className?: string;
+};
