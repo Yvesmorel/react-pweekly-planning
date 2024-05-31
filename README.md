@@ -5,11 +5,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Description and Use Cases
 
-`react-weekly-planning` provides a React component for weekly planning. Easily set up and manage a weekly schedule with customizable tasks, groups and views.
+`react-weekly-calendar` provides a React component for weekly planning. Easily set up and manage a weekly schedule with customizable tasks, groups and views.
 
 ## Screenshot
 
-![Planning Screenshot](./assets/planning-screenshot.webp)
+![Planning Screenshot](https://raw.githubusercontent.com/Yvesmorel/react-pweekly-planning/main/assets/planning-screenshot.webp)
 
 #### `weekOffset`
 
