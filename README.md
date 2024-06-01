@@ -11,6 +11,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ![Planning Screenshot](https://raw.githubusercontent.com/Yvesmorel/react-pweekly-planning/main/assets/planning-screenshot.webp)
 
+[See the demo](https://react-weekly-planning-demo.vercel.app)
 #### `weekOffset`
 
 - **Description**: This prop sets the offset for the week being displayed in the calendar.

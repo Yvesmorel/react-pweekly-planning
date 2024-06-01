@@ -9,8 +9,6 @@ import {
   GroupsHeadContainerPropsType,
   SumHoursContainerPropsType,
   SumHoursHeadContainerPropsType,
-  TaskType,
-  TaskFeildsType,
   TasksType,
 } from "./definitions";
 import {
@@ -23,45 +21,17 @@ import {
   compareWeekOffset,
 } from "./lib/utils";
 
-const tableStyle: StyleType = {
-  width: "100%",
-  height: "150px",
-  borderRadius: "0.5rem",
-  zIndex: 10,
-};
 
-const trStyle: StyleType = {
+const theadTrStyle: StyleType = {
   color: "#0f5173",
   fontWeight: "300",
   position: "sticky",
   top: 0,
 };
 
-const thStyle: StyleType = {
-  color: "#0f5173",
-  paddingLeft: "5px",
-};
-
-const weekDayThStyle: StyleType = {};
-
-const totalThStyle: StyleType = {
-  width: "40px",
-  textAlign: "right",
-  paddingRight: "2px",
-};
-
-const tdStyle: StyleType = {
+const groupTdStyle: StyleType = {
   height: "auto",
   width: "150px",
-};
-const tableTrStyle: StyleType = {
-  borderBottom: "1.5px solid #0f52737e",
-  // backgroundColor: "#f2f8fb",
-  padding: "2px",
-};
-const tableTdStyle: StyleType = {
-  borderLeft: "0.74px solid rgba(198, 219, 225, 0.68)",
-  borderRight: "0.74px solid rgba(198, 219, 225, 0.68)",
 };
 
 const groupContainerStyle: StyleType = {
@@ -170,14 +140,14 @@ const Calendar = ({
     event.preventDefault();
   };
   return (
-    <table className={`${className}`} style={{ ...tableStyle, ...style }}>
+    <table className={`planningCalendar ${className}`} style={{ ...style }}>
       <thead>
         <tr
           className={`${rowsClassName}`}
-          style={{ ...trStyle, ...tableTrStyle, ...rowsStyle }}
+          style={{ ...theadTrStyle, ...rowsStyle }}
           key=""
         >
-          <th style={thStyle}>
+          <th className="dayTh">
             <GroupsHeadContainer
               className={`${groupHeadContainerClassName}`}
               style={groupHeadContainerStyle}
@@ -188,7 +158,7 @@ const Calendar = ({
             <th
               key={i}
               className={`${daysColsClassName}`}
-              style={{ ...weekDayThStyle, ...daysColsStyle }}
+              style={{...daysColsStyle }}
             >
               <DayContainer
                 style={dayStyle}
@@ -202,7 +172,7 @@ const Calendar = ({
               />
             </th>
           ))}
-          <th style={totalThStyle}>
+          <th className="totalTh">
             <SumHoursHead
               className={sumHoursHeadClassName}
               style={sumHoursHeadStyle}
@@ -216,12 +186,12 @@ const Calendar = ({
           <tr
             key={`${i} tr`}
             className={`${rowsClassName}`}
-            style={{ ...tableTrStyle, ...rowsStyle }}
+            style={{ ...rowsStyle }}
           >
             <td
               className={`${groupsColsClassName}`}
               key={i}
-              style={{ ...tdStyle, ...tableTdStyle, ...groupsColsStyle }}
+              style={{ ...groupTdStyle,...groupsColsStyle }}
             >
               <GroupContainer
                 style={groupStyle}
@@ -233,7 +203,6 @@ const Calendar = ({
             </td>
             {dailyHours.map((_, positionDay) => (
               <td
-                style={{ width: "8vw", ...tableTdStyle }}
                 key={`td-${group.id}day-i${positionDay}`}
                 onDragOver={handleDragOver}
                 onDrop={(event) => {

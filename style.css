@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
- flex:1;
+  flex: 1;
   background-color: #f2f8fb;
   opacity: 0;
   border-radius: 5px;
@@ -48,4 +48,31 @@
   font-weight: 600;
   margin-left: 5px;
 }
-td{ -moz-box-sizing: border-box;}
+
+.planningCalendar{
+  width: 100%;
+  height: 150px;
+  border-radius: 0.5rem;
+  z-index: 10
+}
+.planningCalendar .dayTh{
+  color: #0f5173;
+  padding-left: 5px
+}
+.planningCalendar .totalTh {
+  color: #0f5173;
+  width: 40px;
+  text-align: right;
+  padding-right: 2px;
+}
+
+.planningCalendar td {
+  -moz-box-sizing: border-box;
+  border-left: 0.74px solid rgba(198, 219, 225, 0.68);
+  border-right: 0.74px solid rgba(198, 219, 225, 0.68);
+  width: 8vw;
+}
+.planningCalendar tr {
+  border-bottom: 1.5px solid #0f52737e;
+  padding: 2px;
+}

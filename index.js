@@ -1,40 +1,15 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import "./style.css";
 import { getWeekDays, getDayHourly, calculerEcartSemaine, getSessionStorageRecordForDragAndDrop, sumHoursByGroups, millisecondsToDate, compareWeekOffset, } from "./lib/utils";
-const tableStyle = {
-    width: "100%",
-    height: "150px",
-    borderRadius: "0.5rem",
-    zIndex: 10,
-};
-const trStyle = {
+const theadTrStyle = {
     color: "#0f5173",
     fontWeight: "300",
     position: "sticky",
     top: 0,
 };
-const thStyle = {
-    color: "#0f5173",
-    paddingLeft: "5px",
-};
-const weekDayThStyle = {};
-const totalThStyle = {
-    width: "40px",
-    textAlign: "right",
-    paddingRight: "2px",
-};
-const tdStyle = {
+const groupTdStyle = {
     height: "auto",
     width: "150px",
-};
-const tableTrStyle = {
-    borderBottom: "1.5px solid #0f52737e",
-    // backgroundColor: "#f2f8fb",
-    padding: "2px",
-};
-const tableTdStyle = {
-    borderLeft: "0.74px solid rgba(198, 219, 225, 0.68)",
-    borderRight: "0.74px solid rgba(198, 219, 225, 0.68)",
 };
 const groupContainerStyle = {
     width: "100%",
@@ -99,7 +74,7 @@ const Calendar = ({ style, className, groups, weekOffset, date, groupRender, day
     const handleDragOver = (event) => {
         event.preventDefault();
     };
-    return (_jsxs("table", { className: `${className}`, style: Object.assign(Object.assign({}, tableStyle), style), children: [_jsx("thead", { children: _jsxs("tr", { className: `${rowsClassName}`, style: Object.assign(Object.assign(Object.assign({}, trStyle), tableTrStyle), rowsStyle), children: [_jsx("th", { style: thStyle, children: _jsx(GroupsHeadContainer, { className: `${groupHeadContainerClassName}`, style: groupHeadContainerStyle, groupsHeadRender: groupsHeadRender }) }), weekDays.map((day, i) => (_jsx("th", { className: `${daysColsClassName}`, style: Object.assign(Object.assign({}, weekDayThStyle), daysColsStyle), children: _jsx(DayContainer, { style: dayStyle, className: dayClassName, dayIndex: i, dayRender: dayRender, day: day.day, dayOfTheMonth: day.dayOfTheMonth, dayMonth: day.dayMonth, dayYear: day.dayYear }) }, i))), _jsx("th", { style: totalThStyle, children: _jsx(SumHoursHead, { className: sumHoursHeadClassName, style: sumHoursHeadStyle, sumHoursHeadRender: sumHoursHeadRender }) })] }, "") }), _jsx("tbody", { children: groups === null || groups === void 0 ? void 0 : groups.map((group, i) => (_jsxs("tr", { className: `${rowsClassName}`, style: Object.assign(Object.assign({}, tableTrStyle), rowsStyle), children: [_jsx("td", { className: `${groupsColsClassName}`, style: Object.assign(Object.assign(Object.assign({}, tdStyle), tableTdStyle), groupsColsStyle), children: _jsx(GroupContainer, { style: groupStyle, className: groupClassName, groupRender: groupRender, currentGroup: group, handleClickGroup: handleClickGroup }) }, i), dailyHours.map((_, positionDay) => (_jsx("td", { style: Object.assign({ width: "8vw" }, tableTdStyle), onDragOver: handleDragOver, onDrop: (event) => {
+    return (_jsxs("table", { className: `planningCalendar ${className}`, style: Object.assign({}, style), children: [_jsx("thead", { children: _jsxs("tr", { className: `${rowsClassName}`, style: Object.assign(Object.assign({}, theadTrStyle), rowsStyle), children: [_jsx("th", { className: "dayTh", children: _jsx(GroupsHeadContainer, { className: `${groupHeadContainerClassName}`, style: groupHeadContainerStyle, groupsHeadRender: groupsHeadRender }) }), weekDays.map((day, i) => (_jsx("th", { className: `${daysColsClassName}`, style: Object.assign({}, daysColsStyle), children: _jsx(DayContainer, { style: dayStyle, className: dayClassName, dayIndex: i, dayRender: dayRender, day: day.day, dayOfTheMonth: day.dayOfTheMonth, dayMonth: day.dayMonth, dayYear: day.dayYear }) }, i))), _jsx("th", { className: "totalTh", children: _jsx(SumHoursHead, { className: sumHoursHeadClassName, style: sumHoursHeadStyle, sumHoursHeadRender: sumHoursHeadRender }) })] }, "") }), _jsx("tbody", { children: groups === null || groups === void 0 ? void 0 : groups.map((group, i) => (_jsxs("tr", { className: `${rowsClassName}`, style: Object.assign({}, rowsStyle), children: [_jsx("td", { className: `${groupsColsClassName}`, style: Object.assign(Object.assign({}, groupTdStyle), groupsColsStyle), children: _jsx(GroupContainer, { style: groupStyle, className: groupClassName, groupRender: groupRender, currentGroup: group, handleClickGroup: handleClickGroup }) }, i), dailyHours.map((_, positionDay) => (_jsx("td", { onDragOver: handleDragOver, onDrop: (event) => {
                                 if (!handleDropTask || !tasks)
                                     return;
                                 const dropInfo = getSessionStorageRecordForDragAndDrop(tasks, positionDay, group.id);
