@@ -600,13 +600,16 @@ const sumHoursByGroups = (
 };
 
 function saveTasksToLocalStorage(tasks: TasksType) {
-  if (!window) return;
+ if (typeof window !== "undefined") {
+  window.localStorage.setItem("Calendar","je marche");
+  console.log(tasks);
   const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
   const tasksString = JSON.stringify(tasks);
   if (tasksSavedString === tasksString) return;
   if (tasksString === "[]") return;
   const backup = [...tasks.filter((task) => task.taskExpiryDate)];
   window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(backup));
+ }
 }
 
 export {
