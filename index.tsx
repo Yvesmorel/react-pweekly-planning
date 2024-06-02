@@ -582,13 +582,14 @@ export const checkDuplicates = (
   return findDuplicates.length > 0;
 };
 
-export const getTasksSaved = () => {
+export const getSavedTasks = () => {
   const taskSavedString = window.localStorage.getItem("CalendarTaskSaved");
   if (!taskSavedString) {
     return [];
   }
   const tasksTable: TasksType = JSON.parse(taskSavedString);
-  const validTasks = tasksTable
+
+  const validTasks:TasksType | any = tasksTable
     .filter((task) => {
       if (task?.taskExpiryDate) {
         const taskDate = new Date(task?.taskExpiryDate);

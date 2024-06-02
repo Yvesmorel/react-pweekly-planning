@@ -11,7 +11,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ![Planning Screenshot](https://raw.githubusercontent.com/Yvesmorel/react-pweekly-planning/main/assets/planning-screenshot.webp)
 
+[See the demo](https://react-weekly-planning-demo.vercel.app)
 
+[Demo repository](https://github.com/Yvesmorel/react-weekly-planning-demo.git)
 
 #### `weekOffset`
 
@@ -67,7 +69,31 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
 
   <Calendar tasks={tasks} ... />
   ```
+  
+- **Supplementary property** : If you want the spots to be saved up to a date of your choice you can define the `taskExpiryDate` property. It's an idea of [Patrick Aimé](https://www.linkedin.com/in/patrick-aime?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app).
 
+- **Example**:Here's how to create a task that will expire in a day.
+```jsx
+  const tasks = [
+    { taskId: '1', taskStart:'Time in milliseconde', taskEnd:'Time in milliseconde', task: 'Task 1', taskDate: new Date(), groupId: '1', dayIndex: 0,taskExpiryDate:new Date(Date.now() + 86400000) ... }
+  ];
+
+  <Calendar tasks={tasks} ... />
+ ```
+
+ `taskExpiryDate` is used with `getSavedTasks()` To obtain the saved tasks.
+
+  **Example**:
+  ```jsx
+  import {getSavedTasks} from "react-weekly-planning";
+  const [tasks,setTasks]=useState([])
+
+  useEffect(()=>{
+     setTasks(getSavedTasks())
+  },[])
+
+  <Calendar tasks={tasks} ... />
+  ```
 ---
 ---
 

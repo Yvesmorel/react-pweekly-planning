@@ -217,7 +217,7 @@ export const checkDuplicates = (tasks, taskStart, taskEnd, groupId) => {
             taskStart <= task.taskEnd)).filter((task) => task.groupId === groupId);
     return findDuplicates.length > 0;
 };
-export const getTasksSaved = () => {
+export const getSavedTasks = () => {
     const taskSavedString = window.localStorage.getItem("CalendarTaskSaved");
     if (!taskSavedString) {
         return [];
