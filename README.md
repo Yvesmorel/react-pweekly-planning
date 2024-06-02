@@ -69,8 +69,8 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
 
   <Calendar tasks={tasks} ... />
   ```
-  
-- **Supplementary property** : If you want the spots to be saved up to a date of your choice you can define the `taskExpiryDate` property. It's an idea of [Patrick Aimé](https://www.linkedin.com/in/patrick-aime?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app).
+
+- **Supplementary property** : If you want the tasks to be saved up to a date of your choice you can define the `taskExpiryDate` property. It's an idea of [Patrick Aimé](https://www.linkedin.com/in/patrick-aime?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app).
 
 - **Example**:Here's how to create a task that will expire in a day.
 ```jsx
