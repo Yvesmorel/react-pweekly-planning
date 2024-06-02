@@ -606,6 +606,7 @@ function  saveTasksToLocalStorage(tasks:TasksType) {
   const backup = [...tasks.filter((task) => task.taskExpiryDate)];
   window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(backup));
 }
+
 export {
   getWeeksListUpdate,
   saveTasksToLocalStorage,
