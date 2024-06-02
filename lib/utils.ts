@@ -600,6 +600,7 @@ const sumHoursByGroups = (
 };
 
 function saveTasksToLocalStorage(tasks: TasksType) {
+  if (!window) return;
   const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
   const tasksString = JSON.stringify(tasks);
   if (tasksSavedString === tasksString) return;
