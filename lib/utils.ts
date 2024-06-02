@@ -600,15 +600,24 @@ const sumHoursByGroups = (
 };
 
 function saveTasksToLocalStorage(tasks: TasksType) {
- if (typeof window !== "undefined") {
-  window.localStorage.setItem("Calendar","je marche");
-  const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
-  const tasksString = JSON.stringify(tasks);
-  if (tasksSavedString === tasksString) return;
-  if (tasksString === "[]") return;
-  const backup = [...tasks.filter((task) => task.taskExpiryDate)];
-  window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(backup));
- }
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem("Calendar", "je marche");
+    const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
+    const tasksString = JSON.stringify(tasks);
+    if (tasksSavedString === tasksString) return;
+    if (tasksString === "[]") return;
+    const backup = [
+      ...tasks.filter((task) => {
+        {
+          if (task?.taskExpiryDate) {
+            const taskDate = new Date(task?.taskExpiryDate);
+            return taskDate.getTime() >= Date.now();
+          }
+        }
+      }),
+    ];
+    window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(backup));
+  }
 }
 
 export {
