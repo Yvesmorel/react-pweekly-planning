@@ -310,6 +310,8 @@ export type TaskType = {
   dayIndex: number;
   /** Unique identifier for the task. */
   taskId: string;
+   /** This is a prop to save the date in local storage until a date of your choice */
+  taskExpiryDate:Date
 };
 
 /**

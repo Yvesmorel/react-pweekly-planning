@@ -597,8 +597,18 @@ const sumHoursByGroups = (
   });
   return sum;
 };
+
+
+function  saveTasksToLocalStorage(tasks:TasksType) {
+  const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
+  const tasksString = JSON.stringify(tasks);
+  if (tasksSavedString === tasksString) return;
+  const backup = [...tasks.filter((task) => task.taskExpiryDate)];
+  window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(backup));
+}
 export {
   getWeeksListUpdate,
+  saveTasksToLocalStorage,
   clickedDate,
   getCalandarDays,
   startDateMilliseconds,

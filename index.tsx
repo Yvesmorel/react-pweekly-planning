@@ -19,8 +19,8 @@ import {
   sumHoursByGroups,
   millisecondsToDate,
   compareWeekOffset,
+  saveTasksToLocalStorage,
 } from "./lib/utils";
-
 
 const theadTrStyle: StyleType = {
   color: "#0f5173",
@@ -139,6 +139,8 @@ const Calendar = ({
   const handleDragOver = (event: React.DragEvent<HTMLTableDataCellElement>) => {
     event.preventDefault();
   };
+
+  saveTasksToLocalStorage(tasks);
   return (
     <table className={`planningCalendar ${className}`} style={{ ...style }}>
       <thead>
@@ -158,7 +160,7 @@ const Calendar = ({
             <th
               key={i}
               className={`${daysColsClassName}`}
-              style={{...daysColsStyle }}
+              style={{ ...daysColsStyle }}
             >
               <DayContainer
                 style={dayStyle}
@@ -191,7 +193,7 @@ const Calendar = ({
             <td
               className={`${groupsColsClassName}`}
               key={i}
-              style={{ ...groupTdStyle,...groupsColsStyle }}
+              style={{ ...groupTdStyle, ...groupsColsStyle }}
             >
               <GroupContainer
                 style={groupStyle}
@@ -578,5 +580,36 @@ export const checkDuplicates = (
     )
     .filter((task) => task.groupId === groupId);
   return findDuplicates.length > 0;
+};
+
+export const getTasksSaved = () => {
+  const taskSavedString = window.localStorage.getItem("CalendarTaskSaved");
+  if (!taskSavedString) {
+    return [];
+  }
+  const tasksTable: TasksType = JSON.parse(taskSavedString);
+  const validTasks = tasksTable.filter((task) => {
+    const taskDate = new Date(task.taskExpiryDate);
+    return taskDate.getTime() >= Date.now();
+  });
+  return validTasks;
+};
+
+export const deleteTaskSaved = (taskId: string) => {
+  const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
+  if (!tasksSavedString) return;
+  const tasksSavedTable: TasksType = JSON.parse(tasksSavedString);
+  const taskIndex = tasksSavedTable.findIndex((task) => task.taskId === taskId);
+  if (taskIndex) {
+    tasksSavedTable.splice(taskIndex, 1);
+    window.localStorage.setItem(
+      "CalendarTaskSaved",
+      JSON.stringify(tasksSavedTable)
+    );
+  }
+};
+
+export const deleteTasks = () => {
+  window.localStorage.clear();
 };
 export default Calendar;

@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import "./style.css";
-import { getWeekDays, getDayHourly, calculerEcartSemaine, getSessionStorageRecordForDragAndDrop, sumHoursByGroups, millisecondsToDate, compareWeekOffset, } from "./lib/utils";
+import { getWeekDays, getDayHourly, calculerEcartSemaine, getSessionStorageRecordForDragAndDrop, sumHoursByGroups, millisecondsToDate, compareWeekOffset, saveTasksToLocalStorage, } from "./lib/utils";
 const theadTrStyle = {
     color: "#0f5173",
     fontWeight: "300",
@@ -74,6 +74,7 @@ const Calendar = ({ style, className, groups, weekOffset, date, groupRender, day
     const handleDragOver = (event) => {
         event.preventDefault();
     };
+    saveTasksToLocalStorage(tasks);
     return (_jsxs("table", { className: `planningCalendar ${className}`, style: Object.assign({}, style), children: [_jsx("thead", { children: _jsxs("tr", { className: `${rowsClassName}`, style: Object.assign(Object.assign({}, theadTrStyle), rowsStyle), children: [_jsx("th", { className: "dayTh", children: _jsx(GroupsHeadContainer, { className: `${groupHeadContainerClassName}`, style: groupHeadContainerStyle, groupsHeadRender: groupsHeadRender }) }), weekDays.map((day, i) => (_jsx("th", { className: `${daysColsClassName}`, style: Object.assign({}, daysColsStyle), children: _jsx(DayContainer, { style: dayStyle, className: dayClassName, dayIndex: i, dayRender: dayRender, day: day.day, dayOfTheMonth: day.dayOfTheMonth, dayMonth: day.dayMonth, dayYear: day.dayYear }) }, i))), _jsx("th", { className: "totalTh", children: _jsx(SumHoursHead, { className: sumHoursHeadClassName, style: sumHoursHeadStyle, sumHoursHeadRender: sumHoursHeadRender }) })] }, "") }), _jsx("tbody", { children: groups === null || groups === void 0 ? void 0 : groups.map((group, i) => (_jsxs("tr", { className: `${rowsClassName}`, style: Object.assign({}, rowsStyle), children: [_jsx("td", { className: `${groupsColsClassName}`, style: Object.assign(Object.assign({}, groupTdStyle), groupsColsStyle), children: _jsx(GroupContainer, { style: groupStyle, className: groupClassName, groupRender: groupRender, currentGroup: group, handleClickGroup: handleClickGroup }) }, i), dailyHours.map((_, positionDay) => (_jsx("td", { onDragOver: handleDragOver, onDrop: (event) => {
                                 if (!handleDropTask || !tasks)
                                     return;
@@ -204,5 +205,31 @@ export const checkDuplicates = (tasks, taskStart, taskEnd, groupId) => {
             taskEnd >= task.taskEnd &&
             taskStart <= task.taskEnd)).filter((task) => task.groupId === groupId);
     return findDuplicates.length > 0;
+};
+export const getTasksSaved = () => {
+    const taskSavedString = window.localStorage.getItem("CalendarTaskSaved");
+    if (!taskSavedString) {
+        return [];
+    }
+    const tasksTable = JSON.parse(taskSavedString);
+    const validTasks = tasksTable.filter((task) => {
+        const taskDate = new Date(task.taskExpiryDate);
+        return taskDate.getTime() >= Date.now();
+    });
+    return validTasks;
+};
+export const deleteTaskSaved = (taskId) => {
+    const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
+    if (!tasksSavedString)
+        return;
+    const tasksSavedTable = JSON.parse(tasksSavedString);
+    const taskIndex = tasksSavedTable.findIndex((task) => task.taskId === taskId);
+    if (taskIndex) {
+        tasksSavedTable.splice(taskIndex, 1);
+        window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(tasksSavedTable));
+    }
+};
+export const deleteTasks = () => {
+    window.localStorage.clear();
 };
 export default Calendar;
