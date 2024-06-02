@@ -589,24 +589,17 @@ export const getSavedTasks = () => {
   }
   const tasksTable: TasksType = JSON.parse(taskSavedString);
 
-  const validTasks:TasksType | any = tasksTable
-    .filter((task) => {
-      if (task?.taskExpiryDate) {
-        const taskDate = new Date(task?.taskExpiryDate);
-        return taskDate.getTime() >= Date.now();
-      }
-    })
-    .map((task) => {
-      const { taskDate, taskExpiryDate, ...rest } = task;
-      if (taskExpiryDate) {
-        return {
-          taskDate: new Date(taskDate),
-          taskExpiryDate: new Date(taskExpiryDate),
-         ...rest,
-        };
-      }
-    });
-  return validTasks;
+  const savedTasks: TasksType | any = tasksTable.map((task) => {
+    const { taskDate, taskExpiryDate, ...rest } = task;
+    if (taskExpiryDate) {
+      return {
+        taskDate: new Date(taskDate),
+        taskExpiryDate: new Date(taskExpiryDate),
+        ...rest,
+      };
+    }
+  });
+  return savedTasks;
 };
 
 export const deleteTaskSaved = (taskId: string) => {
