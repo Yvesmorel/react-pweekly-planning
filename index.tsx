@@ -588,10 +588,23 @@ export const getTasksSaved = () => {
     return [];
   }
   const tasksTable: TasksType = JSON.parse(taskSavedString);
-  const validTasks = tasksTable.filter((task) => {
-    const taskDate = new Date(task.taskExpiryDate);
-    return taskDate.getTime() >= Date.now();
-  });
+  const validTasks = tasksTable
+    .filter((task) => {
+      if (task?.taskExpiryDate) {
+        const taskDate = new Date(task?.taskExpiryDate);
+        return taskDate.getTime() >= Date.now();
+      }
+    })
+    .map((task) => {
+      const { taskDate, taskExpiryDate, ...rest } = task;
+      if (taskExpiryDate) {
+        return {
+          taskDate: new Date(taskDate),
+          taskExpiryDate: new Date(taskExpiryDate),
+         ...rest,
+        };
+      }
+    });
   return validTasks;
 };
 
@@ -609,7 +622,8 @@ export const deleteTaskSaved = (taskId: string) => {
   }
 };
 
-export const deleteTasks = () => {
-  window.localStorage.clear();
+export const deleteTasksSaved = () => {
+  window.localStorage.removeItem("CalendarTaskSaved");
 };
+
 export default Calendar;

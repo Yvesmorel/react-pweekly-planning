@@ -1,3 +1,14 @@
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import "./style.css";
 import { getWeekDays, getDayHourly, calculerEcartSemaine, getSessionStorageRecordForDragAndDrop, sumHoursByGroups, millisecondsToDate, compareWeekOffset, saveTasksToLocalStorage, } from "./lib/utils";
@@ -212,9 +223,18 @@ export const getTasksSaved = () => {
         return [];
     }
     const tasksTable = JSON.parse(taskSavedString);
-    const validTasks = tasksTable.filter((task) => {
-        const taskDate = new Date(task.taskExpiryDate);
-        return taskDate.getTime() >= Date.now();
+    const validTasks = tasksTable
+        .filter((task) => {
+        if (task === null || task === void 0 ? void 0 : task.taskExpiryDate) {
+            const taskDate = new Date(task === null || task === void 0 ? void 0 : task.taskExpiryDate);
+            return taskDate.getTime() >= Date.now();
+        }
+    })
+        .map((task) => {
+        const { taskDate, taskExpiryDate } = task, rest = __rest(task, ["taskDate", "taskExpiryDate"]);
+        if (taskExpiryDate) {
+            return Object.assign({ taskDate: new Date(taskDate), taskExpiryDate: new Date(taskExpiryDate) }, rest);
+        }
     });
     return validTasks;
 };
@@ -229,7 +249,7 @@ export const deleteTaskSaved = (taskId) => {
         window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(tasksSavedTable));
     }
 };
-export const deleteTasks = () => {
-    window.localStorage.clear();
+export const deleteTasksSaved = () => {
+    window.localStorage.removeItem("CalendarTaskSaved");
 };
 export default Calendar;

@@ -1,10 +1,5 @@
 import moment from "moment";
-import {
-  TasksType,
-  TaskType,
-  TaskFeildsType,
-  GroupFeildsType,
-} from "../definitions";
+import { TasksType, TaskType, TaskFeildsType } from "../definitions";
 // Obtenir la date actuelle
 const currentDate = new Date();
 // Obtenir le jour de la semaine (dimanche = 0, lundi = 1, ..., samedi = 6)
@@ -28,7 +23,10 @@ function getDayHourly(weekOffset: number) {
     start: number;
     end: number;
   }[] = [];
-
+  let dayOffset = weekOffset;
+  if (currentDate.getDay() === 0) {
+    dayOffset = dayOffset - 7;
+  }
   // Boucle pour calculer les heures de début et de fin de chaque jour de la semaine
   for (let i = 0; i < 7; i++) {
     const dayDate = new Date(startDate);
@@ -40,9 +38,9 @@ function getDayHourly(weekOffset: number) {
 
     dailyHours.push({
       positionDay: i,
-      day: new Date(dayStart.getTime() + weekOffset * 86400000),
-      start: dayStart.getTime() + weekOffset * 86400000,
-      end: dayEnd.getTime() + weekOffset * 86400000,
+      day: new Date(dayStart.getTime() + dayOffset * 86400000),
+      start: dayStart.getTime() + dayOffset * 86400000,
+      end: dayEnd.getTime() + dayOffset * 86400000,
     });
   }
   return dailyHours;
@@ -144,8 +142,11 @@ function getWeekDays(jump: number) {
   for (let i = 0; i < 7; i++) {
     const day = new Date();
     const diff = i - currentDayOfWeek;
-
-    day.setDate(currentDate.getDate() + diff + jump);
+    if (currentDayOfWeek === 0) {
+      day.setDate(currentDate.getDate() + diff + jump - 7);
+    } else {
+      day.setDate(currentDate.getDate() + diff + jump);
+    }
 
     const formattedDay = `${days[day.getDay()]}. ${day.getDate()},  ${
       month[day.getMonth()]
@@ -598,11 +599,11 @@ const sumHoursByGroups = (
   return sum;
 };
 
-
-function  saveTasksToLocalStorage(tasks:TasksType) {
+function saveTasksToLocalStorage(tasks: TasksType) {
   const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
   const tasksString = JSON.stringify(tasks);
   if (tasksSavedString === tasksString) return;
+  if (tasksString === "[]") return;
   const backup = [...tasks.filter((task) => task.taskExpiryDate)];
   window.localStorage.setItem("CalendarTaskSaved", JSON.stringify(backup));
 }
