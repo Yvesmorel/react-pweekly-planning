@@ -571,9 +571,9 @@ function compareWeekOffset(
   weekOffset: number,
   taskDate: Date
 ) {
-  if (taskDate.getDay() === 0 && calculerEcartSemaine(taskDate) === -7) {
-    return true;
-  }
+  // if (taskDate.getDay() === 0 && calculerEcartSemaine(taskDate) === -7) {
+  //   return true;
+  // }
   if (calendarDate)
     return (
       calculerEcartSemaine(calendarDate) === calculerEcartSemaine(taskDate)
