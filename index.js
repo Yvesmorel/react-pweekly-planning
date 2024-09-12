@@ -223,20 +223,13 @@ export const getSavedTasks = () => {
         return [];
     }
     const tasksTable = JSON.parse(taskSavedString);
-    const validTasks = tasksTable
-        .filter((task) => {
-        if (task === null || task === void 0 ? void 0 : task.taskExpiryDate) {
-            const taskDate = new Date(task === null || task === void 0 ? void 0 : task.taskExpiryDate);
-            return taskDate.getTime() >= Date.now();
-        }
-    })
-        .map((task) => {
+    const savedTasks = tasksTable.map((task) => {
         const { taskDate, taskExpiryDate } = task, rest = __rest(task, ["taskDate", "taskExpiryDate"]);
         if (taskExpiryDate) {
             return Object.assign({ taskDate: new Date(taskDate), taskExpiryDate: new Date(taskExpiryDate) }, rest);
         }
     });
-    return validTasks;
+    return savedTasks;
 };
 export const deleteTaskSaved = (taskId) => {
     const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
