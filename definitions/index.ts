@@ -33,7 +33,7 @@ type GroupRiquiredFieldsType = {
 /**
  * Additional fields for a group.
  */
-type GroupAdditionalFieldsType = Record<any,any>;
+type GroupAdditionalFieldsType = Record<any, any>;
 
 /**
  * Fields for a group, including both required and additional fields.
@@ -310,8 +310,8 @@ export type TaskType = {
   dayIndex: number;
   /** Unique identifier for the task. */
   taskId: string;
-   /** This is a prop to save the date in local storage until a date of your choice */
-  taskExpiryDate?:Date
+  /** This is a prop to save the date in local storage until a date of your choice */
+  taskExpiryDate?: Date;
 };
 
 /**
@@ -420,3 +420,24 @@ export type SumHoursContainerPropsType = {
   /** Additional class names for the sum hours container. */
   className?: string;
 };
+export type weekDaysType = {
+  day: string;
+  dayMonth: string;
+  dayYear: number;
+  dayOfTheMonth: number;
+}[];
+
+export type dailyHoursType = {
+  positionDay: number;
+  day: Date;
+  start: number;
+  end: number;
+}[];
+
+type AdditionalCalandarTableType = {
+  weekDays: weekDaysType;
+  dailyHours: dailyHoursType;
+  handleDragOver: (event: React.DragEvent<HTMLTableDataCellElement>) => void;
+};
+
+export type CalendarTablePropsType = CalendarPropsType;
