@@ -4,7 +4,7 @@ export const theadTrStyle: StyleType = {
   color: "#0f5173",
   fontWeight: "300",
   position: "sticky",
-  top: 0,
+  top: -1,
 };
 
 export const groupTdStyle: StyleType = {

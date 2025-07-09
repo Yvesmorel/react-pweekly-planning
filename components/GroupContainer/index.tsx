@@ -9,6 +9,7 @@ const GroupContainer = ({
   currentGroup,
   handleClickGroup,
 }: GroupPropsType) => {
+  
   if (groupRender) {
     return <>{groupRender({ currentGroup })}</>;
   }

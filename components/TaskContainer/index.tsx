@@ -10,7 +10,6 @@ const TaskContainer = ({
   className,
   currentTask,
   handleClickTask,
-
 }: TaskContainerPropsType) => {
   
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
@@ -72,6 +71,7 @@ const TaskContainer = ({
       onDragEnd={handleDragEnd}
     >
       <p className="tasklabel">{currentTask.task && currentTask.task}</p>
+
       <p className="taskhour">
         {currentTask.taskStart &&
           currentTask.taskEnd &&

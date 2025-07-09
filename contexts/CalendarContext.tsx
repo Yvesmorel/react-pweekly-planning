@@ -1,5 +1,7 @@
 import { createContext, useContext } from "react";
 import { GroupPropsType } from "../definitions";
+
+
 type CalendarContextProviderPropsType = {
   children: React.ReactNode;
   groups: GroupPropsType[];
@@ -30,5 +32,7 @@ const CalendarContextProvider = ({
     </CalendarContext.Provider>
   );
 };
+
+
 export const useCalendarContext = () => useContext(CalendarContext);
 export default CalendarContextProvider;

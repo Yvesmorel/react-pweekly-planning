@@ -1,6 +1,9 @@
-"use client"
-
-import { CalendarPropsType, CalendarTablePropsType } from "../definitions";
+"use client";
+import {
+  CalendarPropsType,
+  CalendarTablePropsType,
+  TaskFeildsType,
+} from "../definitions";
 import GroupContainer from "./GroupContainer";
 import GroupsHeadContainer from "./GroupsHeadContainer";
 
@@ -13,27 +16,26 @@ import {
   getSessionStorageRecordForDragAndDrop,
   saveTasksToLocalStorage,
   sumHoursByGroups,
+  updateOffsetWithDateCalendar,
 } from "../lib/utils";
 
 import TaskContainer from "./TaskContainer";
+
 import AddTask from "./AddTask";
 import SumHoursContainer from "./SumHoursContainer";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useEffect } from "react";
 import useCalendarDateState from "../hooks/useCalendarDateState";
 
-function CalendarTable(props: CalendarTablePropsType) {
-
+function CalendarForWeek(props: CalendarTablePropsType) {
   const { dailyHours, weekDays } = useCalendarDateState(
     props.date,
-    props.weekOffset
+    props.weekOffset,
+    props.timeZone
   );
 
-  const handleDragOver = useCallback(
-    (event: React.DragEvent<HTMLTableDataCellElement>) => {
-      event.preventDefault();
-    },
-    []
-  );
+  const handleDragOver = (event: React.DragEvent<HTMLTableCellElement>) => {
+    event.preventDefault();
+  };
 
   useEffect(() => {
     saveTasksToLocalStorage(props.tasks);
@@ -50,7 +52,10 @@ function CalendarTable(props: CalendarTablePropsType) {
           style={{ ...theadTrStyle, ...props.rowsStyle }}
           key=""
         >
-          <th className="dayTh">
+          <th
+            className={`dayTh ${props.groupsColsClassName}`}
+            style={{ ...props.groupsColsStyle }}
+          >
             <GroupsHeadContainer
               className={`${props.groupHeadContainerClassName}`}
               style={props.groupHeadContainerStyle}
@@ -75,7 +80,10 @@ function CalendarTable(props: CalendarTablePropsType) {
               />
             </th>
           ))}
-          <th className="totalTh">
+          <th
+            className={`totalTh ${props.hoursColsClassName}`}
+            style={props.hoursColsStyle}
+          >
             <SumHoursHead
               className={props.sumHoursHeadClassName}
               style={props.sumHoursHeadStyle}
@@ -97,8 +105,8 @@ function CalendarTable(props: CalendarTablePropsType) {
               style={{ ...groupTdStyle, ...props.groupsColsStyle }}
             >
               <GroupContainer
-                style={props.groupStyle}
-                className={props.groupClassName}
+                style={props.groupContainerStyle}
+                className={props.groupContainerClassName}
                 groupRender={props.groupRender}
                 currentGroup={group}
                 handleClickGroup={props.handleClickGroup}
@@ -128,6 +136,8 @@ function CalendarTable(props: CalendarTablePropsType) {
                   );
                 }}
                 id={`td-${group.id}day-i`}
+                className={props.dayColsClassName}
+                style={props.dayColsStyle}
               >
                 <div
                   key={positionDay}
@@ -141,8 +151,13 @@ function CalendarTable(props: CalendarTablePropsType) {
                 >
                   <>
                     {props.tasks
-                      ?.filter(
-                        (task) =>
+                      // ?.filter(
+                      //   (task) =>
+
+                      // )
+                      // .sort((a, b) => a.taskStart - b.taskStart)
+                      .map((task, taskKey) => {
+                        if (
                           task.dayIndex === positionDay &&
                           task.groupId === group.id &&
                           compareWeekOffset(
@@ -150,21 +165,20 @@ function CalendarTable(props: CalendarTablePropsType) {
                             props.weekOffset || 0,
                             task.taskDate
                           )
-                      )
-                      .sort((a, b) => a.taskStart - b.taskStart)
-                      .map((task, taskKey) => {
-                        return (
-                          <TaskContainer
-                            key={`${taskKey} task`}
-                            handleDragTask={props.handleDragTask}
-                            taskRender={props.taskRender}
-                            handleDragTaskEnd={props.handleDragTaskEnd}
-                            style={props.taskContainerStyle}
-                            className={`${props.taskContainerClassName}`}
-                            currentTask={task}
-                            handleClickTask={props.handleClickTask}
-                          />
-                        );
+                        ) {
+                          return (
+                            <TaskContainer
+                              key={`${taskKey} task`}
+                              handleDragTask={props.handleDragTask}
+                              taskRender={props.taskRender}
+                              handleDragTaskEnd={props.handleDragTaskEnd}
+                              style={props.taskContainerStyle}
+                              className={`${props.taskContainerClassName}`}
+                              currentTask={task}
+                              handleClickTask={props.handleClickTask}
+                            />
+                          );
+                        } else return "";
                       })}
                   </>
 
@@ -179,7 +193,11 @@ function CalendarTable(props: CalendarTablePropsType) {
                 </div>
               </td>
             ))}
-            <td key={`${i}sumHours`}>
+            <td
+              key={`${i}sumHours`}
+              style={props.hoursColsStyle}
+              className={props.hoursColsClassName}
+            >
               <SumHoursContainer
                 groupId={group.id}
                 tasks={props.tasks}
@@ -204,16 +222,13 @@ function CalendarTable(props: CalendarTablePropsType) {
 }
 
 export default memo(
-
-  CalendarTable,
+  CalendarForWeek,
   (
     prevProps: Readonly<CalendarPropsType>,
     nextProps: Readonly<CalendarPropsType>
   ) =>
-
     prevProps.tasks === nextProps.tasks &&
     prevProps.date === nextProps.date &&
     prevProps.groups === nextProps.groups &&
     prevProps.weekOffset === nextProps.weekOffset
-
 );

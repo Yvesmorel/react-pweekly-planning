@@ -2,12 +2,14 @@ import { memo } from "react";
 import { AddTaskPropsType } from "../../definitions";
 
 const AddTask = ({
+  
   currentGroup,
   handleAddTask,
   addTaskRender,
   dayInfo,
   addTaskStyle,
   addTaskClassName,
+
 }: AddTaskPropsType) => {
   if (addTaskRender) {
     return (
@@ -21,8 +23,10 @@ const AddTask = ({
   }
 
   const handleClick = () => {
+
     if (!handleAddTask) return;
     handleAddTask(currentGroup, dayInfo);
+
   };
 
   return (

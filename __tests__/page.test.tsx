@@ -1,57 +1,129 @@
-import moment from "moment";
+import { render } from "@testing-library/react";
+import Calendar from "..";
+import "@testing-library/jest-dom";
+import { TaskFeildsType } from "../definitions";
+import { icsToJson } from "ics-to-json";
 
-function getWeekNumber(date: Date) {
-  date.setHours(0, 0, 0, 0);
-  date.setDate(date.getDate() + 4 - (date.getDay() || 7));
-  const yearStart= new Date(date.getFullYear(), 0, 1).getTime();
-  const weekNumber = Math.ceil(((date.getTime() - yearStart) / 86400000 + 1) / 7);
-  return weekNumber;
-}
+import ical from "ical";
 
-function calculerEcartSemaine(dateSelectionnee: Date) {
-  // Récupérer la date actuelle
-  const dateActuelle = new Date();
+export function parseICSToTasks(
+  icsData: string,
+  group: string
+): TaskFeildsType[] {
+  const events = ical.parseICS(icsData);
+  const tasks: TaskFeildsType[] = [];
 
-  // Extraire l'année et le numéro de la semaine de la date actuelle
-  const anneeActuelle = dateActuelle.getFullYear();
-  const numeroSemaineActuelle = getWeekNumber(dateActuelle);
+  for (const key in events) {
+    const event = events[key];
 
-  // Extraire l'année et le numéro de la semaine de la date sélectionnée
+    if (event.type === "VEVENT") {
+      const taskStart = event.start
+        ? new Date(event.start).getTime()
+        : new Date().getTime();
+      const taskEnd = event.end
+        ? new Date(event.end).getTime()
+        : new Date().getTime();
+      const taskDate = event.start ? new Date(event.start) : new Date();
+      const taskSummary = event.summary || "";
+      const taskLocation = event.location || "";
+      const taskTimezone = "";
+      const taskCreatedAt = event.created
+        ? new Date(event.created)
+        : new Date();
+      const taskExpiryDate = event.rrule?.options.until
+        ? new Date(event.rrule.options.until)
+        : new Date();
 
-  const anneeSelectionnee = dateSelectionnee.getFullYear();
-  const numeroSemaineSelectionnee = getWeekNumber(dateSelectionnee);
+      const task: TaskFeildsType[][number] = {
+        taskStart,
+        taskEnd,
+        taskDate,
+        taskSummary,
+        taskLocation,
+        taskTimzone: taskTimezone,
+        groupId: group,
+        dayIndex: taskDate.getDay() || 0,
+        taskId: event.uid || "",
+        taskCreatedAt,
+        taskExpiryDate,
+      };
 
-  // Calculer le nombre de semaines depuis une date d'origine arbitraire
+      tasks.push(task);
 
-  // Calculer l'écart entre les semaines en utilisant la formule
-  const ecartSemaine =
-    semainesDepuisOrigine(anneeSelectionnee, numeroSemaineSelectionnee) -
-    semainesDepuisOrigine(anneeActuelle, numeroSemaineActuelle);
+      if (!event.start) return [];
 
-  return ecartSemaine * 7;
-}
-function semainesDepuisOrigine(annee: number, numeroSemaine: number) {
-  // Choisir le 1er janvier 2022 comme date d'origine
-  const dateOrigine = new Date(2022, 0, 1);
-  const anneeOrigine = dateOrigine.getFullYear();
-  const numeroSemaineOrigine = getWeekNumber(dateOrigine);
+      // Gestion des occurrences récurrentes
+      if (event.rrule) {
+        const occurrences = event.rrule.between(
+          event.start,
+          taskExpiryDate || new Date()
+        );
 
-  // Calculer le nombre total de semaines écoulées depuis la date d'origine
-  let nombreSemaines = 0;
-  for (let i = anneeOrigine; i < annee; i++) {
-    nombreSemaines += moment().year(i).weeksInYear();
+        occurrences.forEach((occurrence) => {
+          tasks.push({
+            ...task,
+            taskStart: occurrence.getTime(),
+            taskEnd: occurrence.getTime() + (taskEnd - taskStart),
+            taskDate: new Date(occurrence.getTime()),
+            dayIndex: new Date(occurrence.getTime()).getDay(),
+          });
+        });
+      }
+    }
   }
-  nombreSemaines += numeroSemaine - numeroSemaineOrigine;
 
-  return nombreSemaines;
+  return tasks;
 }
-const makeCalcul=(date:Date)=>calculerEcartSemaine(date)
-describe("Ecartweek", () => {
-  test("current week to next week to be 7", () => {
-    const currentDay = Date.now();
-    const nextWeekDay = currentDay - 14 * 86400000;
-    // console.log(calculerEcartSemaine(new Date(nextWeekDay)));
-    const nextWeek = new Date(nextWeekDay);
-    expect(makeCalcul(nextWeek)).toBe(-14);
-  });
+
+import axios from "axios";
+// Get ICS text however you like, example below
+// Make sure you have the right CORS settings if needed
+const convert = async (fileLocation: string[]) => {
+
+  try {
+    const task = fileLocation.map(async (link)  => {
+      const icsRes = await axios.get(link);
+      const icstext:string = await icsRes.data;
+      const data = parseICSToTasks(icstext, "morel");
+      return data;
+    });
+
+    console.log(task);
+    return "success";
+  } catch (error) {
+    return "error";
+  }
+};
+
+
+export function convertTasksToIcsFormat(tasks: TaskFeildsType[]) {
+  const ics = tasks.reduce((previousIcs: string, task: TaskFeildsType) => {
+    previousIcs += `
+
+        BEGIN:VCALENDAR
+        VERSION:1.0
+        BEGIN:VEVENT
+        DTSTART:${task.taskStart}
+        DTEND:${task.taskEnd}
+        LOCATION:
+        DESCRIPTION:Purpose: Provide example of this file type Document file type: ICS Version: 1.0 Created by http://www.online-convert.com More example files: http://www.online-convert.com/file-type License: http://creativecommons.org/licenses Feel free to use & share the file according to the license above.
+        SUMMARY:ICS test file
+        PRIORITY:3
+        END:VEVENT
+        END:VCALENDAR
+
+    `;
+
+    return previousIcs;
+  }, "");
+
+  return ics;
+}
+
+
+test("the fetch fails with an error", () => {
+  return convert([
+    "https://firebasestorage.googleapis.com/v0/b/ashtonv2.appspot.com/o/example.ics?alt=media&token=679cab97-cde2-4074-b96f-b63c10f1b7e2",
+    "https://firebasestorage.googleapis.com/v0/b/ashtonv2.appspot.com/o/example.ics?alt=media&token=679cab97-cde2-4074-b96f-b63c10f1b7e2",
+  ]).catch((error) => expect(error).toMatch("error"));
 });

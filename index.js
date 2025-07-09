@@ -1,6 +1,7 @@
-import { jsx as _jsx } from "react/jsx-runtime";
+import { jsx as _jsx, Fragment as _Fragment } from "react/jsx-runtime";
 import "./style.css";
-import CalendarTable from "./components/CalendarTable";
+import CalendarForWeek from "./components/CalendarForWeek";
+import CalendarForDay from "./components/CalendarForday";
 /**
  * Calendar component to display tasks and groups in a weekly view.
  *
@@ -47,6 +48,7 @@ import CalendarTable from "./components/CalendarTable";
  * @returns {JSX.Element} The rendered Calendar component.
  */
 const Calendar = (props) => {
-    return (_jsx(CalendarTable, Object.assign({}, props)));
+    return (_jsx(_Fragment, { children: _jsx(CalendarForWeek, Object.assign({}, props)) }));
 };
 export default Calendar;
+export { CalendarForDay };
