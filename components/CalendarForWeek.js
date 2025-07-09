@@ -34,10 +34,6 @@ function CalendarForWeek(props) {
                                     flexDirection: "column",
                                     padding: "5px",
                                 }, children: [_jsx(_Fragment, { children: props.tasks
-                                            // ?.filter(
-                                            //   (task) =>
-                                            // )
-                                            // .sort((a, b) => a.taskStart - b.taskStart)
                                             .map((task, taskKey) => {
                                             if (task.dayIndex === positionDay &&
                                                 task.groupId === group.id &&
