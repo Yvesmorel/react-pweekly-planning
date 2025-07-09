@@ -151,11 +151,6 @@ function CalendarForWeek(props: CalendarTablePropsType) {
                 >
                   <>
                     {props.tasks
-                      // ?.filter(
-                      //   (task) =>
-
-                      // )
-                      // .sort((a, b) => a.taskStart - b.taskStart)
                       .map((task, taskKey) => {
                         if (
                           task.dayIndex === positionDay &&
