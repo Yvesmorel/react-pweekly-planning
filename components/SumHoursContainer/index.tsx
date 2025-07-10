@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { SumHoursContainerPropsType } from "../../definitions";
+import { millisecondsToHours, totalLabel } from "../../lib/utils";
 
 const SumHoursContainer = ({
   groupId,
@@ -30,7 +31,7 @@ const SumHoursContainer = ({
       style={{ textAlign: "right", marginRight: "5px", ...style }}
       className={`${className}`}
     >
-      {sumHoursByGroups}
+      {totalLabel(sumHoursByGroups)}
     </div>
   );
 };

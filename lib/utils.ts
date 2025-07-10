@@ -300,14 +300,15 @@ export const sumHoursByGroups = (
   calendarDate: Date
 ) => {
   let sum: number = 0;
-  tasks?.forEach((task: TaskType | any) => {
-    if (
-      task.groupId === groupId &&
-      compareWeekOffset(calendarDate, weekOffset, task.taskDate) === true
-    ) {
-      sum += (task.taskEnd - task.taskStart) / 3600000;
-    }
-  });
+  if (tasks)
+    tasks.forEach((task: TaskType | any) => {
+      if (
+        task.groupId === groupId &&
+        compareWeekOffset(calendarDate, weekOffset, task.taskDate) === true
+      ) {
+        sum += task.taskEnd - task.taskStart;
+      }
+    });
   return sum;
 };
 
@@ -946,3 +947,24 @@ export const GetTimeRangeByDay = (start: number, end: number) => {
   }
   return range;
 };
+
+export function totalLabel(milliseconds: number) {
+  let label = "";
+  const hourConv = milliseconds / 3600000;
+
+  const truncHour = Math.trunc(hourConv);
+
+  if (hourConv !== truncHour) {
+    const deciHour = hourConv - truncHour;
+    const minConv = deciHour * 60;
+    const truncMin = Math.trunc(minConv);
+
+    if (truncMin !== minConv) {
+      const deciMin = minConv - truncMin;
+      const secConv = deciMin * 60;
+      label = `${truncHour}:${truncMin}:${Math.trunc(secConv)}`;
+    } else label = `${truncHour}:${minConv}:0`;
+  } else label = `${hourConv}:0:0`;
+
+  return label;
+}
