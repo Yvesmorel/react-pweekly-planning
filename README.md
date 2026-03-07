@@ -55,6 +55,39 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
   <Calendar date={currentDate} ... />
   ```
 
+#### `timeZone`
+
+- **Description**: This prop sets the timezone to be used by the calendar for all date and time calculations.
+- **Type**: `TimeZone` (e.g., `"America/New_York"`, `"Europe/Paris"`, etc.)
+- **Use Case**: Use this prop to align the calendar's display and event calculations to a specific global timezone instead of relying on the user's local browser timezone. This ensures consistency across different geographical locations.
+
+  **Example**:
+  ```jsx
+  <Calendar timeZone="Europe/Paris" ... />
+  ```
+
+#### `scope`
+
+- **Description**: This prop sets the view scope of the calendar.
+- **Type**: `"day" | "week"`
+- **Use Case**: Use this prop to define whether the calendar should display a full week or only a single day. If omitted, it defaults to a weekly view.
+
+  **Example**:
+  ```jsx
+  <Calendar scope="day" dayOffset={0} ... />
+  ```
+
+#### `dayOffset`
+
+- **Description**: This prop specifies which day of the week to display when the scope is set to "day".
+- **Type**: `0 | 1 | 2 | 3 | 4 | 5 | 6`
+- **Use Case**: If `scope="day"`, use this prop to target a specific day of the week (`0` being the first day of the week, up to `6`).
+
+  **Example**:
+  ```jsx
+  <Calendar scope="day" dayOffset={2} ... />
+  ```
+
 #### `tasks`
 
 - **Description**: This prop is an array of tasks to be displayed in the calendar.
@@ -94,7 +127,61 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
 
   <Calendar tasks={tasks} ... />
   ```
+
 ---
+
+## Full Example for Beginners
+
+Here is a complete, minimal example showing how to set up the `Calendar` with simple groups and tasks.
+
+```tsx
+import React, { useState } from "react";
+import Calendar from "react-pweekly-planning"; // Verify your exact import path based on package.json
+import "react-pweekly-planning/dist/style.css"; // Ensure CSS is imported depending on your setup
+
+const App = () => {
+  const [date] = useState(new Date());
+  
+  // Define groups (e.g., resources, team members, or projects)
+  const groups = [
+    { id: "1", label: "Developer A" },
+    { id: "2", label: "Developer B" }
+  ];
+
+  // Create start and end times in milliseconds
+  const todayAt10 = new Date().setHours(10, 0, 0, 0);
+  const todayAt12 = new Date().setHours(12, 0, 0, 0);
+
+  // Define your tasks
+  const tasks = [
+    { 
+      taskId: "t1", 
+      groupId: "1", // Belongs to "Developer A"
+      taskStart: todayAt10, 
+      taskEnd: todayAt12,   
+      taskDate: new Date(), 
+      dayIndex: new Date().getDay(), // Matches the task's day of week
+      taskSummary: "Code Review"
+    }
+  ];
+
+  return (
+    <div style={{ padding: "20px" }}>
+      <h1>My Weekly Planner</h1>
+      <Calendar 
+        date={date}
+        weekOffset={0}
+        groups={groups}
+        tasks={tasks}
+        scope="week" // Change to "day" for daily view
+      />
+    </div>
+  );
+};
+
+export default App;
+```
+
 ---
 
 ## `CalendarPropsType`
@@ -105,10 +192,13 @@ Props for the Calendar component.
 | Prop Name                    | Type                                                                                  | Description                                                                                       |
 |------------------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
 | `weekOffset`                 | number                                                                                | Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week).                |
+| `scope`                      | "day" \| "week"                                                                       | Sets the calendar view to either a full week or a single day.                                     |
+| `dayOffset`                  | 0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6                                                       | Offset index for the day column (0 = first day of week, …, 6 = last day) when scope is "day".     |
 | `groups`                     | GroupFeildsType[]                                                                     | Array of group data to be displayed in the calendar.                                              |
 | `className`                  | string                                                                                | Additional class names for the calendar component.                                                |
 | `style`                      | React.CSSProperties \| undefined                                                      | Additional styles for the calendar component.                                                     |
 | `date`                       | Date                                                                                  | The current date to display in the calendar.                                                      |
+| `timeZone`                   | TimeZone                                                                              | The timezone to use for displaying and manipulating the calendar dates.                           |
 | `groupRender`                | ({ currentGroup }: { currentGroup: GroupFeildsType }) => React.ReactNode              | Custom render function for a group.                                                               |
 | `dayRender`                  | ({ dayIndex, day, dayOfTheMonth, dayMonth, dayYear }: { dayIndex: number; day: string; dayOfTheMonth: number; dayMonth: string; dayYear: number; }) => React.ReactNode | Custom render function for a day.                                                                 |
 | `taskRender`                 | ({ currentTask, handleDragTask }: { currentTask: TaskFeildsType}) => React.ReactNode             | Custom render function for a task. |
