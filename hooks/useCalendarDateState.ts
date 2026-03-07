@@ -25,17 +25,18 @@ function useCalendarDateState(
 
   useEffect(() => {
     const weekOffsetByDate = timeZone
-      ? calculerEcartSemaine(getDateObjectInTimeZone(timeZone))
-      : calculerEcartSemaine(date);
+      ? calculerEcartSemaine(getDateObjectInTimeZone(timeZone), timeZone)
+      : calculerEcartSemaine(date, timeZone);
 
-    const weekDays = getWeekDays(weekOffsetByDate || weekOffset || 0);
-    const dailyHours = getDayHourly(weekOffsetByDate || weekOffset || 0);
+    const weekDays = getWeekDays(weekOffsetByDate || weekOffset || 0, timeZone);
+    const dailyHours = getDayHourly(weekOffsetByDate || weekOffset || 0, timeZone);
     const calData = {
       dailyHours: dailyHours,
       weekDays,
     };
 
     setCalendarDateState(calData);
+
   }, [date, weekOffset]);
 
   return { ...calendarDateState };

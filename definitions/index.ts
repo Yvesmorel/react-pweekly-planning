@@ -119,6 +119,7 @@ export type DayPropsType = {
  * Props for the Calendar component.
  */
 export type CalendarPropsType = {
+  scope?: "day" | "week";
   /** Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week). */
   weekOffset?: number;
   /** Array of group data to be displayed in the calendar. */

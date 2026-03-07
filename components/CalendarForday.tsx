@@ -1,4 +1,4 @@
-"use client";
+
 import "../style.css";
 import { memo, useEffect } from "react";
 
@@ -84,7 +84,8 @@ function CalendarForDay(props: CalendarTablePropsType) {
                     compareWeekOffset(
                       props.date,
                       props.weekOffset || 0,
-                      task.taskDate
+                      task.taskDate,
+                      props.timeZone
                     )
                   ) {
                     return (

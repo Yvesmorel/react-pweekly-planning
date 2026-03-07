@@ -31,7 +31,7 @@ endDate.setDate(endDate.getDate() + (6 - currentDayOfWeek));
 endDate.setHours(23, 59, 59, 999);
 export const endDateMilliseconds = endDate.getTime();
 
-export function getDayHourly(weekOffset: number) {
+export function getDayHourly(weekOffset: number, timeZone?: TimeZone) {
   const dailyHours: {
     positionDay: number;
     day: Date;
@@ -40,15 +40,16 @@ export function getDayHourly(weekOffset: number) {
   }[] = [];
   let dayOffset = weekOffset;
 
-  // Adjust the offset if the current day is Sunday
-  if (currentDate.getDay() === 0) {
-    dayOffset = dayOffset - 7;
-  }
+  const resolvedCurrentDate = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
+  const currentDayOfWeek = resolvedCurrentDate.getDay();
+  const resolvedStartDate = new Date(resolvedCurrentDate);
+  resolvedStartDate.setDate(resolvedStartDate.getDate() - currentDayOfWeek);
+  resolvedStartDate.setHours(0, 0, 0, 0);
 
   // Loop to calculate the start and end hours for each day of the week
   for (let i = 0; i < 7; i++) {
-    const dayDate = new Date(startDate);
-    dayDate.setDate(startDate.getDate() + i);
+    const dayDate = new Date(resolvedStartDate);
+    dayDate.setDate(resolvedStartDate.getDate() + i);
     const dayStart = new Date(dayDate);
     dayStart.setHours(1, 0, 0, 0);
     const dayEnd = new Date(dayDate);
@@ -56,9 +57,9 @@ export function getDayHourly(weekOffset: number) {
 
     dailyHours.push({
       positionDay: i,
-      day: new Date(dayStart.getTime() + dayOffset * DAY_IN_MILLISECONDS),
-      start: dayStart.getTime() + dayOffset * DAY_IN_MILLISECONDS,
-      end: dayEnd.getTime() + dayOffset * DAY_IN_MILLISECONDS,
+      day: new Date(dayStart.getTime() + (dayOffset * DAY_IN_MILLISECONDS)),
+      start: dayStart.getTime() + (dayOffset * DAY_IN_MILLISECONDS),
+      end: dayEnd.getTime() + (dayOffset * DAY_IN_MILLISECONDS),
     });
   }
   return dailyHours;
@@ -114,7 +115,7 @@ export function millisecondsToInt(milliseconds: number) {
 }
 
 // Get days of the week with a jump offset
-export function getWeekDays(jump: number) {
+export function getWeekDays(jump: number, timeZone?: TimeZone) {
   const days = ["Sun", "Mon", "Tues", "Wed", "Thur", "Frid", "Sat"];
   const month = [
     "Jan",
@@ -130,21 +131,20 @@ export function getWeekDays(jump: number) {
     "Nov",
     "Dec",
   ];
-  const currentDate = new Date();
+  const currentDate = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
   const currentDayOfWeek = currentDate.getDay();
   let weekDays = [];
 
   for (let i = 0; i < 7; i++) {
-    const day = new Date();
+    const day = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
     const diff = i - currentDayOfWeek;
     if (currentDayOfWeek === 0) {
       day.setDate(currentDate.getDate() + diff + jump - 7);
     } else {
       day.setDate(currentDate.getDate() + diff + jump);
     }
-    const formattedDay = `${days[day.getDay()]}. ${day.getDate()}, ${
-      month[day.getMonth()]
-    } ${day.getFullYear()}`;
+    const formattedDay = `${days[day.getDay()]}. ${day.getDate()}, ${month[day.getMonth()]
+      } ${day.getFullYear()}`;
     weekDays.push({
       day: days[day.getDay()],
       dayMonth: month[day.getMonth()],
@@ -192,25 +192,16 @@ function updateSelectedDateForEcartSemaine(dateSelectionnee: Date): Date {
  * @param dateSelectionnee - The selected date.
  * @returns The week difference in days.
  */
-export function calculerEcartSemaine(dateSelectionnee: Date): number {
-  if (!dateSelectionnee) {
-    return 0;
-  }
-  const selectedDateUpdated =
-    updateSelectedDateForEcartSemaine(dateSelectionnee);
+export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone): number {
+  const dateActuelle = timeZone ? getDateObjectInTimeZone(timeZone) : new Date()
+  const recupDate = new Date(dateSelectionnee)
 
-  const dateActuelle = new Date();
-  const anneeActuelle = dateActuelle.getFullYear();
-  const numeroSemaineActuelle = getWeekNumber(dateActuelle);
 
-  const anneeSelectionnee = selectedDateUpdated.getFullYear();
-  const numeroSemaineSelectionnee = getWeekNumber(selectedDateUpdated);
+  recupDate.setUTCDate(recupDate.getUTCDate() + 4 - (recupDate.getUTCDay() || 7));
+  dateActuelle.setUTCDate(dateActuelle.getUTCDate() + 4 - (dateActuelle.getUTCDay() || 7));
 
-  const ecartSemaine =
-    semainesDepuisOrigine(anneeSelectionnee, numeroSemaineSelectionnee) -
-    semainesDepuisOrigine(anneeActuelle, numeroSemaineActuelle);
 
-  return ecartSemaine * 7;
+  return Math.ceil((recupDate.getTime() - dateActuelle.getTime()) / 86400000)
 }
 
 /**
@@ -281,30 +272,39 @@ export function getSessionStorageRecordForDragAndDrop(
 export function compareWeekOffset(
   calendarDate: Date,
   weekOffset: number,
-  taskDate: Date
+  taskDate: Date,
+  timeZone?: TimeZone
 ) {
   // if (taskDate.getDay() === 0 && calculerEcartSemaine(taskDate) === -7) {
   //   return true;
   // }
-  if (calendarDate)
-    return (
-      calculerEcartSemaine(calendarDate) === calculerEcartSemaine(taskDate)
-    );
-  return weekOffset === calculerEcartSemaine(taskDate);
+
+
+  console.log(weekOffset, "WEEKOFFSET", calculerEcartSemaine(taskDate, timeZone) + 7);
+  console.log(calendarDate, "CALENDAR DATE");
+  const localTaskDate = getArbitraryDateInTimeZone(taskDate, timeZone);
+  console.log(localTaskDate.getDay(), "TASK DATE", localTaskDate);
+
+  // if (calendarDate)
+  //     return (calculerEcartSemaine(calendarDate) === calculerEcartSemaine(taskDate));
+
+  const ecartTask = calculerEcartSemaine(taskDate, timeZone) + (localTaskDate.getDay() === 0 ? 7 : 0)
+  return weekOffset === ecartTask;
 }
 
 export const sumHoursByGroups = (
   groupId: string,
   tasks: TasksType | any,
   weekOffset: number,
-  calendarDate: Date
+  calendarDate: Date,
+  timeZone?: TimeZone
 ) => {
   let sum: number = 0;
   if (tasks)
     tasks.forEach((task: TaskType | any) => {
       if (
         task.groupId === groupId &&
-        compareWeekOffset(calendarDate, weekOffset, task.taskDate) === true
+        compareWeekOffset(calendarDate, weekOffset, task.taskDate, timeZone) === true
       ) {
         sum += task.taskEnd - task.taskStart;
       }
@@ -342,8 +342,8 @@ export const updateCalendarDateWithOffset = (
   return newDate;
 };
 
-export const updateOffsetWithDateCalendar = (calendarDate: Date) => {
-  return calculerEcartSemaine(calendarDate);
+export const updateOffsetWithDateCalendar = (calendarDate: Date, timeZone?: TimeZone) => {
+  return calculerEcartSemaine(calendarDate, timeZone);
 };
 
 export const millisecondsToHours = (milliseconds: number) => {
@@ -379,6 +379,9 @@ export const getSavedTasks = () => {
 
   const savedTasks: TasksType | any = tasksTable.map((task) => {
     const { taskDate, taskExpiryDate, ...rest } = task;
+
+    console.log("SAVED", taskDate);
+
     if (taskExpiryDate) {
       return {
         taskDate: new Date(taskDate),
@@ -470,7 +473,18 @@ export function getDateObjectInTimeZone(timeZone: string) {
   }
 }
 
-function recurring(ecartDay: number, task: TaskFeildsType) {
+export function getArbitraryDateInTimeZone(date: Date, timeZone?: string) {
+  if (!timeZone) return date;
+  try {
+    return new Date(
+      date.toLocaleString("en-US", { timeZone: timeZone })
+    );
+  } catch (error) {
+    return date;
+  }
+}
+
+function recurring(ecartDay: number, task: TaskFeildsType, timeZone?: TimeZone) {
   const newTask = { ...task };
 
   newTask.taskStart = newTask.taskStart + ecartDay;
@@ -483,7 +497,7 @@ function recurring(ecartDay: number, task: TaskFeildsType) {
 
   newTask.taskDate = new Date(newTask.taskStart);
 
-  newTask.dayIndex = newTask.taskDate.getDay();
+  newTask.dayIndex = getArbitraryDateInTimeZone(newTask.taskDate, timeZone).getDay();
 
   newTask.taskId = getUnqueId();
   return newTask;
@@ -493,14 +507,15 @@ export function recurringTasks(
   allTasks: TasksType,
   task: TaskFeildsType,
   recurrenceType: "daily" | "weekly" | "monthly",
-  occurrences: number
+  occurrences: number,
+  timeZone?: TimeZone
 ): TaskFeildsType[] {
   const tasks: TaskFeildsType[] = [];
 
   function daily() {
     for (let i = 0; i < occurrences; i++) {
       // Create a copy of the task with updated taskDate for each day
-      const newTask = recurring(i * DAY_IN_MILLISECONDS, task);
+      const newTask = recurring(i * DAY_IN_MILLISECONDS, task, timeZone);
 
       if (
         !checkDuplicates(
@@ -518,7 +533,7 @@ export function recurringTasks(
   function weekly() {
     for (let i = 0; i < occurrences; i++) {
       // Create a copy of the task with updated taskDate for each week
-      const newTask = recurring(i * WEEK_IN_MILLISECONDS, task);
+      const newTask = recurring(i * WEEK_IN_MILLISECONDS, task, timeZone);
       if (
         !checkDuplicates(
           allTasks,
@@ -537,7 +552,8 @@ export function recurringTasks(
       // Create a copy of the task with updated taskDate for each week
       const newTask = recurring(
         dayjs(task.taskDate).daysInMonth() * i * DAY_IN_MILLISECONDS,
-        task
+        task,
+        timeZone
       );
 
       if (
@@ -571,12 +587,13 @@ export function recurringTasks(
 export function getHoursByday(
   tasks: TaskFeildsType[],
   dayIndex: 0 | 1 | 2 | 3 | 4 | 5 | 6,
-  weekOffset?: number
+  weekOffset?: number,
+  timeZone?: TimeZone
 ) {
   const sum = tasks.reduce((currentSum: number, task: TaskFeildsType) => {
     if (
       task.dayIndex === dayIndex &&
-      weekOffset === updateOffsetWithDateCalendar(task.taskDate)
+      weekOffset === updateOffsetWithDateCalendar(task.taskDate, timeZone)
     )
       return (
         currentSum +
@@ -590,12 +607,13 @@ export function getHoursByday(
 export function getHoursByGroup(
   tasks: TaskFeildsType[],
   groupId: string,
-  weekOffset?: number
+  weekOffset?: number,
+  timeZone?: TimeZone
 ) {
   const sum = tasks.reduce((currentSum: number, task: TaskFeildsType) => {
     if (
       task.groupId === groupId &&
-      weekOffset === updateOffsetWithDateCalendar(task.taskDate)
+      weekOffset === updateOffsetWithDateCalendar(task.taskDate, timeZone)
     )
       return (
         currentSum +
@@ -718,12 +736,13 @@ function updateTaskStartTimeAnEndTime(
   end: number,
   calendarOffset: number,
   dayIndex: number,
-  taskPosition: number
+  taskPosition: number,
+  timeZone?: TimeZone
 ) {
   const diffDay =
     dayIndex +
     calendarOffset -
-    (taskPosition + updateOffsetWithDateCalendar(new Date(start)));
+    (taskPosition + updateOffsetWithDateCalendar(new Date(start), timeZone));
 
   const startTime = start + diffDay * DAY_IN_MILLISECONDS;
   const endTime = end + diffDay * DAY_IN_MILLISECONDS;
@@ -738,7 +757,8 @@ export function pastTasks(
   dayInfo: dayInfoType,
   groupId: string,
   tasks: TaskFeildsType[],
-  taskExpiryDate?: Date
+  taskExpiryDate?: Date,
+  timeZone?: TimeZone
 ) {
   if (typeof window !== "undefined") {
     const copiedTasks: TaskFeildsType[] = JSON.parse(
@@ -762,9 +782,10 @@ export function pastTasks(
           const newTaskStartAndEnd = updateTaskStartTimeAnEndTime(
             copiedTasktaskStart,
             copiedTasktaskEnd,
-            updateOffsetWithDateCalendar(dayInfo.day),
+            updateOffsetWithDateCalendar(dayInfo.day, timeZone),
             dayInfo.positionDay,
-            copiedTaskDayIndex
+            copiedTaskDayIndex,
+            timeZone
           );
 
           if (
@@ -797,7 +818,7 @@ export function pastTasks(
       window.sessionStorage.removeItem("copiedTasks");
 
       return [...tasks, ...newTasks];
-    } else throw new Error("Sorry there are no tasks to select");
+    } else throw new Error("no past task(s)");
   }
 }
 

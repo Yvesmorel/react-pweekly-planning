@@ -1,4 +1,4 @@
-"use client";
+
 import {
   CalendarPropsType,
   CalendarTablePropsType,
@@ -27,6 +27,8 @@ import { memo, useEffect } from "react";
 import useCalendarDateState from "../hooks/useCalendarDateState";
 
 function CalendarForWeek(props: CalendarTablePropsType) {
+
+
   const { dailyHours, weekDays } = useCalendarDateState(
     props.date,
     props.weekOffset,
@@ -158,7 +160,8 @@ function CalendarForWeek(props: CalendarTablePropsType) {
                           compareWeekOffset(
                             props.date,
                             props.weekOffset || 0,
-                            task.taskDate
+                            task.taskDate,
+                            props.timeZone
                           )
                         ) {
                           return (
@@ -203,7 +206,8 @@ function CalendarForWeek(props: CalendarTablePropsType) {
                   group.id,
                   props.tasks,
                   props.weekOffset || 0,
-                  props.date
+                  props.date,
+                  props.timeZone
                 )}
                 className={props.sumHoursContainerClassName}
                 style={props.sumHoursContainerStyle}

@@ -67,7 +67,7 @@ import CalendarForDay from "./components/CalendarForday";
 const Calendar = (props: CalendarPropsType) => {
   return (
     <>
-      <CalendarForWeek {...props} />
+      {props.scope === "day" ? <CalendarForDay {...props} /> : <CalendarForWeek {...props} />}
     </>
   );
 };

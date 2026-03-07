@@ -64,7 +64,7 @@ import CalendarForDay from "./components/CalendarForday";
  * @param {string} [props.hoursColsClassName] - Additional class names for the hours columns.
  */
 const Calendar = (props) => {
-    return (_jsx(_Fragment, { children: _jsx(CalendarForWeek, Object.assign({}, props)) }));
+    return (_jsx(_Fragment, { children: props.scope === "day" ? _jsx(CalendarForDay, Object.assign({}, props)) : _jsx(CalendarForWeek, Object.assign({}, props)) }));
 };
 export default Calendar;
 export { CalendarForDay };

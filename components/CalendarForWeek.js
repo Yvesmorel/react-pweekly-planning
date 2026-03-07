@@ -1,4 +1,3 @@
-"use client";
 import { jsx as _jsx, jsxs as _jsxs, Fragment as _Fragment } from "react/jsx-runtime";
 import GroupContainer from "./GroupContainer";
 import GroupsHeadContainer from "./GroupsHeadContainer";
@@ -37,12 +36,12 @@ function CalendarForWeek(props) {
                                             .map((task, taskKey) => {
                                             if (task.dayIndex === positionDay &&
                                                 task.groupId === group.id &&
-                                                compareWeekOffset(props.date, props.weekOffset || 0, task.taskDate)) {
+                                                compareWeekOffset(props.date, props.weekOffset || 0, task.taskDate, props.timeZone)) {
                                                 return (_jsx(TaskContainer, { handleDragTask: props.handleDragTask, taskRender: props.taskRender, handleDragTaskEnd: props.handleDragTaskEnd, style: props.taskContainerStyle, className: `${props.taskContainerClassName}`, currentTask: task, handleClickTask: props.handleClickTask }, `${taskKey} task`));
                                             }
                                             else
                                                 return "";
-                                        }) }), _jsx(AddTask, { addTaskStyle: props.addTaskStyle, addTaskClassName: props.addTaskClassName, currentGroup: group, dayInfo: dailyHours[positionDay], addTaskRender: props.addTaskRender, handleAddTask: props.handleAddTask })] }, positionDay) }, `td-${group.id}day-i${positionDay}`))), _jsx("td", { style: props.hoursColsStyle, className: props.hoursColsClassName, children: _jsx(SumHoursContainer, { groupId: group.id, tasks: props.tasks, weekOffset: props.weekOffset || 0, calendarDate: props.date, sumHoursRender: props.sumHoursRender, sumHoursByGroups: sumHoursByGroups(group.id, props.tasks, props.weekOffset || 0, props.date), className: props.sumHoursContainerClassName, style: props.sumHoursContainerStyle }) }, `${i}sumHours`)] }, `${i} tr`))) })] }));
+                                        }) }), _jsx(AddTask, { addTaskStyle: props.addTaskStyle, addTaskClassName: props.addTaskClassName, currentGroup: group, dayInfo: dailyHours[positionDay], addTaskRender: props.addTaskRender, handleAddTask: props.handleAddTask })] }, positionDay) }, `td-${group.id}day-i${positionDay}`))), _jsx("td", { style: props.hoursColsStyle, className: props.hoursColsClassName, children: _jsx(SumHoursContainer, { groupId: group.id, tasks: props.tasks, weekOffset: props.weekOffset || 0, calendarDate: props.date, sumHoursRender: props.sumHoursRender, sumHoursByGroups: sumHoursByGroups(group.id, props.tasks, props.weekOffset || 0, props.date, props.timeZone), className: props.sumHoursContainerClassName, style: props.sumHoursContainerStyle }) }, `${i}sumHours`)] }, `${i} tr`))) })] }));
 }
 export default memo(CalendarForWeek, (prevProps, nextProps) => prevProps.tasks === nextProps.tasks &&
     prevProps.date === nextProps.date &&
