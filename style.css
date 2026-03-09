@@ -98,3 +98,26 @@
   padding: 10px;
   position: relative;
 }
+
+.CalendarTableForDayRow {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 15px;
+  align-items: flex-start;
+  padding: 15px !important;
+}
+
+.CalendarTableForDayGroupTasks {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.CalendarTableForDayGroupTasks .taskContainer,
+.CalendarTableForDayGroupTasks .addPlanStyle {
+  margin-bottom: 0px;
+  height: 100%;
+  min-height: 80px;
+}
+

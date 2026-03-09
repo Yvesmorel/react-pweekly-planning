@@ -280,10 +280,9 @@ export function compareWeekOffset(
   // }
 
 
-  console.log(weekOffset, "WEEKOFFSET", calculerEcartSemaine(taskDate, timeZone) + 7);
-  console.log(calendarDate, "CALENDAR DATE");
+
   const localTaskDate = getArbitraryDateInTimeZone(taskDate, timeZone);
-  console.log(localTaskDate.getDay(), "TASK DATE", localTaskDate);
+
 
   // if (calendarDate)
   //     return (calculerEcartSemaine(calendarDate) === calculerEcartSemaine(taskDate));
@@ -380,7 +379,7 @@ export const getSavedTasks = () => {
   const savedTasks: TasksType | any = tasksTable.map((task) => {
     const { taskDate, taskExpiryDate, ...rest } = task;
 
-    console.log("SAVED", taskDate);
+
 
     if (taskExpiryDate) {
       return {
@@ -578,7 +577,7 @@ export function recurringTasks(
     monthly();
   }
 
-  console.log(tasks);
+
 
   // Return the list of generated tasks
   return tasks;
