@@ -1,4 +1,16 @@
-node_modules
-out
-docs
-__tests__
+# Les dépendances (ne jamais commiter ça)
+node_modules/
+
+# Le dossier de build (il est généré à chaque fois, inutile de le versionner)
+dist/
+build/
+__tests__/
+
+# Les fichiers d'environnement (secrets, clés API)
+.env
+.env.local
+.env.development
+.env.production
+
+# Les logs
+*.log

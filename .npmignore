@@ -1,7 +1,36 @@
+# 1. Le code source (inutile pour ceux qui installent le package)
 src/
+*.ts
+*.tsx
+
+# 2. La configuration de développement
 tsconfig.json
-*.log
-node_modules/
+webpack.config.js
+rollup.config.js
+vite.config.ts
+.eslintrc*
+.prettierrc*
+babel.config.js
+
+# 3. Les tests (très lourds et inutiles en production)
 __tests__/
-out/
-docs/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+jest.config.js
+cypress/
+playwright.config.ts
+
+# 4. Les fichiers Git et CI/CD
+.github/
+.gitlab-ci.yml
+.git/
+.gitignore
+
+# 5. Les logs et fichiers locaux
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.env.local
