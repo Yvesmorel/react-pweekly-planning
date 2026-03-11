@@ -1,7 +1,25 @@
 {
   "name": "react-weekly-planning",
   "version": "1.0.35",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./utils": {
+      "types": "./dist/types/lib/utils.d.ts",
+      "default": "./dist/lib/utils.js"
+    },
+    "./definitions": {
+      "types": "./dist/types/definitions/index.d.ts",
+      "default": "./dist/definitions/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "jest --env=jsdom",
     "test:watch": "jest --watch",

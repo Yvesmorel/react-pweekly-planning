@@ -118,7 +118,7 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
 
   **Example**:
   ```jsx
-  import {getSavedTasks} from "react-weekly-planning/lib/utils";
+  import {getSavedTasks} from "react-weekly-planning";
   const [tasks,setTasks]=useState([])
 
   useEffect(()=>{
@@ -137,7 +137,7 @@ Here is a complete, minimal example showing how to set up the `Calendar` with si
 ```tsx
 import React, { useState } from "react";
 import Calendar from "react-pweekly-planning"; // Verify your exact import path based on package.json
-import "react-pweekly-planning/dist/style.css"; // Ensure CSS is imported depending on your setup
+
 
 const App = () => {
   const [date] = useState(new Date());
@@ -263,7 +263,7 @@ Props for the Calendar component.
 
   **Example**:
   ```javascript
-  import {updateOffsetWithDateCalendar} from "react-weekly-planning/lib/utils";
+  import {updateOffsetWithDateCalendar} from "react-weekly-planning";
   const offset = updateOffsetWithDateCalendar(new Date());
   console.log(offset); // Logs the week offset for the given date
   ```
@@ -277,7 +277,7 @@ Props for the Calendar component.
 
   **Example**:
   ```javascript
-  import {millisecondsToHours} from "react-weekly-planning/lib/utils";
+  import {millisecondsToHours} from "react-weekly-planning";
   const formattedTime = millisecondsToHours(1716905215397);
   console.log(formattedTime); // Logs the formatted time for 14h06
   ```

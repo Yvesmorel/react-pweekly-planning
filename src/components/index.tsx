@@ -1,7 +1,7 @@
 import "./style.css";
-import { CalendarPropsType } from "./definitions";
-import CalendarForWeek from "./components/CalendarForWeek";
-import CalendarForDay from "./components/CalendarForday";
+import { CalendarPropsType } from "../definitions";
+import CalendarForWeek from "./CalendarForWeek";
+import CalendarForDay from "./CalendarForday";
 /**
  * Calendar component to display tasks and groups in a weekly view.
  *
@@ -71,7 +71,6 @@ const Calendar = (props: CalendarPropsType) => {
     </>
   );
 };
-
 export default Calendar;
 
-export { CalendarForDay };
+
