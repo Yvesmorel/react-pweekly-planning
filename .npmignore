@@ -2,3 +2,6 @@ src/
 tsconfig.json
 *.log
 node_modules/
+__tests__/
+out/
+docs/

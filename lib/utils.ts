@@ -1,4 +1,3 @@
-import moment from "moment";
 import dayjs from "dayjs";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -210,20 +209,7 @@ export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone
  * @param numeroSemaine - The week number.
  * @returns The number of weeks since the origin date.
  */
-function semainesDepuisOrigine(annee: number, numeroSemaine: number): number {
-  const dateActuelle = new Date();
-  const dateOrigine = new Date(dateActuelle.getFullYear() - 2, 0, 1);
-  const anneeOrigine = dateOrigine.getFullYear();
-  const numeroSemaineOrigine = getWeekNumber(dateOrigine);
 
-  let nombreSemaines = 0;
-  for (let i = anneeOrigine; i < annee; i++) {
-    nombreSemaines += moment().year(i).isoWeeksInYear();
-  }
-  nombreSemaines += numeroSemaine - numeroSemaineOrigine;
-
-  return nombreSemaines;
-}
 
 export function getSessionStorageRecordForDragAndDrop(
   tasks: TasksType,
