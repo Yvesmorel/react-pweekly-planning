@@ -39,7 +39,7 @@ export function getDayHourly(weekOffset: number, timeZone?: TimeZone) {
   }[] = [];
   let dayOffset = weekOffset;
 
-  const resolvedCurrentDate = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
+  const resolvedCurrentDate = getCalendarDate(timeZone);
   const currentDayOfWeek = resolvedCurrentDate.getDay();
   const resolvedStartDate = new Date(resolvedCurrentDate);
   resolvedStartDate.setDate(resolvedStartDate.getDate() - currentDayOfWeek);
@@ -130,12 +130,12 @@ export function getWeekDays(jump: number, timeZone?: TimeZone) {
     "Nov",
     "Dec",
   ];
-  const currentDate = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
+  const currentDate = getCalendarDate(timeZone);
   const currentDayOfWeek = currentDate.getDay();
   let weekDays = [];
 
   for (let i = 0; i < 7; i++) {
-    const day = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
+    const day = getCalendarDate(timeZone);
     const diff = i - currentDayOfWeek;
     if (currentDayOfWeek === 0) {
       day.setDate(currentDate.getDate() + diff + jump - 7);
@@ -191,16 +191,30 @@ function updateSelectedDateForEcartSemaine(dateSelectionnee: Date): Date {
  * @param dateSelectionnee - The selected date.
  * @returns The week difference in days.
  */
+
+
 export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone): number {
-  const dateActuelle = timeZone ? getDateObjectInTimeZone(timeZone) : new Date()
-  const recupDate = new Date(dateSelectionnee)
+  const dateActuelle = getCalendarDate(timeZone);
+
+  // 1. Retrieve only the year, month, and day, and force it to midnight UTC.
+  // This eliminates any risk related to time zones and daylight saving time.
+  const utcSelected = Date.UTC(dateSelectionnee.getFullYear(), dateSelectionnee.getMonth(), dateSelectionnee.getDate());
+  const utcActuelle = Date.UTC(dateActuelle.getFullYear(), dateActuelle.getMonth(), dateActuelle.getDate());
+
+  const MS_PAR_JOUR = 86400000;
+
+  // 2. Resize each date to the Sunday of its corresponding week.
+
+  // getDay() returns a number from 0 (Sunday) to 6 (Saturday).
+
+  // By subtracting (day * ms_per_day), we arrive at Sunday at midnight.
+  const dimancheSelected = utcSelected - (dateSelectionnee.getDay() * MS_PAR_JOUR);
+  const dimancheActuelle = utcActuelle - (dateActuelle.getDay() * MS_PAR_JOUR);
 
 
-  recupDate.setUTCDate(recupDate.getUTCDate() + 4 - (recupDate.getUTCDay() || 7));
-  dateActuelle.setUTCDate(dateActuelle.getUTCDate() + 4 - (dateActuelle.getUTCDay() || 7));
+  const ecartJours = Math.round((dimancheSelected - dimancheActuelle) / MS_PAR_JOUR);
 
-
-  return Math.ceil((recupDate.getTime() - dateActuelle.getTime()) / 86400000)
+  return ecartJours; // Retournera 0, 7, -7, 14, -14...
 }
 
 /**
@@ -266,14 +280,17 @@ export function compareWeekOffset(
   // }
 
 
-
+  const currentDate = getCalendarDate(timeZone);
+  const currentWeekOffset = calculerEcartSemaine(currentDate, timeZone);
   const localTaskDate = getArbitraryDateInTimeZone(taskDate, timeZone);
 
 
   // if (calendarDate)
   //     return (calculerEcartSemaine(calendarDate) === calculerEcartSemaine(taskDate));
 
-  const ecartTask = calculerEcartSemaine(taskDate, timeZone) + (localTaskDate.getDay() === 0 ? 7 : 0)
+
+  const ecartTask = calculerEcartSemaine(taskDate, timeZone)
+
   return weekOffset === ecartTask;
 }
 
@@ -458,6 +475,15 @@ export function getDateObjectInTimeZone(timeZone: string) {
   }
 }
 
+/**
+ * Returns the current date according to the selected timezone or the local time.
+ * @param timeZone - The optional timezone.
+ * @returns The current date.
+ */
+export function getCalendarDate(timeZone?: TimeZone): Date {
+  return timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
+}
+
 export function getArbitraryDateInTimeZone(date: Date, timeZone?: string) {
   if (!timeZone) return date;
   try {
@@ -611,7 +637,7 @@ export function getHoursByGroup(
 }
 
 export function getTaskProgression(task: TaskFeildsType, timeZone?: TimeZone) {
-  const now = timeZone ? getDateObjectInTimeZone(timeZone) : new Date();
+  const now = getCalendarDate(timeZone);
 
   if (task.taskStart >= now.getTime()) return 0;
   if (now.getTime() >= task.taskEnd) return 100;

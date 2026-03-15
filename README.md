@@ -239,6 +239,20 @@ Props for the Calendar component.
 
 ## Additional Functions
 
+### `getCalendarDate`
+
+- **Description**: Returns the current date according to the selected timezone or the local time.
+- **Parameters**:
+  - `timeZone` (TimeZone, optional): The timezone to use for the date calculation.
+- **Returns**: A `Date` object representing the current time in the specified timezone (or local time if omitted).
+
+  **Example**:
+  ```javascript
+  import { getCalendarDate } from "react-weekly-planning";
+  const now = getCalendarDate("Europe/Paris");
+  console.log(now); // Logs the current date in Paris
+  ```
+
 ### `updateCalendarDateWithOffset`
 
 - **Description**: Updates the calendar date based on the week offset.
