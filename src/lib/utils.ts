@@ -137,11 +137,9 @@ export function getWeekDays(jump: number, timeZone?: TimeZone) {
   for (let i = 0; i < 7; i++) {
     const day = getCalendarDate(timeZone);
     const diff = i - currentDayOfWeek;
-    if (currentDayOfWeek === 0) {
-      day.setDate(currentDate.getDate() + diff + jump - 7);
-    } else {
-      day.setDate(currentDate.getDate() + diff + jump);
-    }
+
+    day.setDate(currentDate.getDate() + diff + jump);
+
     const formattedDay = `${days[day.getDay()]}. ${day.getDate()}, ${month[day.getMonth()]
       } ${day.getFullYear()}`;
     weekDays.push({
