@@ -2,6 +2,10 @@ import "./style.css";
 import { CalendarPropsType } from "../definitions";
 import CalendarForWeek from "./CalendarForWeek";
 import CalendarForDay from "./CalendarForday";
+import { useCalendarTask } from "../hooks/useCalendarTask";
+import { useMemo } from "react";
+import CalendarContextProvider from "../contexts/CalendarContext";
+import CalendarTaskContextProvider from "../contexts/CalendarTaskContext";
 /**
  * Calendar component to display tasks and groups in a weekly view.
  *
@@ -65,10 +69,13 @@ import CalendarForDay from "./CalendarForday";
  */
 
 const Calendar = (props: CalendarPropsType) => {
+
+
+
   return (
-    <>
+    <CalendarTaskContextProvider timeZone={props.timeZone}>
       {props.scope === "day" ? <CalendarForDay {...props} /> : <CalendarForWeek {...props} />}
-    </>
+    </CalendarTaskContextProvider>
   );
 };
 export default Calendar;

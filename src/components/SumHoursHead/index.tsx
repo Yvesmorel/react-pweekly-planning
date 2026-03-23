@@ -19,4 +19,4 @@ const SumHoursHead = ({
   );
 };
 
-export default memo(SumHoursHead);
+export default SumHoursHead;

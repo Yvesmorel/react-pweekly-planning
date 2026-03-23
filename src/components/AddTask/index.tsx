@@ -2,7 +2,7 @@ import { memo } from "react";
 import { AddTaskPropsType } from "../../definitions";
 
 const AddTask = ({
-  
+
   currentGroup,
   handleAddTask,
   addTaskRender,
@@ -40,4 +40,4 @@ const AddTask = ({
   );
 };
 
-export default memo(AddTask);
+export default AddTask;

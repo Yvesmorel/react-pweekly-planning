@@ -11,12 +11,12 @@ const TaskContainer = ({
   currentTask,
   handleClickTask,
 }: TaskContainerPropsType) => {
-  
+
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     if (!handleDragTask) return;
     event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", currentTask.taskId);
-    window.sessionStorage.setItem("calendardragtaskId", currentTask.taskId);
+    event.dataTransfer.setData("text/plain", currentTask.id);
+    window.sessionStorage.setItem("calendardragtaskId", currentTask.id);
     window.sessionStorage.setItem(
       "calendardragtaskStart",
       `${currentTask.taskStart}`
@@ -46,7 +46,7 @@ const TaskContainer = ({
     return (
       <div
         onClick={handleClick}
-        id={currentTask.taskId}
+        id={currentTask.id}
         className={`taskContainer ${className}`}
         style={{ ...style }}
         draggable
@@ -63,7 +63,7 @@ const TaskContainer = ({
   return (
     <div
       onClick={handleClick}
-      id={currentTask.taskId}
+      id={currentTask.id}
       className={`taskContainer  ${className}`}
       style={{ ...style }}
       draggable
@@ -75,12 +75,11 @@ const TaskContainer = ({
       <p className="taskhour">
         {currentTask.taskStart &&
           currentTask.taskEnd &&
-          `${millisecondsToDate(currentTask.taskStart).formattedDate} - ${
-            millisecondsToDate(currentTask.taskEnd).formattedDate
+          `${millisecondsToDate(currentTask.taskStart).formattedDate} - ${millisecondsToDate(currentTask.taskEnd).formattedDate
           }`}
       </p>
     </div>
   );
 };
 
-export default memo(TaskContainer);
+export default memo(TaskContainer)

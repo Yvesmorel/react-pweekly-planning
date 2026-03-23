@@ -119,6 +119,7 @@ export type DayPropsType = {
  * Props for the Calendar component.
  */
 export type CalendarPropsType = {
+  drop?: "copy" | "move"
   scope?: "day" | "week";
   /** Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week). */
   weekOffset?: number;
@@ -207,7 +208,7 @@ export type CalendarPropsType = {
     dayInfo: dayInfoType;
   }) => React.ReactNode;
   /** Array of tasks to be displayed in the calendar. */
-  tasks: TasksType;
+
   /** Handler function for dragging a task. */
   handleDragTask?: (
     event: React.DragEvent<HTMLDivElement>,
@@ -272,6 +273,7 @@ export type StyleType = React.CSSProperties | undefined;
  * Props for the AddTask component.
  */
 export type AddTaskPropsType = {
+
   /** The current group data. */
   currentGroup: GroupFeildsType;
   /** Additional styles for the add task button. */
@@ -325,7 +327,7 @@ export type TaskType = {
   /** Index of the day the task belongs to. */
   dayIndex: number;
   /** Unique identifier for the task. */
-  taskId: string;
+  id: string;
   /** This is a prop to save the date in local storage until a date of your choice */
   taskExpiryDate?: Date;
   /**task created date */

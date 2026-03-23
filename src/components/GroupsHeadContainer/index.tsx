@@ -16,4 +16,4 @@ const GroupsHeadContainer = ({
   );
 };
 
-export default memo(GroupsHeadContainer);
+export default GroupsHeadContainer;

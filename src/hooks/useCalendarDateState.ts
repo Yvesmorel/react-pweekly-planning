@@ -23,7 +23,9 @@ function useCalendarDateState(
     dailyHours: dailyHoursType;
   }>({ dailyHours: [], weekDays: [] });
 
+
   useEffect(() => {
+
     const weekOffsetByDate = timeZone
       ? calculerEcartSemaine(getDateObjectInTimeZone(timeZone), timeZone)
       : calculerEcartSemaine(date, timeZone);

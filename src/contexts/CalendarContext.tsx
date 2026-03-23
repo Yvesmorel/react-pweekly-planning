@@ -1,33 +1,36 @@
-import { createContext, useContext } from "react";
-import { GroupPropsType } from "../definitions";
+import { createContext, useContext, useRef } from "react";
+import { GroupPropsType, TaskFeildsType } from "../definitions";
+import { useCalendarTask } from "../hooks/useCalendarTask";
 
+type Task = TaskFeildsType
 
+type TaskBucket = {
+  list: Task[];
+  indexMap: Record<string, number>;
+};
+
+type TasksStore = Record<string, TaskBucket>;
 type CalendarContextProviderPropsType = {
   children: React.ReactNode;
-  groups: GroupPropsType[];
-  weekOffset: number;
-  date:Date
 };
 
 type CalendarContextType = {
-  groups: GroupPropsType[];
-  weekOffset: number;
-  date:Date
+  getTasks: (hash: string) => TaskFeildsType[]
 };
 const CalendarContext = createContext<CalendarContextType>({
-  groups: [],
-  weekOffset: 0,
-  date:new Date()
+  getTasks: () => []
 });
 
 const CalendarContextProvider = ({
-  groups,
-  weekOffset,
+
   children,
-  date
+
 }: CalendarContextProviderPropsType) => {
+  const { getTasks } = useCalendarTask();
+
+
   return (
-    <CalendarContext.Provider value={{ groups, weekOffset ,date}}>
+    <CalendarContext.Provider value={{ getTasks }}>
       {children}
     </CalendarContext.Provider>
   );

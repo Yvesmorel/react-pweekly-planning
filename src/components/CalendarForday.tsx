@@ -2,25 +2,34 @@
 import "./style.css";
 import { memo, useEffect } from "react";
 
-import { CalendarPropsType, CalendarTablePropsType } from "../definitions";
-import { compareWeekOffset, saveTasksToLocalStorage } from "../lib/utils";
+import { CalendarPropsType, CalendarTablePropsType, TasksType } from "../definitions";
+import { compareWeekOffset, getSessionStorageRecordForDragAndDrop, getUnqueId, saveTasksToLocalStorage, updateOffsetWithDateCalendar } from "../lib/utils";
 import useCalendarDateState from "../hooks/useCalendarDateState";
 
 import AddTask from "./AddTask";
 import TaskContainer from "./TaskContainer";
 import GroupContainer from "./GroupContainer";
 import DayContainer from "./DayContainer";
+import { useCalendarTask } from "../hooks/useCalendarTask";
+import { useCalendarTaskContext } from "../contexts/CalendarTaskContext";
 
 function CalendarForDay(props: CalendarTablePropsType) {
+  const handleDragOver = (event: React.DragEvent<HTMLTableCellElement>) => {
+    event.preventDefault();
+  };
   const { dailyHours, weekDays } = useCalendarDateState(
     props.date,
     props.weekOffset,
     props.timeZone
   );
 
-  useEffect(() => {
-    saveTasksToLocalStorage(props.tasks);
-  }, [props.tasks]);
+
+  const { getTasks, isValidTask, addTask, deleteTask, updateTask, getTask } = useCalendarTaskContext();
+  const tasks = getTasks(`${props.weekOffset || 0}`);
+
+  // useEffect(() => {
+  //   saveTasksToLocalStorage(props.tasks);
+  // }, [props.tasks]);
 
   const currentDay = weekDays[props.dayOffset || 0];
   const currentDailyHours = dailyHours[props.dayOffset || 0];
@@ -75,21 +84,37 @@ function CalendarForDay(props: CalendarTablePropsType) {
                     handleClickGroup={props.handleClickGroup}
                   />
                 </div>
-                <div className="CalendarTableForDayGroupTasks">
-                  {props.tasks.map((task, taskKey) => {
+                <div className="CalendarTableForDayGroupTasks" onDragOver={handleDragOver}
+                  onDrop={(event) => {
+                    if (!tasks) return;
+                    const dropInfo = getSessionStorageRecordForDragAndDrop(
+                      tasks,
+                      currentDailyHours.positionDay,
+                      group.id,
+                      getTask
+                    );
+                    if (!dropInfo) return;
+                    const dropOffset = updateOffsetWithDateCalendar(props.date);
+                    console.log('ici', dropOffset, dropInfo.newTask.id, dropInfo.newTask);
+                    if (props.drop === "copy") {
+                      addTask(`${dropOffset}`, { ...dropInfo.newTask, id: getUnqueId() })
+                      return
+                    }
+                    updateTask(`${dropOffset}`, dropInfo.newTask.id, dropInfo.newTask)
+                    // deleteTask(`${dropOffset}`, dropInfo.newTask.id)
+
+
+                    // console.log('ici', dropOffset, dropInfo.newTask.id, dropInfo.newTask);
+
+                  }}>
+                  {tasks.map((task, taskKey) => {
                     if (
                       task.dayIndex === (props.dayOffset || 0) &&
-                      task.groupId === group.id &&
-                      compareWeekOffset(
-                        props.date,
-                        props.weekOffset || 0,
-                        task.taskDate,
-                        props.timeZone
-                      )
+                      task.groupId === group.id
                     ) {
                       return (
                         <TaskContainer
-                          key={`${taskKey} task`}
+                          key={`${task.id} task`}
                           handleDragTask={props.handleDragTask}
                           taskRender={props.taskRender}
                           handleDragTaskEnd={props.handleDragTaskEnd}
@@ -118,14 +143,5 @@ function CalendarForDay(props: CalendarTablePropsType) {
   );
 }
 
-export default memo(
-  CalendarForDay,
-  (
-    prevProps: Readonly<CalendarPropsType>,
-    nextProps: Readonly<CalendarPropsType>
-  ) =>
-    prevProps.tasks === nextProps.tasks &&
-    prevProps.date === nextProps.date &&
-    prevProps.groups === nextProps.groups &&
-    prevProps.weekOffset === nextProps.weekOffset
-);
+export default
+  CalendarForDay

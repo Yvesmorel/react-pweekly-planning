@@ -15,6 +15,14 @@
     "./definitions": {
       "types": "./dist/types/definitions/index.d.ts",
       "default": "./dist/definitions/index.js"
+    },
+    "./hooks/useCalendarTask": {
+      "types": "./dist/types/hooks/useCalendarTask.d.ts",
+      "default": "./dist/hooks/useCalendarTask.js"
+    },
+    "./contexts/CalendarTaskContext": {
+      "types": "./dist/types/contexts/CalendarTaskContext.d.ts",
+      "default": "./dist/contexts/CalendarTaskContext.js"
     }
   },
   "files": [

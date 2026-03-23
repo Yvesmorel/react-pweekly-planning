@@ -194,9 +194,10 @@ function updateSelectedDateForEcartSemaine(dateSelectionnee: Date): Date {
 export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone): number {
   const dateActuelle = getCalendarDate(timeZone);
 
+
   // 1. Retrieve only the year, month, and day, and force it to midnight UTC.
   // This eliminates any risk related to time zones and daylight saving time.
-  const utcSelected = Date.UTC(dateSelectionnee.getFullYear(), dateSelectionnee.getMonth(), dateSelectionnee.getDate());
+  const utcSelected = Date.UTC(typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getFullYear() : dateSelectionnee.getFullYear(), typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getMonth() : dateSelectionnee.getMonth(), typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getDate() : dateSelectionnee.getDate());
   const utcActuelle = Date.UTC(dateActuelle.getFullYear(), dateActuelle.getMonth(), dateActuelle.getDate());
 
   const MS_PAR_JOUR = 86400000;
@@ -206,7 +207,7 @@ export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone
   // getDay() returns a number from 0 (Sunday) to 6 (Saturday).
 
   // By subtracting (day * ms_per_day), we arrive at Sunday at midnight.
-  const dimancheSelected = utcSelected - (dateSelectionnee.getDay() * MS_PAR_JOUR);
+  const dimancheSelected = utcSelected - (typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getDay() : dateSelectionnee.getDay() * MS_PAR_JOUR);
   const dimancheActuelle = utcActuelle - (dateActuelle.getDay() * MS_PAR_JOUR);
 
 
@@ -226,7 +227,8 @@ export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone
 export function getSessionStorageRecordForDragAndDrop(
   tasks: TasksType,
   positionDay: number,
-  dropGroupId: string
+  dropGroupId: string,
+  getTask: (hash: string, taskId: string) => TaskFeildsType | undefined
 ) {
   const dragtaskId = window.sessionStorage.getItem("calendardragtaskId");
   const dragtaskStart = window.sessionStorage.getItem("calendardragtaskStart");
@@ -235,12 +237,20 @@ export function getSessionStorageRecordForDragAndDrop(
   let newTask: TaskFeildsType | any;
   let newTasks: TasksType = [];
   window.sessionStorage.clear();
+
+
   if (!dragdayIndex || !dragtaskStart || !dragtaskEnd || !dragtaskId || !tasks)
     return;
-  const dragTask = tasks.find((task) => task.taskId === dragtaskId);
+  const convertTaskDropStart = new Date(parseInt(dragtaskStart));
+  const taskOffset = updateOffsetWithDateCalendar(convertTaskDropStart,)
+  const dragTask = getTask(`${taskOffset}`, dragtaskId)
+
+  console.log('dragTask', dragTask);
+  if (!dragTask) return;
+
   const dayIndex = parseInt(dragdayIndex);
   let ecartDaysIndex = positionDay - dayIndex;
-  const convertTaskDropStart = new Date(parseInt(dragtaskStart));
+
   convertTaskDropStart.setDate(convertTaskDropStart.getDate() + ecartDaysIndex);
   const taskDropStart = convertTaskDropStart.getTime();
   let convertTaskDropEnd = new Date(parseInt(dragtaskEnd));
@@ -260,7 +270,7 @@ export function getSessionStorageRecordForDragAndDrop(
       ...rest,
     };
 
-    const dragTaskIndex = tasks.findIndex((task) => task.taskId === dragtaskId);
+    const dragTaskIndex = tasks.findIndex((task) => task.id === dragtaskId);
     newTasks = [...tasks];
     newTasks.splice(dragTaskIndex, 1, newTask);
   }
@@ -335,14 +345,20 @@ export function saveTasksToLocalStorage(tasks: TasksType) {
 
 export const updateCalendarDateWithOffset = (
   offset: number,
-  calendarDate: Date
+  timeZone?: TimeZone
 ) => {
-  const newDate = new Date(calendarDate);
+  const newDate = getCalendarDate(timeZone);
   newDate.setDate(newDate.getDate() + offset);
   return newDate;
 };
 
 export const updateOffsetWithDateCalendar = (calendarDate: Date, timeZone?: TimeZone) => {
+  if (typeof calendarDate === 'string') {
+
+
+    return calculerEcartSemaine(new Date(calendarDate), timeZone);
+  }
+
   return calculerEcartSemaine(calendarDate, timeZone);
 };
 
@@ -397,7 +413,7 @@ export const deleteTaskSaved = (taskId: string) => {
   const tasksSavedString = window.localStorage.getItem("CalendarTaskSaved");
   if (!tasksSavedString) return;
   const tasksSavedTable: TasksType = JSON.parse(tasksSavedString);
-  const taskIndex = tasksSavedTable.findIndex((task) => task.taskId === taskId);
+  const taskIndex = tasksSavedTable.findIndex((task) => task.id === taskId);
 
   if (taskIndex) {
     tasksSavedTable.splice(taskIndex, 1);
@@ -508,7 +524,7 @@ function recurring(ecartDay: number, task: TaskFeildsType, timeZone?: TimeZone) 
 
   newTask.dayIndex = getArbitraryDateInTimeZone(newTask.taskDate, timeZone).getDay();
 
-  newTask.taskId = getUnqueId();
+  newTask.id = getUnqueId();
   return newTask;
 }
 
@@ -675,7 +691,7 @@ export function addTask(tasks: TaskFeildsType[], task: TaskFeildsType) {
 }
 
 export function deleteTask(tasks: TaskFeildsType[], taskId: string) {
-  const taskPos = tasks.findIndex((task) => task.taskId === taskId);
+  const taskPos = tasks.findIndex((task) => task.id === taskId);
   const alltasks = [...tasks];
 
   alltasks.splice(taskPos, 1);
@@ -687,7 +703,7 @@ export function getTaskInfoById(
   groups: GroupFeildsType[],
   taskId: string
 ) {
-  const task = tasks.find((task) => task.taskId === taskId);
+  const task = tasks.find((task) => task.id === taskId);
   if (!task) throw new Error("no such to task");
 
   const group = groups.find((group) => group.id === task.groupId);
@@ -720,7 +736,7 @@ export function deSelectTask(task: TaskFeildsType) {
     );
 
     if (copiedTasks.length > 0) {
-      const newTasks = deleteTask(copiedTasks, task.taskId);
+      const newTasks = deleteTask(copiedTasks, task.id);
 
       window.sessionStorage.setItem(
         "copiedTasks",
@@ -783,7 +799,7 @@ export function pastTasks(
             taskEnd: copiedTasktaskEnd,
             taskDate: copiedTasktaskDate,
             groupId: copiedTaskGroupId,
-            taskId: copiedTaskId,
+            id: copiedTaskId,
             taskExpiryDate: copiedTaskExpiryDate,
             ...rest
           } = task;
@@ -811,7 +827,7 @@ export function pastTasks(
               taskStart: newTaskStartAndEnd.startTime,
               taskEnd: newTaskStartAndEnd.endTime,
               dayIndex: dayInfo.positionDay,
-              taskId: newTaskId,
+              id: newTaskId,
               taskDate: newTaskDate,
               groupId: groupId,
               taskExpiryDate: taskExpiryDate,
@@ -837,7 +853,7 @@ export function updateTask(
   newtask: TaskFeildsType
 ) {
   return tasks.map((task) => {
-    if (task.taskId === taskId) {
+    if (task.id === taskId) {
       return newtask;
     }
     return task;
@@ -872,7 +888,7 @@ export function duplicateTasksForPeriod(
 
     if (findPlanning.length > 0) {
       findPlanning.forEach((plan) => {
-        const { taskStart, taskEnd, taskDate, offset, taskId, ...rest } = plan;
+        const { taskStart, taskEnd, taskDate, offset, id, ...rest } = plan;
 
         const newOffset = updateOffsetWithDateCalendar(periodEnd);
 
@@ -894,7 +910,7 @@ export function duplicateTasksForPeriod(
             taskDate: newTaskDate,
             taskStart: newTaskStart,
             taskEnd: newTaskEnd,
-            taskId: getUnqueId(),
+            id: getUnqueId(),
           };
 
           tasks.push({ ...newTask, offset: newOffset });
@@ -931,7 +947,7 @@ export function duplicateTaskForPeriod(
       taskEnd,
       taskDate,
       offset,
-      taskId,
+      id,
       groupId: currentTaskGroupId,
       taskExpiryDate: currentTaskExpiryDate,
       ...rest
@@ -957,7 +973,7 @@ export function duplicateTaskForPeriod(
         taskDate: newTaskDate,
         taskStart: newTaskStart,
         taskEnd: newTaskEnd,
-        taskId: getUnqueId(),
+        id: getUnqueId(),
         groupId: groupId ? groupId : currentTaskGroupId,
         taskExpiryDate: taskExpiryDate,
       };

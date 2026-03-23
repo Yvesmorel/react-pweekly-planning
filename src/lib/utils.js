@@ -256,6 +256,8 @@ export function saveTasksToLocalStorage(tasks) {
     }
 }
 export const updateCalendarDateWithOffset = (offset, calendarDate) => {
+
+
     const newDate = new Date(calendarDate);
     newDate.setDate(newDate.getDate() + offset);
     return newDate;

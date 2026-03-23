@@ -3,7 +3,9 @@ import {
   CalendarPropsType,
   CalendarTablePropsType,
   TaskFeildsType,
+  TasksType,
 } from "../definitions";
+import { v4 as uuidv4 } from 'uuid';
 import GroupContainer from "./GroupContainer";
 import GroupsHeadContainer from "./GroupsHeadContainer";
 
@@ -25,9 +27,17 @@ import AddTask from "./AddTask";
 import SumHoursContainer from "./SumHoursContainer";
 import { memo, useEffect } from "react";
 import useCalendarDateState from "../hooks/useCalendarDateState";
-
+import { useCalendarTask } from "../hooks/useCalendarTask";
+import { useCalendarContext } from "../contexts/CalendarContext";
+import { useCalendarTaskContext } from "../contexts/CalendarTaskContext";
 function CalendarForWeek(props: CalendarTablePropsType) {
 
+  const { getTasks, isValidTask, addTask, deleteTask, updateTask, getTask } = useCalendarTaskContext();
+
+
+
+
+  const tasks = getTasks(`${props.weekOffset || 0}`);
 
   const { dailyHours, weekDays } = useCalendarDateState(
     props.date,
@@ -39,9 +49,7 @@ function CalendarForWeek(props: CalendarTablePropsType) {
     event.preventDefault();
   };
 
-  useEffect(() => {
-    saveTasksToLocalStorage(props.tasks);
-  }, [props.tasks]);
+
 
   return (
     <table
@@ -119,23 +127,26 @@ function CalendarForWeek(props: CalendarTablePropsType) {
                 key={`td-${group.id}day-i${positionDay}`}
                 onDragOver={handleDragOver}
                 onDrop={(event) => {
-                  if (!props.handleDropTask || !props.tasks) return;
+                  if (!tasks) return;
                   const dropInfo = getSessionStorageRecordForDragAndDrop(
-                    props.tasks,
+                    tasks,
                     positionDay,
-                    group.id
+                    group.id,
+                    getTask
                   );
                   if (!dropInfo) return;
-                  props.handleDropTask(
-                    event,
-                    dropInfo.taskDropStart,
-                    dropInfo.taskDropEnd,
-                    dropInfo.taskDropDate,
-                    group.id,
-                    positionDay,
-                    dropInfo.newTask,
-                    dropInfo.newTasks
-                  );
+                  const dropOffset = updateOffsetWithDateCalendar(props.date);
+                  console.log('ici', dropOffset, dropInfo.newTask.id, dropInfo.newTask);
+                  if (props.drop === "copy") {
+                    addTask(`${dropOffset}`, { ...dropInfo.newTask, id: uuidv4() })
+                    return
+                  }
+                  updateTask(`${dropOffset}`, dropInfo.newTask.id, dropInfo.newTask)
+                  // deleteTask(`${dropOffset}`, dropInfo.newTask.id)
+
+
+                  // console.log('ici', dropOffset, dropInfo.newTask.id, dropInfo.newTask);
+
                 }}
                 id={`td-${group.id}day-i`}
                 className={props.dayColsClassName}
@@ -152,21 +163,16 @@ function CalendarForWeek(props: CalendarTablePropsType) {
                   }}
                 >
                   <>
-                    {props.tasks
+                    {tasks
                       .map((task, taskKey) => {
                         if (
+
                           task.dayIndex === positionDay &&
-                          task.groupId === group.id &&
-                          compareWeekOffset(
-                            props.date,
-                            props.weekOffset || 0,
-                            task.taskDate,
-                            props.timeZone
-                          )
+                          task.groupId === group.id && isValidTask(task)
                         ) {
                           return (
                             <TaskContainer
-                              key={`${taskKey} task`}
+                              key={`${task.id} task`}
                               handleDragTask={props.handleDragTask}
                               taskRender={props.taskRender}
                               handleDragTaskEnd={props.handleDragTaskEnd}
@@ -198,13 +204,13 @@ function CalendarForWeek(props: CalendarTablePropsType) {
             >
               <SumHoursContainer
                 groupId={group.id}
-                tasks={props.tasks}
+                tasks={tasks}
                 weekOffset={props.weekOffset || 0}
                 calendarDate={props.date}
                 sumHoursRender={props.sumHoursRender}
                 sumHoursByGroups={sumHoursByGroups(
                   group.id,
-                  props.tasks,
+                  tasks,
                   props.weekOffset || 0,
                   props.date,
                   props.timeZone
@@ -220,14 +226,4 @@ function CalendarForWeek(props: CalendarTablePropsType) {
   );
 }
 
-export default memo(
-  CalendarForWeek,
-  (
-    prevProps: Readonly<CalendarPropsType>,
-    nextProps: Readonly<CalendarPropsType>
-  ) =>
-    prevProps.tasks === nextProps.tasks &&
-    prevProps.date === nextProps.date &&
-    prevProps.groups === nextProps.groups &&
-    prevProps.weekOffset === nextProps.weekOffset
-);
+export default CalendarForWeek

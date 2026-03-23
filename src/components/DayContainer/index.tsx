@@ -11,7 +11,7 @@ const DayContainer = ({
   className,
   style,
 }: DayPropsType) => {
-  
+
   if (dayRender) {
     return (
       <>
