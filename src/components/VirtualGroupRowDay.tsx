@@ -6,7 +6,7 @@ import AddTask from "./AddTask";
 import {
   getHash,
   getNewTaskForDropOrPaste,
-  getUnqueId,
+  getUniqueId,
   updateOffsetWithDateCalendar,
 } from "../lib/utils";
 import { CalendarTablePropsType, GroupFeildsType, TaskType, TasksStore, TasksType, dayInfoType } from "../definitions";
@@ -108,7 +108,7 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
               );
               if (!dropInfo) return;
               if (props.drop === "copy") {
-                addTask({ ...dropInfo.newTask, id: getUnqueId() });
+                addTask({ ...dropInfo.newTask, id: getUniqueId() });
                 return;
               }
               updateTask(hash[hashScope], dropInfo.newTask.id, dropInfo.newTask);

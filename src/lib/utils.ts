@@ -528,7 +528,7 @@ function recurring(ecartDay: number, task: TaskFeildsType, timeZone?: TimeZone) 
 
   newTask.dayIndex = getArbitraryDateInTimeZone(newTask.taskDate, timeZone).getDay();
 
-  newTask.id = getUnqueId();
+  newTask.id = getUniqueId();
   return newTask;
 }
 
@@ -778,7 +778,7 @@ function updateTaskStartTimeAnEndTime(
   return { startTime, endTime };
 }
 
-export function getUnqueId() {
+export function getUniqueId() {
   const uid = uuidv4();
   return uid;
 }
@@ -826,7 +826,7 @@ export function pastTasks(
             )
           ) {
             const newTaskDate = new Date(newTaskStartAndEnd.startTime);
-            const newTaskId = `${getUnqueId()}`;
+            const newTaskId = `${getUniqueId()}`;
             const newTask: TaskFeildsType = {
               taskStart: newTaskStartAndEnd.startTime,
               taskEnd: newTaskStartAndEnd.endTime,
@@ -914,7 +914,7 @@ export function duplicateTasksForPeriod(
             taskDate: newTaskDate,
             taskStart: newTaskStart,
             taskEnd: newTaskEnd,
-            id: getUnqueId(),
+            id: getUniqueId(),
           };
 
           tasks.push({ ...newTask, offset: newOffset });
@@ -977,7 +977,7 @@ export function duplicateTaskForPeriod(
         taskDate: newTaskDate,
         taskStart: newTaskStart,
         taskEnd: newTaskEnd,
-        id: getUnqueId(),
+        id: getUniqueId(),
         groupId: groupId ? groupId : currentTaskGroupId,
         taskExpiryDate: taskExpiryDate,
       };

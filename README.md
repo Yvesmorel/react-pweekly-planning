@@ -215,7 +215,7 @@ Use this hook within any component nested under the provider to access the task 
 | `getTask` | `(hash: string, taskId: string) => Task \| undefined` | Finds a specific task by ID. |
 | `updateTask` | `(hash: string, taskId: string, updatedTask: Partial<Task>) => void` | Updates an existing task's properties. |
 | `deleteTask` | `(hash: string, taskId: string) => void` | Removes a task from the store. |
-| `isValidTask` | `(task: Task) => boolean` | Checks if a task object has all required fields. |
+| `isValidTask` | `(task: Task) => boolean` | Verifies if a task has not yet expired. |
 | `cleanExpiredTasks` | `() => void` | Removes all tasks that have passed their `taskExpiryDate`. |
 | `cleanExpiredTasksByHash` | `(hash: string) => void` | Removes expired tasks within a specific hash bucket. |
 | `hashScope` | `"week" \| "group" \| "day"` | The active hashing strategy. |
@@ -314,7 +314,7 @@ The library uses "hashes" to bucket tasks efficiently. When calling `getTasks(ha
 
 - **Manual Rendering**: Use `getTasks(hash)` to retrieve only the tasks relevant to the current view.
 - **CRUD Operations**: Use `addTask`, `updateTask`, and `deleteTask` to modify the store. The UI will re-render automatically thanks to the context.
-- **Validation**: Use `isValidTask(task)` to verify if a task is expired before displaying it, or rely on `cleanExpiredTasks()` to prune the store.
+- **Validation**: Use `isValidTask(task)` to verify if a task has not yet expired before displaying it, or rely on `cleanExpiredTasks()` to prune the store.
 - **Performance**: Accessing tasks by hash is highly optimized. Avoid looping through the entire `tasks.buckets` manually if possible.
 
 ---
@@ -425,7 +425,67 @@ to create an organization that truly reflects you.
   console.log(hashes.day);   // "0/group-1/2"
   ```
 
+### `calculateWeekDifference`
+
+- **Description**: Calculates the week difference in days between a selected date and the current date, normalized to Sundays.
+- **Parameters**: 
+  - `dateSelectionnee` (Date): The date to compare.
+  - `timeZone` (string, optional): The timezone to use for the comparison.
+- **Returns**: The difference in days (e.g., 0, 7, -7, 14, -14...).
+
+  **Example**:
+  ```javascript
+  import { calculateWeekDifference } from "react-weekly-planning";
+  const diff = calculateWeekDifference(new Date());
+  console.log(diff); // Logs 0 if it's the current week
+  ```
+
+### `getUniqueId`
+
+- **Description**: Generates a unique identifier (UUID v4).
+- **Returns**: A unique ID string.
+
+  **Example**:
+  ```javascript
+  import { getUniqueId } from "react-weekly-planning";
+  const id = getUniqueId();
+  console.log(id); // Logs a unique UUID
+  ```
+
+### `getNewTaskForDropOrPaste`
+
+- **Description**: Utility function to generate a new task correctly positioned when dropping or pasting it in a custom calendar context. It reads the dragged task information from the browser's `sessionStorage` and calculates the new start/end dates based on the drop target.
+- **Parameters**:
+  - `positionDay` (number): The index of the day where the task is dropped or pasted (0-6).
+  - `dropGroupId` (string): The ID of the group where the task is dropped or pasted.
+  - `getTask` (function): The function `(hash: string, taskId: string) => TaskFeildsType | undefined` (available from `useCalendarTaskContext`) to retrieve the original task being dragged.
+  - `hash` (string): The hash for the current view, representing the destination bucket.
+- **Returns**: An object containing `{ taskDropStart, taskDropEnd, taskDropDate, newTask }` or `undefined` if no task is currently in the session storage.
+
+  **Example**:
+  ```tsx
+  import { getNewTaskForDropOrPaste, useCalendarTaskContext } from "react-weekly-planning";
+
+  const CustomCell = ({ dayIndex, groupId, currentHash }) => {
+    const { getTask, addTask } = useCalendarTaskContext();
+
+    const handleDrop = (e) => {
+      e.preventDefault();
+      
+      const result = getNewTaskForDropOrPaste(
+        dayIndex,
+        groupId,
+        getTask,
+        currentHash
+      );
+
+      if (result && result.newTask) {
+        addTask(result.newTask);
+      }
+    };
+
+    return <div onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>Drop Here</div>;
+  };
+  ```
 
 ---
-
-

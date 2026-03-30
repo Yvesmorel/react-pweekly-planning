@@ -7,7 +7,7 @@ import AddTask from "./AddTask";
 import {
   getHash,
   getNewTaskForDropOrPaste,
-  getUnqueId,
+  getUniqueId,
   updateOffsetWithDateCalendar,
 } from "../lib/utils";
 import { groupTdStyle } from "../lib/slyles";
@@ -111,7 +111,7 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
                     return;
                   }
                   deleteTask(dropInfo.newTask.draghash, dropInfo.newTask.id);
-                  addTask({ ...dropInfo.newTask, id: getUnqueId() });
+                  addTask({ ...dropInfo.newTask, id: getUniqueId() });
                 }}
                 id={`col-${group.id}day-i`}
                 className={`dayCol ${props.dayColsClassName}`}
