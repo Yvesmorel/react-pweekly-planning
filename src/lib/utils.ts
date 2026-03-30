@@ -224,8 +224,7 @@ export function calculateWeekDifference(dateSelectionnee: Date, timeZone?: TimeZ
  */
 
 
-export function getSessionStorageRecordForDragAndDrop(
-  tasks: TasksType,
+export function getNewTaskForDropOrPaste(
   positionDay: number,
   dropGroupId: string,
   getTask: (hash: string, taskId: string) => TaskFeildsType | undefined,
@@ -241,14 +240,14 @@ export function getSessionStorageRecordForDragAndDrop(
   window.sessionStorage.clear();
 
 
-  if (!dragdayIndex || !dragtaskStart || !dragtaskEnd || !dragtaskId || !tasks)
+  if (!dragdayIndex || !dragtaskStart || !dragtaskEnd || !dragtaskId)
     return;
   const convertTaskDropStart = new Date(parseInt(dragtaskStart));
 
 
   if (draghash === null) return
   const dragTask = getTask(draghash, dragtaskId)
-  console.log('dragTask', dragTask, draghash, hash);
+
 
   if (!dragTask) return;
 

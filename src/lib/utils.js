@@ -183,7 +183,7 @@ export function calculerEcartSemaine(dateSelectionnee, timeZone) {
  * @param numeroSemaine - The week number.
  * @returns The number of weeks since the origin date.
  */
-export function getSessionStorageRecordForDragAndDrop(tasks, positionDay, dropGroupId) {
+export function getNewTaskForDropOrPaste(tasks, positionDay, dropGroupId) {
     const dragtaskId = window.sessionStorage.getItem("calendardragtaskId");
     const dragtaskStart = window.sessionStorage.getItem("calendardragtaskStart");
     const dragtaskEnd = window.sessionStorage.getItem("calendardragtaskEnd");

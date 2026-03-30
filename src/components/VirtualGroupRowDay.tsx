@@ -5,7 +5,7 @@ import TaskVirtual from "./TaskContainer/TaskVirtual";
 import AddTask from "./AddTask";
 import {
   getHash,
-  getSessionStorageRecordForDragAndDrop,
+  getNewTaskForDropOrPaste,
   getUnqueId,
   updateOffsetWithDateCalendar,
 } from "../lib/utils";
@@ -100,8 +100,7 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
             onDragOver={handleDragOver}
             onDrop={(event) => {
               if (!cellTasks) return;
-              const dropInfo = getSessionStorageRecordForDragAndDrop(
-                cellTasks,
+              const dropInfo = getNewTaskForDropOrPaste(
                 currentDailyHours.positionDay,
                 group.id,
                 getTask,

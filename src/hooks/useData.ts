@@ -13,7 +13,7 @@ export const useData = (
     bottomBufferSize: number,
     topBufferSize: number
 ) => {
-    console.log(sliceIndex, itemsByLine, windowLines, tasks, "virtual");
+    
     const visibleTasks = useMemo(
         () =>
             tasks.slice(
