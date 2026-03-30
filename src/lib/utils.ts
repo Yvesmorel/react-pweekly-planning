@@ -191,7 +191,7 @@ function updateSelectedDateForEcartSemaine(dateSelectionnee: Date): Date {
  */
 
 
-export function calculerEcartSemaine(dateSelectionnee: Date, timeZone?: TimeZone): number {
+export function calculateWeekDifference(dateSelectionnee: Date, timeZone?: TimeZone): number {
   const dateActuelle = getCalendarDate(timeZone);
 
 
@@ -228,24 +228,28 @@ export function getSessionStorageRecordForDragAndDrop(
   tasks: TasksType,
   positionDay: number,
   dropGroupId: string,
-  getTask: (hash: string, taskId: string) => TaskFeildsType | undefined
+  getTask: (hash: string, taskId: string) => TaskFeildsType | undefined,
+  hash: string
 ) {
   const dragtaskId = window.sessionStorage.getItem("calendardragtaskId");
   const dragtaskStart = window.sessionStorage.getItem("calendardragtaskStart");
   const dragtaskEnd = window.sessionStorage.getItem("calendardragtaskEnd");
   const dragdayIndex = window.sessionStorage.getItem("calendardragdayIndex");
+  const draghash = window.sessionStorage.getItem("calendardraghash");
   let newTask: TaskFeildsType | any;
-  let newTasks: TasksType = [];
+
   window.sessionStorage.clear();
 
 
   if (!dragdayIndex || !dragtaskStart || !dragtaskEnd || !dragtaskId || !tasks)
     return;
   const convertTaskDropStart = new Date(parseInt(dragtaskStart));
-  const taskOffset = updateOffsetWithDateCalendar(convertTaskDropStart,)
-  const dragTask = getTask(`${taskOffset}`, dragtaskId)
 
-  console.log('dragTask', dragTask);
+
+  if (draghash === null) return
+  const dragTask = getTask(draghash, dragtaskId)
+  console.log('dragTask', dragTask, draghash, hash);
+
   if (!dragTask) return;
 
   const dayIndex = parseInt(dragdayIndex);
@@ -262,19 +266,20 @@ export function getSessionStorageRecordForDragAndDrop(
       dragTask;
 
     newTask = {
+
       taskStart: taskDropStart,
       taskEnd: taskDropEnd,
       taskDate: taskDropDate,
       groupId: dropGroupId,
       dayIndex: positionDay,
       ...rest,
+      hash: hash,
+      draghash: draghash,
+
     };
 
-    const dragTaskIndex = tasks.findIndex((task) => task.id === dragtaskId);
-    newTasks = [...tasks];
-    newTasks.splice(dragTaskIndex, 1, newTask);
   }
-  return { taskDropStart, taskDropEnd, taskDropDate, newTask, newTasks };
+  return { taskDropStart, taskDropEnd, taskDropDate, newTask };
 }
 
 export function compareWeekOffset(
@@ -283,21 +288,21 @@ export function compareWeekOffset(
   taskDate: Date,
   timeZone?: TimeZone
 ) {
-  // if (taskDate.getDay() === 0 && calculerEcartSemaine(taskDate) === -7) {
+  // if (taskDate.getDay() === 0 && calculateWeekDifference(taskDate) === -7) {
   //   return true;
   // }
 
 
   const currentDate = getCalendarDate(timeZone);
-  const currentWeekOffset = calculerEcartSemaine(currentDate, timeZone);
+  const currentWeekOffset = calculateWeekDifference(currentDate, timeZone);
   const localTaskDate = getArbitraryDateInTimeZone(taskDate, timeZone);
 
 
   // if (calendarDate)
-  //     return (calculerEcartSemaine(calendarDate) === calculerEcartSemaine(taskDate));
+  //     return (calculateWeekDifference(calendarDate) === calculateWeekDifference(taskDate));
 
 
-  const ecartTask = calculerEcartSemaine(taskDate, timeZone)
+  const ecartTask = calculateWeekDifference(taskDate, timeZone)
 
   return weekOffset === ecartTask;
 }
@@ -356,10 +361,10 @@ export const updateOffsetWithDateCalendar = (calendarDate: Date, timeZone?: Time
   if (typeof calendarDate === 'string') {
 
 
-    return calculerEcartSemaine(new Date(calendarDate), timeZone);
+    return calculateWeekDifference(new Date(calendarDate), timeZone);
   }
 
-  return calculerEcartSemaine(calendarDate, timeZone);
+  return calculateWeekDifference(calendarDate, timeZone);
 };
 
 export const millisecondsToHours = (milliseconds: number) => {
@@ -1013,4 +1018,13 @@ export function totalLabel(milliseconds: number) {
   } else label = `${hourConv}:0:0`;
 
   return label;
+}
+
+
+export function getHash(weekOffset: number, groupId?: string, dayIndex?: number,) {
+  return {
+    "week": `${weekOffset}`,
+    "group": `${weekOffset}/${groupId}`,
+    "day": `${weekOffset}/${groupId}/${dayIndex}`
+  }
 }

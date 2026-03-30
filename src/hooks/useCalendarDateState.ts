@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  calculerEcartSemaine,
+  calculateWeekDifference,
   getDateObjectInTimeZone,
   getDayHourly,
   getWeekDays,
@@ -27,8 +27,8 @@ function useCalendarDateState(
   useEffect(() => {
 
     const weekOffsetByDate = timeZone
-      ? calculerEcartSemaine(getDateObjectInTimeZone(timeZone), timeZone)
-      : calculerEcartSemaine(date, timeZone);
+      ? calculateWeekDifference(getDateObjectInTimeZone(timeZone), timeZone)
+      : calculateWeekDifference(date, timeZone);
 
     const weekDays = getWeekDays(weekOffsetByDate || weekOffset || 0, timeZone);
     const dailyHours = getDayHourly(weekOffsetByDate || weekOffset || 0, timeZone);

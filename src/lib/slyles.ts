@@ -5,6 +5,8 @@ export const theadTrStyle: StyleType = {
   fontWeight: "300",
   position: "sticky",
   top: -1,
+
+
 };
 
 export const groupTdStyle: StyleType = {

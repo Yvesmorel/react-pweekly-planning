@@ -73,7 +73,7 @@ const Calendar = (props: CalendarPropsType) => {
 
 
   return (
-    <CalendarTaskContextProvider timeZone={props.timeZone}>
+    <CalendarTaskContextProvider hashScope={"week"}>
       {props.scope === "day" ? <CalendarForDay {...props} /> : <CalendarForWeek {...props} />}
     </CalendarTaskContextProvider>
   );

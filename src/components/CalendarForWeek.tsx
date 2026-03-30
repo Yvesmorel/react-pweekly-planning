@@ -1,43 +1,24 @@
-
-import {
-  CalendarPropsType,
-  CalendarTablePropsType,
-  TaskFeildsType,
-  TasksType,
-} from "../definitions";
-import { v4 as uuidv4 } from 'uuid';
-import GroupContainer from "./GroupContainer";
+import { CalendarTablePropsType } from "../definitions";
 import GroupsHeadContainer from "./GroupsHeadContainer";
-
-import { groupTdStyle, theadTrStyle } from "../lib/slyles";
+import { theadTrStyle } from "../lib/slyles";
 import DayContainer from "./DayContainer";
-import SumHoursHead from "./SumHoursHead";
-
 import {
-  compareWeekOffset,
-  getSessionStorageRecordForDragAndDrop,
-  saveTasksToLocalStorage,
-  sumHoursByGroups,
+  getHash,
+  getUnqueId,
   updateOffsetWithDateCalendar,
 } from "../lib/utils";
-
-import TaskContainer from "./TaskContainer";
-
-import AddTask from "./AddTask";
-import SumHoursContainer from "./SumHoursContainer";
-import { memo, useEffect } from "react";
+import { memo, useRef, useMemo } from "react";
 import useCalendarDateState from "../hooks/useCalendarDateState";
-import { useCalendarTask } from "../hooks/useCalendarTask";
-import { useCalendarContext } from "../contexts/CalendarContext";
 import { useCalendarTaskContext } from "../contexts/CalendarTaskContext";
-function CalendarForWeek(props: CalendarTablePropsType) {
+import { useContainerScroll } from "../hooks/useContainerScroll";
+import useMainContainerContent from "../hooks/useMainContainerItemContent";
+import VirtualGroupRow from "./VirtualGroupRow";
 
-  const { getTasks, isValidTask, addTask, deleteTask, updateTask, getTask } = useCalendarTaskContext();
+const CalendarForWeek = (props: CalendarTablePropsType) => {
+
+  const { getTasks, isValidTask, addTask, deleteTask, getTask, hashScope, tasks } = useCalendarTaskContext();
 
 
-
-
-  const tasks = getTasks(`${props.weekOffset || 0}`);
 
   const { dailyHours, weekDays } = useCalendarDateState(
     props.date,
@@ -45,185 +26,91 @@ function CalendarForWeek(props: CalendarTablePropsType) {
     props.timeZone
   );
 
-  const handleDragOver = (event: React.DragEvent<HTMLTableCellElement>) => {
-    event.preventDefault();
-  };
+  const memoizedHeader = useMemo(() => (
+    <div className="planningCalendarHeader">
+      <div
+        className={`planningCalendarRow ${props.rowsClassName}`}
+        style={{ ...theadTrStyle, ...props.rowsStyle }}
+        key="header"
+      >
+        <div
+          className={`dayTh ${props.groupsColsClassName}`}
+          style={{ ...props.groupsColsStyle }}
+        >
+          <GroupsHeadContainer
+            className={`${props.groupHeadContainerClassName}`}
+            style={props.groupHeadContainerStyle}
+            groupsHeadRender={props.groupsHeadRender}
+          />
+        </div>
+        {weekDays.map((day, i) => (
+          <div
+            key={i}
+            className={`dayCol ${props.daysColsClassName}`}
+            style={{ ...props.daysColsStyle }}
+          >
+            <DayContainer
+              style={props.dayStyle}
+              className={props.dayClassName}
+              dayIndex={i}
+              dayRender={props.dayRender}
+              day={day.day}
+              dayOfTheMonth={day.dayOfTheMonth}
+              dayMonth={day.dayMonth}
+              dayYear={day.dayYear}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  ), [weekDays, props.rowsClassName, props.rowsStyle, props.groupsColsClassName, props.groupsColsStyle, props.groupHeadContainerClassName, props.groupHeadContainerStyle, props.groupsHeadRender, props.daysColsClassName, props.daysColsStyle, props.dayStyle, props.dayClassName, props.dayRender]);
 
-
+  const offset = useMemo(() => updateOffsetWithDateCalendar(props.date), [props.date]);
 
   return (
-    <table
-      className={`planningCalendar ${props.className}`}
-      style={{ ...props.style }}
-    >
-      <thead>
-        <tr
-          className={`${props.rowsClassName}`}
-          style={{ ...theadTrStyle, ...props.rowsStyle }}
-          key=""
-        >
-          <th
-            className={`dayTh ${props.groupsColsClassName}`}
-            style={{ ...props.groupsColsStyle }}
-          >
-            <GroupsHeadContainer
-              className={`${props.groupHeadContainerClassName}`}
-              style={props.groupHeadContainerStyle}
-              groupsHeadRender={props.groupsHeadRender}
-            />
-          </th>
-          {weekDays.map((day, i) => (
-            <th
-              key={i}
-              className={`${props.daysColsClassName}`}
-              style={{ ...props.daysColsStyle }}
-            >
-              <DayContainer
-                style={props.dayStyle}
-                className={props.dayClassName}
-                dayIndex={i}
-                dayRender={props.dayRender}
-                day={day.day}
-                dayOfTheMonth={day.dayOfTheMonth}
-                dayMonth={day.dayMonth}
-                dayYear={day.dayYear}
-              />
-            </th>
-          ))}
-          <th
-            className={`totalTh ${props.hoursColsClassName}`}
-            style={props.hoursColsStyle}
-          >
-            <SumHoursHead
-              className={props.sumHoursHeadClassName}
-              style={props.sumHoursHeadStyle}
-              sumHoursHeadRender={props.sumHoursHeadRender}
-            />
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {props.groups?.map((group, i) => (
-          <tr
-            key={`${i} tr`}
-            className={`${props.rowsClassName}`}
-            style={{ ...props.rowsStyle }}
-          >
-            <td
-              className={`${props.groupsColsClassName}`}
-              key={i}
-              style={{ ...groupTdStyle, ...props.groupsColsStyle }}
-            >
-              <GroupContainer
-                style={props.groupContainerStyle}
-                className={props.groupContainerClassName}
-                groupRender={props.groupRender}
-                currentGroup={group}
-                handleClickGroup={props.handleClickGroup}
-              />
-            </td>
-            {dailyHours.map((_, positionDay) => (
-              <td
-                key={`td-${group.id}day-i${positionDay}`}
-                onDragOver={handleDragOver}
-                onDrop={(event) => {
-                  if (!tasks) return;
-                  const dropInfo = getSessionStorageRecordForDragAndDrop(
-                    tasks,
-                    positionDay,
-                    group.id,
-                    getTask
-                  );
-                  if (!dropInfo) return;
-                  const dropOffset = updateOffsetWithDateCalendar(props.date);
-                  console.log('ici', dropOffset, dropInfo.newTask.id, dropInfo.newTask);
-                  if (props.drop === "copy") {
-                    addTask(`${dropOffset}`, { ...dropInfo.newTask, id: uuidv4() })
-                    return
-                  }
-                  updateTask(`${dropOffset}`, dropInfo.newTask.id, dropInfo.newTask)
-                  // deleteTask(`${dropOffset}`, dropInfo.newTask.id)
+    <div className="calendarForWeek" style={{ position: "relative" }}>
+      <div
+        className={`planningCalendar ${props.className}`}
+        style={{ ...props.style }}
+      >
+        {memoizedHeader}
+        <div className="planningCalendarBody">
+          {props.groups?.map((group, i) => {
 
+            const scope = hashScope || "week";
+            const groupHash = getHash(offset, group.id);
+            const sumHoursByGroupsCount = tasks.buckets[groupHash[scope]]?.sumOfTaskDuration || 0;
 
-                  // console.log('ici', dropOffset, dropInfo.newTask.id, dropInfo.newTask);
-
-                }}
-                id={`td-${group.id}day-i`}
-                className={props.dayColsClassName}
-                style={props.dayColsStyle}
-              >
-                <div
-                  key={positionDay}
-                  style={{
-                    display: "flex",
-                    width: "100%",
-                    height: "100%",
-                    flexDirection: "column",
-                    padding: "5px",
-                  }}
-                >
-                  <>
-                    {tasks
-                      .map((task, taskKey) => {
-                        if (
-
-                          task.dayIndex === positionDay &&
-                          task.groupId === group.id && isValidTask(task)
-                        ) {
-                          return (
-                            <TaskContainer
-                              key={`${task.id} task`}
-                              handleDragTask={props.handleDragTask}
-                              taskRender={props.taskRender}
-                              handleDragTaskEnd={props.handleDragTaskEnd}
-                              style={props.taskContainerStyle}
-                              className={`${props.taskContainerClassName}`}
-                              currentTask={task}
-                              handleClickTask={props.handleClickTask}
-                            />
-                          );
-                        } else return "";
-                      })}
-                  </>
-
-                  <AddTask
-                    addTaskStyle={props.addTaskStyle}
-                    addTaskClassName={props.addTaskClassName}
-                    currentGroup={group}
-                    dayInfo={dailyHours[positionDay]}
-                    addTaskRender={props.addTaskRender}
-                    handleAddTask={props.handleAddTask}
-                  />
-                </div>
-              </td>
-            ))}
-            <td
-              key={`${i}sumHours`}
-              style={props.hoursColsStyle}
-              className={props.hoursColsClassName}
-            >
-              <SumHoursContainer
-                groupId={group.id}
+            return (
+              <VirtualGroupRow
+                key={`${group.id}-${i}`}
+                group={group}
+                i={i}
+                props={props}
+                getTasks={getTasks}
+                isValidTask={isValidTask}
+                addTask={addTask}
+                deleteTask={deleteTask}
+                getTask={getTask}
+                dailyHours={dailyHours}
+                hashScope={scope}
                 tasks={tasks}
-                weekOffset={props.weekOffset || 0}
-                calendarDate={props.date}
-                sumHoursRender={props.sumHoursRender}
-                sumHoursByGroups={sumHoursByGroups(
-                  group.id,
-                  tasks,
-                  props.weekOffset || 0,
-                  props.date,
-                  props.timeZone
-                )}
-                className={props.sumHoursContainerClassName}
-                style={props.sumHoursContainerStyle}
+                sumHoursByGroupsCount={sumHoursByGroupsCount}
               />
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 
-export default CalendarForWeek
+export default memo(CalendarForWeek, (prevProps, nextProps) => {
+
+  return (
+    prevProps.date?.getTime() === nextProps.date?.getTime() &&
+    prevProps.weekOffset === nextProps.weekOffset &&
+    prevProps.groups === nextProps.groups &&
+    prevProps.className === nextProps.className
+  );
+});

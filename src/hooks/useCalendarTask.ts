@@ -1,57 +1,57 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { TaskFeildsType } from "../definitions";
+import { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import { Task, TaskFeildsType, TasksStore } from "../definitions";
+import { getHash, updateOffsetWithDateCalendar } from "../lib/utils";
 
-type Task = TaskFeildsType
 
-type TaskBucket = {
-    list: Task[];
-    indexMap: Record<string, number>;
-};
-
-type TasksStore = Record<string, TaskBucket>;
 
 const STORAGE_KEY = "calendar_tasks";
 
-export function useCalendarTask(timeZone?: string) {
+export function useCalendarTask(hashScope: "week" | "group" | "day", timeZone?: string) {
 
 
-    const tasksRef = useRef<TasksStore>({});
+    const tasksRef = useRef<TasksStore>({ buckets: {}, dataLength: 0, taskCache: {} });
     const scheduleCleanRef = useRef<() => void>(null);
     const [render, forceRender] = useState(0);
 
 
 
+
     const cleanExpiredTasks = () => {
         const store = tasksRef.current;
+        let newDataLength = 0;
 
-        for (const hash in store) {
-            const bucket = store[hash];
+        for (const hash in store.buckets) {
+            const bucket = store.buckets[hash];
 
 
             const validTasks = bucket.list.filter(isValidTask);
+            newDataLength += validTasks.length;
 
             if (validTasks.length === bucket.list.length) continue;
 
 
             const newIndexMap: Record<string, number> = {};
-
+            let sumOfTaskDuration = 0;
             validTasks.forEach((task, index) => {
                 newIndexMap[task.id] = index;
+                sumOfTaskDuration += task.taskEnd - task.taskStart;
             });
 
 
-            store[hash] = {
+            store.buckets[hash] = {
                 list: validTasks,
                 indexMap: newIndexMap,
+                sumOfTaskDuration,
             };
         }
 
+        store.dataLength = newDataLength;
         saveToStorage();
         forceRender((x) => x + 1);
     };
 
     const cleanExpiredTasksByHash = (hash: string) => {
-        const bucket = tasksRef.current[hash];
+        const bucket = tasksRef.current.buckets[hash];
         if (!bucket) return;
 
 
@@ -60,17 +60,21 @@ export function useCalendarTask(timeZone?: string) {
 
         if (validTasks.length === bucket.list.length) return;
 
+        const removedCount = bucket.list.length - validTasks.length;
+        tasksRef.current.dataLength -= removedCount;
 
         const newIndexMap: Record<string, number> = {};
-
+        let sumOfTaskDuration = 0;
         validTasks.forEach((task, index) => {
             newIndexMap[task.id] = index;
+            sumOfTaskDuration += task.taskEnd - task.taskStart;
         });
 
 
-        tasksRef.current[hash] = {
+        tasksRef.current.buckets[hash] = {
             list: validTasks,
             indexMap: newIndexMap,
+            sumOfTaskDuration,
         };
 
         saveToStorage();
@@ -135,35 +139,44 @@ export function useCalendarTask(timeZone?: string) {
     }, []);
 
     // ➕ ADD → O(1)
-    const addTask = (hash: string, task: Task) => {
-        if (!tasksRef.current[hash]) {
-            tasksRef.current[hash] = {
+    const addTask = (task: Task) => {
+        const offset = updateOffsetWithDateCalendar(task.taskDate)
+        const hash = getHash(offset, task.groupId, task.dayIndex)[hashScope]
+
+        if (!tasksRef.current.buckets[hash]) {
+            tasksRef.current.buckets[hash] = {
                 list: [],
                 indexMap: {},
+                sumOfTaskDuration: 0,
             };
         }
 
-        const bucket = tasksRef.current[hash];
+
+        const bucket = tasksRef.current.buckets[hash];
         const index = bucket.list.length;
 
-        bucket.list.push(task);
+
+        bucket.list.push({ ...task, hash });
         bucket.indexMap[task.id] = index;
+        bucket.sumOfTaskDuration += task.taskEnd - task.taskStart;
+        tasksRef.current.dataLength++;
 
         saveToStorage();
         scheduleClean();
         forceRender((x) => x + 1);
+
     };
 
 
     const getTasks = (hash: string): Task[] => {
-        const bucket = tasksRef.current[hash];
+        const bucket = tasksRef.current.buckets[hash];
         if (!bucket) return [];
 
         return bucket.list
     };
 
     const getTask = (hash: string, taskId: string) => {
-        const bucket = tasksRef.current[hash];
+        const bucket = tasksRef.current.buckets[hash];
         if (!bucket) return;
         const index = bucket.indexMap[taskId]
         if (index === undefined) return;
@@ -175,16 +188,25 @@ export function useCalendarTask(timeZone?: string) {
         taskId: string,
         updatedTask: Partial<Task>
     ) => {
-        const bucket = tasksRef.current[hash];
 
-
+        const bucket = tasksRef.current.buckets[hash];
         if (!bucket) return;
+
 
         const index = bucket.indexMap[taskId];
 
 
         if (index === undefined) return;
 
+
+        const oldTAskDuration = bucket.list[index].taskEnd - bucket.list[index].taskStart;
+        if (updatedTask.taskEnd && updatedTask.taskStart) {
+            const newTAskDuration = updatedTask.taskEnd - updatedTask.taskStart;
+
+            if (newTAskDuration !== oldTAskDuration) {
+                bucket.sumOfTaskDuration = bucket.sumOfTaskDuration - oldTAskDuration + newTAskDuration;
+            }
+        }
         bucket.list[index] = {
             ...bucket.list[index],
             ...updatedTask,
@@ -198,7 +220,7 @@ export function useCalendarTask(timeZone?: string) {
 
     // ❌ DELETE → O(1)
     const deleteTask = (hash: string, taskId: string) => {
-        const bucket = tasksRef.current[hash];
+        const bucket = tasksRef.current.buckets[hash];
         if (!bucket) return;
 
         const index = bucket.indexMap[taskId];
@@ -206,6 +228,9 @@ export function useCalendarTask(timeZone?: string) {
 
         const lastIndex = bucket.list.length - 1;
         const lastTask = bucket.list[lastIndex];
+
+        const oldTAskDuration = bucket.list[index].taskEnd - bucket.list[index].taskStart;
+
 
         [bucket.list[index], bucket.list[lastIndex]] = [
             bucket.list[lastIndex],
@@ -216,14 +241,21 @@ export function useCalendarTask(timeZone?: string) {
 
         bucket.list.pop();
         delete bucket.indexMap[taskId];
+        bucket.sumOfTaskDuration -= oldTAskDuration;
+        tasksRef.current.dataLength--;
 
         saveToStorage();
         scheduleClean();
         forceRender((x) => x + 1);
+
     };
 
+    const tasks = useMemo(() => ({
+        ...tasksRef.current
+    }), [render]);
+
     return {
-        tasks: tasksRef.current,
+        tasks,
         addTask,
         getTasks,
         updateTask,

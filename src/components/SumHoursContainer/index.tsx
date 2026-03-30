@@ -4,7 +4,6 @@ import { millisecondsToHours, totalLabel } from "../../lib/utils";
 
 const SumHoursContainer = ({
   groupId,
-  tasks,
   weekOffset,
   calendarDate,
   sumHoursByGroups,
@@ -17,7 +16,6 @@ const SumHoursContainer = ({
       <>
         {sumHoursRender({
           groupId,
-          tasks,
           weekOffset,
           calendarDate,
           sumHoursByGroups,

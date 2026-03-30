@@ -23,6 +23,46 @@
     "./contexts/CalendarTaskContext": {
       "types": "./dist/types/contexts/CalendarTaskContext.d.ts",
       "default": "./dist/contexts/CalendarTaskContext.js"
+    },
+    "./contexts/CalendarContext": {
+      "types": "./dist/types/contexts/CalendarContext.d.ts",
+      "default": "./dist/contexts/CalendarContext.js"
+    },
+    "./components/TaskContainer": {
+      "types": "./dist/types/components/TaskContainer.d.ts",
+      "default": "./dist/components/TaskContainer.js"
+    },
+    "./components/DayContainer": {
+      "types": "./dist/types/components/DayContainer.d.ts",
+      "default": "./dist/components/DayContainer.js"
+    },
+    "./components/VirtualGroupRow": {
+      "types": "./dist/types/components/VirtualGroupRow.d.ts",
+      "default": "./dist/components/VirtualGroupRow.js"
+    },
+    "./components/VirtualGroupRowDay": {
+      "types": "./dist/types/components/VirtualGroupRowDay.d.ts",
+      "default": "./dist/components/VirtualGroupRowDay.js"
+    },
+    "./components/TaskContainer/TaskVirtualRow": {
+      "types": "./dist/types/components/TaskContainer/TaskVirtualRow.d.ts",
+      "default": "./dist/components/TaskContainer/TaskVirtualRow.js"
+    },
+    "./components/AddTask": {
+      "types": "./dist/types/components/AddTask.d.ts",
+      "default": "./dist/components/AddTask.js"
+    },
+    "./components/SumHoursContainer": {
+      "types": "./dist/types/components/SumHoursContainer.d.ts",
+      "default": "./dist/components/SumHoursContainer.js"
+    },
+    "./components/SumHoursHead": {
+      "types": "./dist/types/components/SumHoursHead.d.ts",
+      "default": "./dist/components/SumHoursHead.js"
+    },
+    "./components/GroupContainer": {
+      "types": "./dist/types/components/GroupContainer.d.ts",
+      "default": "./dist/components/GroupContainer.js"
     }
   },
   "files": [

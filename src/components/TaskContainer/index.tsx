@@ -12,6 +12,7 @@ const TaskContainer = ({
   handleClickTask,
 }: TaskContainerPropsType) => {
 
+
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     if (!handleDragTask) return;
     event.dataTransfer.effectAllowed = "move";
@@ -28,6 +29,10 @@ const TaskContainer = ({
     window.sessionStorage.setItem(
       "calendardragdayIndex",
       `${currentTask.dayIndex}`
+    );
+    window.sessionStorage.setItem(
+      "calendardraghash",
+      `${currentTask.hash}`
     );
     handleDragTask(event, currentTask);
   };

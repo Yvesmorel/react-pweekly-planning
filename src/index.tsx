@@ -8,4 +8,17 @@ export * from './lib/utils';
 export * from './definitions/index';
 export * from './hooks/useCalendarTask'
 export * from './contexts/CalendarTaskContext'
-// OU exportes des éléments spécifiques : export { formatTime, generateSlots } from './utils';
+export * from './components/TaskContainer/'
+export * from './components/TaskContainer/TaskVirtual'
+export * from './components/AddTask'
+export * from './components/SumHoursContainer'
+export * from './components/SumHoursHead'
+export * from './components/GroupContainer'
+export * from './components/VirtualGroupRow'
+export * from './components/VirtualGroupRowDay'
+export * from './components/DayContainer'
+export * from './hooks/useCalendarDateState'
+export * from './contexts/CalendarTaskContext'
+
+
+

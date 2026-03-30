@@ -15,10 +15,10 @@ type CalendarContextProviderPropsType = {
 };
 
 type CalendarContextType = {
-  getTasks: (hash: string) => TaskFeildsType[]
+
 };
 const CalendarContext = createContext<CalendarContextType>({
-  getTasks: () => []
+
 });
 
 const CalendarContextProvider = ({
@@ -26,11 +26,11 @@ const CalendarContextProvider = ({
   children,
 
 }: CalendarContextProviderPropsType) => {
-  const { getTasks } = useCalendarTask();
+
 
 
   return (
-    <CalendarContext.Provider value={{ getTasks }}>
+    <CalendarContext.Provider value={{}}>
       {children}
     </CalendarContext.Provider>
   );

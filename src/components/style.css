@@ -15,6 +15,7 @@
   background-color: #c6dbe159;
   opacity: 1;
 }
+
 .taskContainer {
   box-shadow: 0px 7px 18px 0px rgba(15, 105, 115, 0.03),
     0px 6px 10px 0px rgba(15, 105, 115, 0.04),
@@ -53,34 +54,62 @@
 
 .planningCalendar {
   width: 100%;
-  height: 150px;
   border-radius: 0.5rem;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  border: 0.74px solid rgba(198, 219, 225, 0.68);
+
+  background-color: white;
+
 }
 
-.planningCalendar .dayTh {
+.planningCalendarHeader {
+  display: flex;
+  width: 100%;
+  z-index: 200;
+  border-bottom: 1.5px solid #0f52737e;
+  background-color: #fff;
+}
+
+.planningCalendarRow {
+  display: flex;
+  width: 100%;
+  border-bottom: 1.5px solid #0f52737e;
+}
+
+.planningCalendarRow:last-child {
+  border-bottom: none;
+}
+
+.planningCalendar .dayTh,
+.planningCalendar .groupCol {
+  flex: 0 0 150px;
   color: #0f5173;
   padding-left: 5px;
-}
-.planningCalendar .totalTh {
-  color: #0f5173;
-  width: 40px;
-  text-align: right;
-  padding-right: 2px;
+  display: flex;
+  align-items: center;
 }
 
-.planningCalendar td {
-  -moz-box-sizing: border-box;
+.planningCalendar .dayCol {
+  flex: 1;
   border-left: 0.74px solid rgba(198, 219, 225, 0.68);
-  border-right: 0.74px solid rgba(198, 219, 225, 0.68);
-  width: 8vw;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.planningCalendar tr {
-  border-bottom: 1.5px solid #0f52737e;
-  padding: 2px;
-}
-.planningCalendar tr:nth-child(1){
-  z-index: 200;
+
+.planningCalendar .totalTh,
+.planningCalendar .totalCol {
+  flex: 0 0 50px;
+  color: #0f5173;
+  text-align: right;
+  padding-right: 5px;
+  border-left: 0.74px solid rgba(198, 219, 225, 0.68);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .CalendarTableForDay {
@@ -121,3 +150,18 @@
   min-height: 80px;
 }
 
+.calendarForWeek {
+  display: flex;
+  width: 100%;
+  flex: 1;
+  overflow: auto;
+  position: relative;
+
+}
+
+.calendarForWeek-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}

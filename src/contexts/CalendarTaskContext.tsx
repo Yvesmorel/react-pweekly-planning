@@ -1,35 +1,38 @@
 import { createContext, useContext } from "react";
 import { TaskFeildsType } from "../definitions";
 import { useCalendarTask } from "../hooks/useCalendarTask";
-
+import { TasksStore } from "../definitions";
 type Task = TaskFeildsType;
 
 type TaskBucket = {
   list: Task[];
   indexMap: Record<string, number>;
+  sumOfTaskDuration: number;
 };
 
-type TasksStore = Record<string, TaskBucket>;
+
 
 type CalendarTaskContextProviderPropsType = {
   children: React.ReactNode;
   timeZone?: string;
+  hashScope?: "week" | "group" | "day";
 };
 
 type CalendarTaskContextType = {
   tasks: TasksStore;
-  addTask: (hash: string, task: Task) => void;
+  addTask: (task: Task) => void;
   getTasks: (hash: string) => Task[];
   updateTask: (hash: string, taskId: string, updatedTask: Partial<Task>) => void;
   deleteTask: (hash: string, taskId: string) => void;
   cleanExpiredTasks: () => void;
   cleanExpiredTasksByHash: (hash: string) => void;
   isValidTask: (task: Task) => boolean;
-  getTask: (hash: string, taskId: string) => TaskFeildsType | undefined
+  getTask: (hash: string, taskId: string) => TaskFeildsType | undefined,
+  hashScope?: "week" | "group" | "day";
 };
 
 const CalendarTaskContext = createContext<CalendarTaskContextType>({
-  tasks: {},
+  tasks: { buckets: {}, dataLength: 0, taskCache: {} },
   addTask: () => { },
   getTasks: () => [],
   updateTask: () => { },
@@ -37,12 +40,13 @@ const CalendarTaskContext = createContext<CalendarTaskContextType>({
   cleanExpiredTasks: () => { },
   cleanExpiredTasksByHash: () => { },
   isValidTask: () => false,
-  getTask: () => undefined
+  getTask: () => undefined,
+  hashScope: "week"
 });
 
 const CalendarTaskContextProvider = ({
   children,
-  timeZone,
+  hashScope
 }: CalendarTaskContextProviderPropsType) => {
   const {
     tasks,
@@ -54,7 +58,7 @@ const CalendarTaskContextProvider = ({
     cleanExpiredTasksByHash,
     isValidTask,
     getTask
-  } = useCalendarTask(timeZone);
+  } = useCalendarTask(hashScope || "week");
 
   return (
     <CalendarTaskContext.Provider
@@ -67,7 +71,8 @@ const CalendarTaskContextProvider = ({
         cleanExpiredTasks,
         cleanExpiredTasksByHash,
         isValidTask,
-        getTask
+        getTask,
+        hashScope
       }}
     >
       {children}

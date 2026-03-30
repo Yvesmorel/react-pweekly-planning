@@ -119,7 +119,8 @@ export type DayPropsType = {
  * Props for the Calendar component.
  */
 export type CalendarPropsType = {
-  drop?: "copy" | "move"
+  // hashScope: "week" | "group" | "day";
+  drop?: "copy" | "move";
   scope?: "day" | "week";
   /** Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week). */
   weekOffset?: number;
@@ -233,13 +234,11 @@ export type CalendarPropsType = {
   /** Custom render function for the sum of hours. */
   sumHoursRender?: ({
     groupId,
-    tasks,
     weekOffset,
     calendarDate,
     sumHoursByGroups,
   }: {
     groupId: string;
-    tasks: TasksType;
     weekOffset: number;
     calendarDate: Date;
     sumHoursByGroups: number;
@@ -336,6 +335,9 @@ export type TaskType = {
   taskLocation?: string;
   /**task timezone */
   taskTimzone?: string;
+  hash?: string;
+  dragHash?: string;
+
 };
 
 export type filterTaskType = {
@@ -437,8 +439,6 @@ export type handleDragTaskEndType = (
 export type SumHoursContainerPropsType = {
   /** ID of the group. */
   groupId: string;
-  /** Array of tasks to be displayed in the calendar. */
-  tasks: TasksType;
   /** Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week). */
   weekOffset: number;
   /** The current date to display in the calendar. */
@@ -448,13 +448,11 @@ export type SumHoursContainerPropsType = {
   /** Custom render function for the sum of hours. */
   sumHoursRender?: ({
     groupId,
-    tasks,
     weekOffset,
     calendarDate,
     sumHoursByGroups,
   }: {
     groupId: string;
-    tasks: TasksType;
     weekOffset: number;
     calendarDate: Date;
     sumHoursByGroups: number;
@@ -481,7 +479,7 @@ export type dailyHoursType = {
 type AdditionalCalandarTableType = {
   weekDays: weekDaysType;
   dailyHours: dailyHoursType;
-  handleDragOver: (event: React.DragEvent<HTMLTableDataCellElement>) => void;
+  handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
 };
 
 export type CalendarTablePropsType = CalendarPropsType;
@@ -1084,3 +1082,19 @@ export type TimeZone =
   | "W-SU"
   | "WET"
   | "Zulu";
+
+
+export type virtualDataPropsType = { groups: GroupFeildsType[], props: CalendarPropsType, dailyHours: dailyHoursType, handleDragOver: (event: React.DragEvent<HTMLDivElement>) => void, tasks: TasksType, getTasks: (offset: string) => TasksType, getTask: (offset: string, taskId: string) => TaskFeildsType | undefined, addTask: (offset: string, task: TaskFeildsType) => void, updateTask: (offset: string, taskId: string, task: TaskFeildsType) => void, deleteTask: (offset: string, taskId: string) => void, isValidTask: (task: TaskFeildsType) => boolean }
+export type Task = TaskFeildsType
+
+export type TaskBucket = {
+  list: Task[];
+  indexMap: Record<string, number>;
+  sumOfTaskDuration: number;
+};
+
+export type TasksStore = {
+  buckets: Record<string, TaskBucket>;
+  dataLength: number;
+  taskCache: Record<string, Task[]>;
+};

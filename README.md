@@ -3,9 +3,7 @@
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
-### Description and Use Cases
-
-`react-weekly-planning` provides a React component for weekly planning. Easily set up and manage a weekly schedule with customizable tasks, groups and views.
+## 🚀 react-weekly-planning, a flexible and customizable package for your productivity projects.
 
 ## Screenshot
 
@@ -55,16 +53,6 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
   <Calendar date={currentDate} ... />
   ```
 
-#### `timeZone`
-
-- **Description**: This prop sets the timezone to be used by the calendar for all date and time calculations.
-- **Type**: `TimeZone` (e.g., `"America/New_York"`, `"Europe/Paris"`, etc.)
-- **Use Case**: Use this prop to align the calendar's display and event calculations to a specific global timezone instead of relying on the user's local browser timezone. This ensures consistency across different geographical locations.
-
-  **Example**:
-  ```jsx
-  <Calendar timeZone="Europe/Paris" ... />
-  ```
 
 #### `scope`
 
@@ -88,94 +76,40 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
   <Calendar scope="day" dayOffset={2} ... />
   ```
 
-#### `tasks`
-
-- **Description**: This prop is an array of tasks to be displayed in the calendar.
-- **Type**: `TasksType`
-- **Use Case**: Use this prop to manage and display tasks in the calendar. Each task should contain details such as start time, end time, description, date, group ID, and day index.
- taskId, taskStart taskEnd, task, taskDate, groupId, dayIndex
-  **Example**:
-  ```jsx
-  const tasks = [
-    { taskId: '1', taskStart:'Time in milliseconde', taskEnd:'Time in milliseconde', task: 'Task 1', taskDate: new Date(), groupId: '1', dayIndex: 0, ... }
-  ];
-
-  <Calendar tasks={tasks} ... />
-  ```
-
-- **Supplementary property** : If you want the tasks to be saved up to a date of your choice you can define the `taskExpiryDate` property. It's an idea of [Patrick Aimé](https://www.linkedin.com/in/patrick-aime?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app).
-
-- **Example**:Here's how to create a task that will expire in a day.
-```jsx
-  const tasks = [
-    { taskId: '1', taskStart:'Time in milliseconde', taskEnd:'Time in milliseconde', task: 'Task 1', taskDate: new Date(), groupId: '1', dayIndex: 0,taskExpiryDate:new Date(Date.now() + 86400000) ... }
-  ];
-
-  <Calendar tasks={tasks} ... />
- ```
-
- `taskExpiryDate` is used with `getSavedTasks()` To obtain the saved tasks.
-
-  **Example**:
-  ```jsx
-  import {getSavedTasks} from "react-weekly-planning";
-  const [tasks,setTasks]=useState([])
-
-  useEffect(()=>{
-     setTasks(getSavedTasks())
-  },[])
-
-  <Calendar tasks={tasks} ... />
-  ```
 
 ---
 
 ## Full Example for Beginners
 
-Here is a complete, minimal example showing how to set up the `Calendar` with simple groups and tasks.
+Here is a complete, minimal example showing how to set up the `Calendar` with the `CalendarTaskContextProvider`.
 
 ```tsx
 import React, { useState } from "react";
-import Calendar from "react-pweekly-planning"; // Verify your exact import path based on package.json
-
+import { 
+  Calendar, 
+  CalendarTaskContextProvider 
+} from "react-pweekly-planning";
 
 const App = () => {
   const [date] = useState(new Date());
   
-  // Define groups (e.g., resources, team members, or projects)
   const groups = [
     { id: "1", label: "Developer A" },
     { id: "2", label: "Developer B" }
   ];
 
-  // Create start and end times in milliseconds
-  const todayAt10 = new Date().setHours(10, 0, 0, 0);
-  const todayAt12 = new Date().setHours(12, 0, 0, 0);
-
-  // Define your tasks
-  const tasks = [
-    { 
-      taskId: "t1", 
-      groupId: "1", // Belongs to "Developer A"
-      taskStart: todayAt10, 
-      taskEnd: todayAt12,   
-      taskDate: new Date(), 
-      dayIndex: new Date().getDay(), // Matches the task's day of week
-      taskSummary: "Code Review"
-    }
-  ];
-
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>My Weekly Planner</h1>
-      <Calendar 
-        date={date}
-        weekOffset={0}
-        groups={groups}
-        tasks={tasks}
-        scope="week" // Change to "day" for daily view
-      />
-    </div>
+    <CalendarTaskContextProvider hashScope="week">
+      <div style={{ padding: "20px" }}>
+        <h1>My Weekly Planner</h1>
+        <Calendar 
+          date={date}
+          weekOffset={0}
+          groups={groups}
+          scope="week"
+        />
+      </div>
+    </CalendarTaskContextProvider>
   );
 };
 
@@ -198,7 +132,6 @@ Props for the Calendar component.
 | `className`                  | string                                                                                | Additional class names for the calendar component.                                                |
 | `style`                      | React.CSSProperties \| undefined                                                      | Additional styles for the calendar component.                                                     |
 | `date`                       | Date                                                                                  | The current date to display in the calendar.                                                      |
-| `timeZone`                   | TimeZone                                                                              | The timezone to use for displaying and manipulating the calendar dates.                           |
 | `groupRender`                | ({ currentGroup }: { currentGroup: GroupFeildsType }) => React.ReactNode              | Custom render function for a group.                                                               |
 | `dayRender`                  | ({ dayIndex, day, dayOfTheMonth, dayMonth, dayYear }: { dayIndex: number; day: string; dayOfTheMonth: number; dayMonth: string; dayYear: number; }) => React.ReactNode | Custom render function for a day.                                                                 |
 | `taskRender`                 | ({ currentTask, handleDragTask }: { currentTask: TaskFeildsType}) => React.ReactNode             | Custom render function for a task. |
@@ -224,7 +157,6 @@ Props for the Calendar component.
 | `sumHoursHeadClassName`      | string                                                                                | Additional class names for the sum hours header.                                                  |
 | `handleAddTask`              | handleAddTask?: (currentGroup: GroupFeildsType, dayInfo: dayInfoType) => void;          | Handler function for adding a new task.                                                           |
 | `addTaskRender`              | addTaskRender?: ({currentGroup,dayInfo}:{currentGroup: GroupFeildsType;dayInfo: dayInfoType}) => React.ReactNode;| Custom render function for adding a task.                                                         |
-| `tasks`                      | TasksType                                                                             | Array of tasks to be displayed in the calendar.                                                   |
 | `handleDragTask`             | (event: React.DragEvent<HTMLDivElement>, currentTask: TaskFeildsType) => void         | Handler function for dragging a task.                                                             |
 | `handleDropTask`             | (event: React.DragEvent<HTMLTableDataCellElement>, taskStart: number, taskEnd: number, taskDate: Date, groupId: string, dayIndex: number, newTask: TaskFeildsType, newTasks: TasksType) => void | Handler function for dropping a task.                                                             |
 | `handleDragTaskEnd`          | (event: React.DragEvent<HTMLDivElement>) => void                                      | Handler function for ending the drag of a task.                                                   |
@@ -233,7 +165,187 @@ Props for the Calendar component.
 | `sumHoursHeadRender`         | () => React.ReactNode                                                                 | Custom render function for the sum of hours header.                                               |
 | `handleClickTask`            | (currentTask: TaskFeildsType) => void                                                 | Handler function for clicking a task.                                                             |
 | `handleClickGroup`           | (currentGroup: GroupFeildsType) => void                                               | Handler function for clicking a group.                                                            |
+
 ---
+
+### ⚡ A modular approach
+
+This package is based on a simple principle:
+👉 **use only what you need.**
+
+Each feature is independent:
+
+* 📅 calendar
+* ⏱ planning logic
+* 📊 data management
+* 🧩 custom extensions
+
+Use everything… or only a part.
+**The choice is yours.**
+
+---
+
+## Task Management (`CalendarTaskContext`)
+
+The `CalendarTaskContext` provides a powerful way to manage tasks globally or within specific sections of your app. It handles indexing, caching, and expiration automatically.
+
+### `CalendarTaskContextProvider`
+
+Wrap your application (or a specific branch) with this provider to enable task management features.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `hashScope` | `"week" \| "group" \| "day"` | Defines how tasks are bucketed and cached. |
+| `children` | `React.ReactNode` | Your application components. |
+
+> [!NOTE]
+> The `hashScope` is **optional** for the provider and defaults to `"week"`. It is primarily used for custom calendar implementations. When using the standard `<Calendar />` component, it internally wraps itself in a provider with `hashScope="week"`, meaning you don't need to provide one unless you are building a custom UI.
+
+### `useCalendarTaskContext()`
+
+Use this hook within any component nested under the provider to access the task store and management methods.
+
+#### Properties and Methods
+
+| Name | Type | Description |
+|------|------|-------------|
+| `tasks` | `TasksStore` | The current state of all tasks, organized by buckets. |
+| `addTask` | `(task: Task) => void` | Adds a new task. |
+| `getTasks` | `(hash: string) => Task[]` | Retrieves all tasks for a given hash (e.g., a specific week key). |
+| `getTask` | `(hash: string, taskId: string) => Task \| undefined` | Finds a specific task by ID. |
+| `updateTask` | `(hash: string, taskId: string, updatedTask: Partial<Task>) => void` | Updates an existing task's properties. |
+| `deleteTask` | `(hash: string, taskId: string) => void` | Removes a task from the store. |
+| `isValidTask` | `(task: Task) => boolean` | Checks if a task object has all required fields. |
+| `cleanExpiredTasks` | `() => void` | Removes all tasks that have passed their `taskExpiryDate`. |
+| `cleanExpiredTasksByHash` | `(hash: string) => void` | Removes expired tasks within a specific hash bucket. |
+| `hashScope` | `"week" \| "group" \| "day"` | The active hashing strategy. |
+
+#### Example: Adding a Task
+
+```tsx
+const TaskAdder = () => {
+  const { addTask } = useCalendarTaskContext();
+
+  const handleAdd = () => {
+    addTask({
+      taskId: "123",
+      groupId: "1",
+      taskStart: Date.now(),
+      taskEnd: Date.now() + 3600000,
+      taskDate: new Date(),
+      dayIndex: new Date().getDay(),
+      taskSummary: "New Task"
+    });
+  };
+
+  return <button onClick={handleAdd}>Quick Add Task</button>;
+};
+```
+
+---
+
+## Custom Calendar Implementation (Modular Design)
+
+For advanced users who want to build their own calendar UI from scratch (without using the `<Calendar />` component), the `CalendarTaskContext` provides all the necessary state and logic. This allows you to create highly personalized designs while leveraging the library's optimized task management.
+
+### 1. Basic Setup
+
+To build a custom calendar, wrap your components in `CalendarTaskContextProvider` and use `useCalendarTaskContext` to access the data and methods.
+
+```tsx
+import React from 'react';
+import { 
+  CalendarTaskContextProvider, 
+  useCalendarTaskContext,
+  updateOffsetWithDateCalendar,
+  getHash 
+} from 'react-weekly-planning';
+
+const MyCustomCalendar = () => {
+  const { getTasks, addTask } = useCalendarTaskContext();
+  const currentDate = new Date();
+  
+  // 1. Calculate the week offset for the desired date
+  const offset = updateOffsetWithDateCalendar(currentDate);
+  
+  // 2. Generate the hash for the current view (e.g., 'week' scope)
+  const hash = getHash(offset).week;
+  
+  // 3. Retrieve tasks for that hash
+  const tasks = getTasks(hash);
+
+  return (
+    <div className="my-custom-design">
+      <h2>My Weekly View</h2>
+      {tasks.length === 0 && <p>No tasks for this week.</p>}
+      {tasks.map(task => (
+        <div key={task.id} className="custom-task-card">
+          <h4>{task.taskSummary}</h4>
+          <p>
+            {new Date(task.taskStart).toLocaleTimeString()} - 
+            {new Date(task.taskEnd).toLocaleTimeString()}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const App = () => (
+  <CalendarTaskContextProvider hashScope="week">
+    <MyCustomCalendar />
+  </CalendarTaskContextProvider>
+);
+```
+
+### 2. Default Behavior of `<Calendar />`
+
+It's important to note that the main `<Calendar />` component uses the `"week"` hash scope by default. If you use the standard component, you are implicitly using this scope. Explicitly defining a `hashScope` on the `CalendarTaskContextProvider` is only necessary when you want to change how tasks are indexed or when building a fully custom UI as shown above.
+
+### 3. Understanding Hashes and Scopes
+
+The library uses "hashes" to bucket tasks efficiently. When calling `getTasks(hash)`, `updateTask(hash, ...)` or `deleteTask(hash, ...)`, you must provide the hash that matches your `hashScope`:
+
+- **Scope `"week"`**: Use `getHash(offset).week`.
+- **Scope `"group"`**: Use `getHash(offset, groupId).group`.
+- **Scope `"day"`**: Use `getHash(offset, groupId, dayIndex).day`.
+
+### 4. Best Practices for Custom Designs
+
+- **Manual Rendering**: Use `getTasks(hash)` to retrieve only the tasks relevant to the current view.
+- **CRUD Operations**: Use `addTask`, `updateTask`, and `deleteTask` to modify the store. The UI will re-render automatically thanks to the context.
+- **Validation**: Use `isValidTask(task)` to verify if a task is expired before displaying it, or rely on `cleanExpiredTasks()` to prune the store.
+- **Performance**: Accessing tasks by hash is highly optimized. Avoid looping through the entire `tasks.buckets` manually if possible.
+
+---
+
+### 🧠 Total flexibility
+
+Whether you want:
+
+* a simple planner
+* a complete productivity system
+* or a fully customized solution
+
+This package allows you to:
+
+* integrate only useful components
+* easily modify behaviors
+* build your own logic
+
+👉 **No constraints. No imposed framework.**
+
+---
+
+### 💡 Designed for builders
+
+This isn't just a tool.
+It's a foundation.
+
+A system you can shape, extend, and control —
+to create an organization that truly reflects you.
+
+**Because performance starts with the freedom to build.**
 
 ---
 
@@ -241,16 +353,14 @@ Props for the Calendar component.
 
 ### `getCalendarDate`
 
-- **Description**: Returns the current date according to the selected timezone or the local time.
-- **Parameters**:
-  - `timeZone` (TimeZone, optional): The timezone to use for the date calculation.
-- **Returns**: A `Date` object representing the current time in the specified timezone (or local time if omitted).
+- **Description**: Returns the current date.
+- **Returns**: A `Date` object representing the current time.
 
   **Example**:
   ```javascript
   import { getCalendarDate } from "react-weekly-planning";
-  const now = getCalendarDate("Europe/Paris");
-  console.log(now); // Logs the current date in Paris
+  const now = getCalendarDate();
+  console.log(now);
   ```
 
 ### `updateCalendarDateWithOffset`
@@ -295,16 +405,27 @@ Props for the Calendar component.
   const formattedTime = millisecondsToHours(1716905215397);
   console.log(formattedTime); // Logs the formatted time for 14h06
   ```
-### `checkDuplicates`
 
-- **Description**: Checks if a new task overlaps with any existing tasks in the schedule. This function helps prevent overlapping tasks when scheduling.
+
+### `getHash`
+
+- **Description**: Generates a set of bucket hashes based on the offset, group, and day.
 - **Parameters**:
-  - `tasks` (TasksType): An array of existing tasks. Each task should have `groupId`,`taskStart` and `taskEnd` properties representing the groupId of new task, the start and end times of the task.
-  - `taskStart` (number): The start time in milliseconds of the new task to be checked.
-  - `taskEnd` (number): The end time in milliseconds of the new task to be checked.
-  - `groupId` (string): The groupId of new task.
-- **Returns**: `boolean` - Returns `true` if there is an overlap with any existing task, otherwise returns `false`.
+  - `weekOffset` (number): The week offset.
+  - `groupId` (string, optional): The group ID.
+  - `dayIndex` (number, optional): The day index (0-6).
+- **Returns**: An object containing `week`, `group`, and `day` hash strings.
+
+  **Example**:
+  ```javascript
+  import { getHash } from "react-weekly-planning";
+  const hashes = getHash(0, "group-1", 2);
+  console.log(hashes.week);  // "0"
+  console.log(hashes.group); // "0/group-1"
+  console.log(hashes.day);   // "0/group-1/2"
+  ```
 
 
 ---
+
 
