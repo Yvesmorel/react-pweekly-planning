@@ -9,7 +9,8 @@ const STORAGE_KEY = "calendar_tasks";
 export function useCalendarTask(hashScope: "week" | "group" | "day", timeZone?: string) {
 
 
-    const tasksRef = useRef<TasksStore>({ buckets: {}, dataLength: 0, taskCache: {} });
+    const tasksRef = useRef<TasksStore>({ buckets: {}, dataLength: 0, taskCache: {}, maxBucketSize: 0 });
+    const bucketSizeCountsRef = useRef<Record<number, number>>({});
     const scheduleCleanRef = useRef<() => void>(null);
     const [render, forceRender] = useState(0);
 
@@ -157,6 +158,7 @@ export function useCalendarTask(hashScope: "week" | "group" | "day", timeZone?: 
 
 
         bucket.list.push({ ...task, hash });
+        tasksRef.current.maxBucketSize = Math.max(tasksRef.current.maxBucketSize, bucket.list.length);
         bucket.indexMap[task.id] = index;
         bucket.sumOfTaskDuration += task.taskEnd - task.taskStart;
         tasksRef.current.dataLength++;
@@ -212,6 +214,7 @@ export function useCalendarTask(hashScope: "week" | "group" | "day", timeZone?: 
             ...updatedTask,
         };
 
+        tasksRef.current.maxBucketSize = Math.max(tasksRef.current.maxBucketSize, bucket.list.length);
 
         saveToStorage();
         scheduleClean();
@@ -244,6 +247,7 @@ export function useCalendarTask(hashScope: "week" | "group" | "day", timeZone?: 
         bucket.sumOfTaskDuration -= oldTAskDuration;
         tasksRef.current.dataLength--;
 
+        tasksRef.current.maxBucketSize = Math.max(tasksRef.current.maxBucketSize, bucket.list.length);
         saveToStorage();
         scheduleClean();
         forceRender((x) => x + 1);

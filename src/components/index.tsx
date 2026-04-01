@@ -73,7 +73,7 @@ const Calendar = (props: CalendarPropsType) => {
 
 
   return (
-    <CalendarTaskContextProvider hashScope={"week"}>
+    <CalendarTaskContextProvider hashScope={"day"}>
       {props.scope === "day" ? <CalendarForDay {...props} /> : <CalendarForWeek {...props} />}
     </CalendarTaskContextProvider>
   );

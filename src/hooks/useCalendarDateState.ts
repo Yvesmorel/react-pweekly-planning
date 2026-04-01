@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   calculateWeekDifference,
   getDateObjectInTimeZone,
@@ -16,16 +16,10 @@ import {
 function useCalendarDateState(
   date: Date,
   weekOffset: number | undefined,
-  timeZone: TimeZone | undefined
+  timeZone: TimeZone | undefined,
 ) {
-  const [calendarDateState, setCalendarDateState] = useState<{
-    weekDays: weekDaysType;
-    dailyHours: dailyHoursType;
-  }>({ dailyHours: [], weekDays: [] });
 
-
-  useEffect(() => {
-
+  let calendarDateState = useMemo(() => {
     const weekOffsetByDate = timeZone
       ? calculateWeekDifference(getDateObjectInTimeZone(timeZone), timeZone)
       : calculateWeekDifference(date, timeZone);
@@ -37,8 +31,8 @@ function useCalendarDateState(
       weekDays,
     };
 
-    setCalendarDateState(calData);
 
+    return calData;
   }, [date, weekOffset]);
 
   return { ...calendarDateState };

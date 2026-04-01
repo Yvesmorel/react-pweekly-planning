@@ -3,9 +3,13 @@ import { useIntersectionObserver } from "../../hooks/useIntersectionObserver";
 import { TaskContainerPropsType } from "../../definitions";
 import TaskContainer from ".";
 
-const TaskVirtual = (props: TaskContainerPropsType) => {
+interface TaskVirtualProps extends TaskContainerPropsType {
+  index?: number;
+}
+
+const TaskVirtual = (props: TaskVirtualProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const entry = useIntersectionObserver(ref, {
+  const { entry, height } = useIntersectionObserver(ref, {
     rootMargin: "200px", // Margin to pre-render tasks before they appear
     threshold: 0,
   });
@@ -16,15 +20,16 @@ const TaskVirtual = (props: TaskContainerPropsType) => {
     <div
       ref={ref}
       style={{
-        minHeight: isVisible ? "auto" : "40px",
+        minHeight: isVisible ? "auto" : `${height}px`,
         width: "100%",
         marginBottom: "4px"
       }}
+      data-index={props.index}
     >
       {isVisible ? (
         <TaskContainer {...props} />
       ) : (
-        <div style={{ height: "60px", backgroundColor: "rgba(200, 200, 200, 0.1)", borderRadius: "4px" }}></div>
+        <div style={{ height: `${height}px`, backgroundColor: "rgba(200, 200, 200, 0.1)", borderRadius: "4px" }}></div>
       )}
     </div>
   );

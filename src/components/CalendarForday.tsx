@@ -15,15 +15,20 @@ function CalendarForDay(props: CalendarTablePropsType) {
   const { dailyHours, weekDays } = useCalendarDateState(
     props.date,
     props.weekOffset,
-    props.timeZone
+    props.timeZone,
+
   );
+
 
   const { getTasks, isValidTask, addTask, deleteTask, updateTask, getTask, hashScope, tasks } = useCalendarTaskContext();
 
 
 
-  const currentDay = weekDays[props.dayOffset || 0];
 
+
+
+  const currentDay = weekDays[props.dayOffset || 0];
+  console.log(currentDay);
   const memoizedHeader = useMemo(() => (
     currentDay ? (
       <DayContainer
@@ -37,7 +42,7 @@ function CalendarForDay(props: CalendarTablePropsType) {
         dayYear={currentDay.dayYear}
       />
     ) : null
-  ), [currentDay, props.dayStyle, props.dayClassName, props.dayOffset, props.dayRender]);
+  ), [weekDays, props.rowsClassName, props.rowsStyle, props.groupsColsClassName, props.groupsColsStyle, props.groupHeadContainerClassName, props.groupHeadContainerStyle, props.groupsHeadRender, props.daysColsClassName, props.daysColsStyle, props.dayStyle, props.dayClassName, props.dayRender]);
 
   return (
     <div

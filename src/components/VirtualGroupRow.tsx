@@ -29,6 +29,8 @@ interface VirtualGroupRowProps {
 
   tasks: TasksStore; // The tasks store to trigger re-renders
   sumHoursByGroupsCount: number;
+
+
 }
 
 const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
@@ -44,12 +46,14 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
   hashScope,
 
   tasks,
-  sumHoursByGroupsCount
+  sumHoursByGroupsCount,
+
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const entry = useIntersectionObserver(ref, {
+  const { entry, height } = useIntersectionObserver(ref, {
     rootMargin: "600px",
     threshold: 0,
+
   });
 
   const isVisible = !!entry?.isIntersecting;
@@ -75,8 +79,9 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
       className={`planningCalendarRow ${props.rowsClassName}`}
       style={{
         ...props.rowsStyle,
-        minHeight: isVisible ? "auto" : "60px",
+        minHeight: isVisible ? "auto" : `${height}px`,
       }}
+      data-index={i}
     >
       {isVisible ? (
         <>
@@ -94,6 +99,8 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
             />
           </div>
           {cellData.map((cell: { tasks: TasksType; positionDay: number; hash: string }) => {
+
+
             return (
               <div
                 key={`col-${group.id}day-i${cell.positionDay}`}
@@ -126,12 +133,16 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
                     padding: "5px",
                   }}
                 >
-                  {cell.tasks.map((task: TaskType) => {
+
+
+
+                  {cell.tasks.map((task: TaskType, index: number) => {
                     if (task.dayIndex === cell.positionDay &&
                       task.groupId === group.id && isValidTask(task)) {
                       return (
                         <TaskVirtual
                           key={`${task.id} task`}
+                          index={index}
                           handleDragTask={props.handleDragTask}
                           taskRender={props.taskRender}
                           handleDragTaskEnd={props.handleDragTaskEnd}
@@ -173,7 +184,7 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
           </div> */}
         </>
       ) : (
-        <div style={{ height: "60px", width: "100%" }} />
+        <div style={{ height: `${height}px`, width: "100%" }} />
       )}
     </div>
   );

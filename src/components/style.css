@@ -59,7 +59,7 @@
   display: flex;
   flex-direction: column;
   border: 0.74px solid rgba(198, 219, 225, 0.68);
-
+  border-bottom: none;
   background-color: white;
 
 }
@@ -70,6 +70,8 @@
   z-index: 200;
   border-bottom: 1.5px solid #0f52737e;
   background-color: #fff;
+  position: sticky;
+  top: 0px;
 }
 
 .planningCalendarRow {

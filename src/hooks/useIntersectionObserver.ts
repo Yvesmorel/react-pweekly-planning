@@ -12,19 +12,25 @@ export function useIntersectionObserver(
     rootMargin = "0%",
     freezeOnceVisible = false,
   }: UseIntersectionObserverProps = {}
-): IntersectionObserverEntry | undefined {
-
+): { entry: IntersectionObserverEntry | undefined; height: number } {
 
   const [entry, setEntry] = useState<IntersectionObserverEntry>();
+  const [height, setHeight] = useState<number>(60);
 
   const frozen = entry?.isIntersecting && freezeOnceVisible;
 
   const updateEntry = ([entry]: IntersectionObserverEntry[]): void => {
     setEntry(entry);
+
+    if (entry.boundingClientRect) {
+      if (entry.boundingClientRect.height > 0) {
+        setHeight(entry.boundingClientRect.height);
+      }
+    }
   };
 
   useEffect(() => {
-    const node = elementRef?.current; // DOM node
+    const node = elementRef?.current;
     const hasIOSupport = !!window.IntersectionObserver;
 
     if (!hasIOSupport || frozen || !node) return;
@@ -37,5 +43,5 @@ export function useIntersectionObserver(
     return () => observer.disconnect();
   }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen]);
 
-  return entry;
+  return { entry, height };
 }

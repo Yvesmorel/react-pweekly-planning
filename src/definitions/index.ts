@@ -1097,4 +1097,5 @@ export type TasksStore = {
   buckets: Record<string, TaskBucket>;
   dataLength: number;
   taskCache: Record<string, Task[]>;
+  maxBucketSize: number;
 };

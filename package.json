@@ -63,6 +63,10 @@
     "./components/GroupContainer": {
       "types": "./dist/types/components/GroupContainer.d.ts",
       "default": "./dist/components/GroupContainer.js"
+    },
+    "./hooks/useIntersectionObserver": {
+      "types": "./dist/types/hooks/useIntersectionObserver.d.ts",
+      "default": "./dist/hooks/useIntersectionObserver.js"
     }
   },
   "files": [

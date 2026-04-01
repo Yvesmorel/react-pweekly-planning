@@ -32,7 +32,7 @@ type CalendarTaskContextType = {
 };
 
 const CalendarTaskContext = createContext<CalendarTaskContextType>({
-  tasks: { buckets: {}, dataLength: 0, taskCache: {} },
+  tasks: { buckets: {}, dataLength: 0, taskCache: {}, maxBucketSize: 0 },
   addTask: () => { },
   getTasks: () => [],
   updateTask: () => { },

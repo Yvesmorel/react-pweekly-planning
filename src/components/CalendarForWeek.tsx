@@ -13,8 +13,10 @@ import { useCalendarTaskContext } from "../contexts/CalendarTaskContext";
 import { useContainerScroll } from "../hooks/useContainerScroll";
 import useMainContainerContent from "../hooks/useMainContainerItemContent";
 import VirtualGroupRow from "./VirtualGroupRow";
+import { useGridContainer } from "../hooks/useGridContainer";
 
 const CalendarForWeek = (props: CalendarTablePropsType) => {
+
 
   const { getTasks, isValidTask, addTask, deleteTask, getTask, hashScope, tasks } = useCalendarTaskContext();
 
@@ -25,6 +27,7 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
     props.weekOffset,
     props.timeZone
   );
+  console.log("dailyHours", dailyHours, props.weekOffset);
 
   const memoizedHeader = useMemo(() => (
     <div className="planningCalendarHeader">
@@ -32,6 +35,7 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
         className={`planningCalendarRow ${props.rowsClassName}`}
         style={{ ...theadTrStyle, ...props.rowsStyle }}
         key="header"
+
       >
         <div
           className={`dayTh ${props.groupsColsClassName}`}
@@ -58,6 +62,7 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
               dayOfTheMonth={day.dayOfTheMonth}
               dayMonth={day.dayMonth}
               dayYear={day.dayYear}
+
             />
           </div>
         ))}
@@ -68,13 +73,24 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
   const offset = useMemo(() => updateOffsetWithDateCalendar(props.date), [props.date]);
 
   return (
-    <div className="calendarForWeek" style={{ position: "relative" }}>
+    <div className="calendarForWeek" style={{ position: "relative" }} >
       <div
         className={`planningCalendar ${props.className}`}
-        style={{ ...props.style }}
+        style={{
+          ...props.style,
+
+          // height: `${((tasks.maxBucketSize / itemsByLine) * (cardCompH + 4)) + 36 + 24 + 10}px`,
+
+          // (DATA_LENGTH / itemsByLine) * (cardCompH + GRID_GAP) pour caluler la hauteur totale du container de la grid donc du scroll
+        }}
       >
         {memoizedHeader}
-        <div className="planningCalendarBody">
+        <div className="planningCalendarBody" style={{
+          // position: "absolute",
+          // width: "100%",
+          // // top: `${36 + 5}px`,
+          // top: `${36 + 5 + ((65 + 4) * Math.max(rowSliceIndexStart, 0))}px`,
+        }} >
           {props.groups?.map((group, i) => {
 
             const scope = hashScope || "week";
@@ -96,6 +112,9 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
                 hashScope={scope}
                 tasks={tasks}
                 sumHoursByGroupsCount={sumHoursByGroupsCount}
+
+              // taskSliceIdexStart={taskSliceIdexStart}
+              // taskSliceIdexEnd={taskSLiceIdexEnd}
               />
             );
           })}

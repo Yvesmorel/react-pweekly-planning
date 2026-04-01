@@ -12,20 +12,21 @@ export const useGridContainer = (gridContaineRef: React.RefObject<any>) => {
     useEffect(() => {
         if (typeof window === "undefined") return;
 
-        //si le parent n'a aucun enfant on sort
+        // //si le parent n'a aucun enfant on sort
         if (gridContaineRef.current.hasChildNodes() === false) return;
+        console.log(gridContaineRef.current.firstChild);
 
-        //la hauteur du premier enfant de la grid
-        const cardH = gridContaineRef.current.firstChild.clientHeight;
+        // //la hauteur du premier enfant de la grid
+        // const cardH = gridContaineRef.current.firstChild.clientHeight;
 
-        if (cardH !== cardCompH) {
-            const gridW = gridContaineRef.current.clientWidth;
-            const cardW = gridContaineRef.current.firstChild.clientWidth;
+        // if (cardH !== cardCompH) {
+        //     const gridW = gridContaineRef.current.clientWidth;
+        //     const cardW = gridContaineRef.current.firstChild.clientWidth;
 
-            setCardCompH(cardH);
-            setItemsByLines(Math.floor(gridW / cardW));
-        }
+        //     setCardCompH(cardH);
+        //     setItemsByLines(Math.floor(gridW / cardW));
+        // }
     }, [width]);
 
-    return { cardCompH, cardRef, itemsByLine };
+    return { cardCompH: 65, cardRef, itemsByLine: 1 };
 };

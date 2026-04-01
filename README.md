@@ -488,4 +488,37 @@ to create an organization that truly reflects you.
   };
   ```
 
+### `useIntersectionObserver`
+
+- **Description**: Utility hook designed to help virtualize scrolling components. It leverages the Intersection Observer API to detect when an element enters or leaves the viewport, allowing you to mount or unmount heavy DOM elements dynamically for better performance in long lists or large grids.
+- **Parameters**:
+  - `ref` (React.RefObject): The ref assigned to the DOM element you want to observe.
+  - `options` (IntersectionObserverInit, optional): Configuration object (e.g., `rootMargin`, `threshold`).
+- **Returns**: An object containing `{ entry, height }`. `entry` is the `IntersectionObserverEntry` which can be used to check `isIntersecting`. `height` provides the element's cached height when it is unmounted to maintain scroll position consistency.
+
+  **Example**:
+  ```tsx
+  import React, { useRef } from "react";
+  import { useIntersectionObserver } from "react-pweekly-planning";
+
+  const VirtualItem = ({ children }) => {
+    const ref = useRef(null);
+    const { entry, height } = useIntersectionObserver(ref, {
+      rootMargin: "600px",
+      threshold: 0
+    });
+
+    const isVisible = !!entry?.isIntersecting;
+
+    return (
+      <div 
+        ref={ref} 
+        style={{ minHeight: isVisible ? "auto" : `${height}px` }}
+      >
+        {isVisible ? children : null}
+      </div>
+    );
+  };
+  ```
+
 ---
