@@ -79,17 +79,12 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
         style={{
           ...props.style,
 
-          // height: `${((tasks.maxBucketSize / itemsByLine) * (cardCompH + 4)) + 36 + 24 + 10}px`,
 
-          // (DATA_LENGTH / itemsByLine) * (cardCompH + GRID_GAP) pour caluler la hauteur totale du container de la grid donc du scroll
         }}
       >
         {memoizedHeader}
         <div className="planningCalendarBody" style={{
-          // position: "absolute",
-          // width: "100%",
-          // // top: `${36 + 5}px`,
-          // top: `${36 + 5 + ((65 + 4) * Math.max(rowSliceIndexStart, 0))}px`,
+
         }} >
           {props.groups?.map((group, i) => {
 

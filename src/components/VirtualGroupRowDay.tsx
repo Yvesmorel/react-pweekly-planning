@@ -7,10 +7,8 @@ import {
   getHash,
   getNewTaskForDropOrPaste,
   getUniqueId,
-  updateOffsetWithDateCalendar,
 } from "../lib/utils";
 import { CalendarTablePropsType, GroupFeildsType, TaskType, TasksStore, TasksType, dayInfoType } from "../definitions";
-
 
 interface VirtualGroupRowDayProps {
   group: GroupFeildsType;
@@ -24,6 +22,7 @@ interface VirtualGroupRowDayProps {
   getTask: (hash: string, taskId: string) => TaskType | undefined;
   dailyHours: dayInfoType[];
   dayOffset: number;
+  weekOffset: number;
   hashScope: "week" | "group" | "day";
   tasks: TasksStore;
 }
@@ -40,8 +39,8 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
   getTask,
   dailyHours,
   dayOffset,
+  weekOffset,
   hashScope,
-
   tasks,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -51,13 +50,10 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
   });
 
   const isVisible = !!entry?.isIntersecting;
-  const offset = useMemo(() => updateOffsetWithDateCalendar(props.date), [props.date]);
 
   const currentDailyHours = dailyHours[dayOffset];
 
-
-
-  const hash = useMemo(() => getHash(offset, group.id, dayOffset), [offset, group.id, dayOffset]);
+  const hash = useMemo(() => getHash(weekOffset, group.id, dayOffset), [weekOffset, group.id, dayOffset]);
   const cellTasks = useMemo(() => getTasks(hash[hashScope]), [getTasks, hash, hashScope, tasks]);
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -85,7 +81,6 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
             style={{
               width: "auto",
               height: "auto",
-
               ...props.groupsColsStyle,
             }}
             className={props.groupsColsClassName}
@@ -147,7 +142,6 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
               handleAddTask={props.handleAddTask}
             />
           </div>
-
         </>
       ) : (
         <div style={{ height: `${height}px`, width: "100%" }} />
@@ -162,6 +156,7 @@ export default memo(VirtualGroupRowDay, (prev, next) => {
     prev.i === next.i &&
     prev.tasks === next.tasks &&
     prev.props.date.getTime() === next.props.date.getTime() &&
-    prev.dayOffset === next.dayOffset
+    prev.dayOffset === next.dayOffset &&
+    prev.weekOffset === next.weekOffset
   );
 });

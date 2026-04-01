@@ -87,24 +87,66 @@
 .planningCalendar .dayTh,
 .planningCalendar .groupCol {
   flex: 0 0 150px;
+  min-width: 150px;
   color: #0f5173;
   padding-left: 5px;
   display: flex;
   align-items: center;
+  background-color: inherit;
 }
 
 .planningCalendar .dayCol {
   flex: 1;
+  min-width: 120px;
   border-left: 0.74px solid rgba(198, 219, 225, 0.68);
-  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
+@media (max-width: 768px) {
+
+  .planningCalendar .dayTh,
+  .planningCalendar .groupCol {
+    flex: 0 0 100px;
+    min-width: 100px;
+    font-size: 13px;
+    position: sticky;
+    left: 0;
+    z-index: 50;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-left: 10px;
+  }
+
+  .planningCalendar .dayCol {
+    min-width: 120px;
+  }
+
+  .planningCalendarHeader {
+    z-index: 201;
+    /* Layer over the sticky row column */
+  }
+
+  /* Make sure the group container labels also truncate */
+  .groupCol label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .planningCalendar {
+    width: auto;
+  }
+}
+
 .planningCalendar .totalTh,
 .planningCalendar .totalCol {
   flex: 0 0 50px;
+  min-width: 50px;
   color: #0f5173;
   text-align: right;
   padding-right: 5px;

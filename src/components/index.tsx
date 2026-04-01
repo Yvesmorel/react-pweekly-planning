@@ -1,7 +1,6 @@
 import "./style.css";
 import { CalendarPropsType } from "../definitions";
 import CalendarForWeek from "./CalendarForWeek";
-import CalendarForDay from "./CalendarForday";
 import { useCalendarTask } from "../hooks/useCalendarTask";
 import { useMemo } from "react";
 import CalendarContextProvider from "../contexts/CalendarContext";
@@ -61,7 +60,6 @@ import CalendarTaskContextProvider from "../contexts/CalendarTaskContext";
  * @param {() => React.ReactNode} [props.sumHoursHeadRender] - Custom render function for the sum-of-hours header.
  * @param {(currentTask: TaskFeildsType) => void} [props.handleClickTask] - Handler function for clicking a task.
  * @param {(currentGroup: GroupFeildsType) => void} [props.handleClickGroup] - Handler function for clicking a group.
- * @param {0|1|2|3|4|5|6} [props.dayOffset] - Offset index for the day column (0 = first day of week, …, 6 = last day).
  * @param {React.CSSProperties} [props.dayColsStyle] - Additional styles for the day columns.
  * @param {string} [props.dayColsClassName] - Additional class names for the day columns.
  * @param {React.CSSProperties} [props.hoursColsStyle] - Additional styles for the hours columns.
@@ -74,7 +72,7 @@ const Calendar = (props: CalendarPropsType) => {
 
   return (
     <CalendarTaskContextProvider hashScope={"day"}>
-      {props.scope === "day" ? <CalendarForDay {...props} /> : <CalendarForWeek {...props} />}
+      <CalendarForWeek {...props} />
     </CalendarTaskContextProvider>
   );
 };

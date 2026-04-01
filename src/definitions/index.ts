@@ -121,7 +121,7 @@ export type DayPropsType = {
 export type CalendarPropsType = {
   // hashScope: "week" | "group" | "day";
   drop?: "copy" | "move";
-  scope?: "day" | "week";
+
   /** Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week). */
   weekOffset?: number;
   /** Array of group data to be displayed in the calendar. */
@@ -251,8 +251,6 @@ export type CalendarPropsType = {
   handleClickGroup?: (currentGroup: GroupFeildsType) => void;
   /** your timezones */
   timeZone?: TimeZone;
-  /** day id */
-  dayOffset?: 0 | 1 | 2 | 3 | 4 | 5 | 6;
   /**day columns styles */
   dayColsStyle?: React.CSSProperties | undefined;
   /**day columns className*/

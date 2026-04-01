@@ -54,27 +54,7 @@ It is possible to use either Weekoffset or Date, or even both simultaneously.
   ```
 
 
-#### `scope`
 
-- **Description**: This prop sets the view scope of the calendar.
-- **Type**: `"day" | "week"`
-- **Use Case**: Use this prop to define whether the calendar should display a full week or only a single day. If omitted, it defaults to a weekly view.
-
-  **Example**:
-  ```jsx
-  <Calendar scope="day" dayOffset={0} ... />
-  ```
-
-#### `dayOffset`
-
-- **Description**: This prop specifies which day of the week to display when the scope is set to "day".
-- **Type**: `0 | 1 | 2 | 3 | 4 | 5 | 6`
-- **Use Case**: If `scope="day"`, use this prop to target a specific day of the week (`0` being the first day of the week, up to `6`).
-
-  **Example**:
-  ```jsx
-  <Calendar scope="day" dayOffset={2} ... />
-  ```
 
 
 ---
@@ -106,7 +86,6 @@ const App = () => {
           date={date}
           weekOffset={0}
           groups={groups}
-          scope="week"
         />
       </div>
     </CalendarTaskContextProvider>
@@ -126,8 +105,6 @@ Props for the Calendar component.
 | Prop Name                    | Type                                                                                  | Description                                                                                       |
 |------------------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
 | `weekOffset`                 | number                                                                                | Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week).                |
-| `scope`                      | "day" \| "week"                                                                       | Sets the calendar view to either a full week or a single day.                                     |
-| `dayOffset`                  | 0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6                                                       | Offset index for the day column (0 = first day of week, …, 6 = last day) when scope is "day".     |
 | `groups`                     | GroupFeildsType[]                                                                     | Array of group data to be displayed in the calendar.                                              |
 | `className`                  | string                                                                                | Additional class names for the calendar component.                                                |
 | `style`                      | React.CSSProperties \| undefined                                                      | Additional styles for the calendar component.                                                     |
@@ -300,7 +277,7 @@ const App = () => (
 
 ### 2. Default Behavior of `<Calendar />`
 
-It's important to note that the main `<Calendar />` component uses the `"week"` hash scope by default. If you use the standard component, you are implicitly using this scope. Explicitly defining a `hashScope` on the `CalendarTaskContextProvider` is only necessary when you want to change how tasks are indexed or when building a fully custom UI as shown above.
+It's important to note that the main `<Calendar />` component uses the `"day"` hash scope by default. If you use the standard component, you are implicitly using this scope. Explicitly defining a `hashScope` on the `CalendarTaskContextProvider` is only necessary when you want to change how tasks are indexed or when building a fully custom UI as shown above.
 
 ### 3. Understanding Hashes and Scopes
 
@@ -491,6 +468,8 @@ to create an organization that truly reflects you.
 ### `useIntersectionObserver`
 
 - **Description**: Utility hook designed to help virtualize scrolling components. It leverages the Intersection Observer API to detect when an element enters or leaves the viewport, allowing you to mount or unmount heavy DOM elements dynamically for better performance in long lists or large grids.
+  👉 **Watch the performance demo (rendering 7,000 tasks in a single week):**  
+  [![Performance Demo](https://img.youtube.com/vi/st4QmsaHoDM/0.jpg)](https://youtu.be/st4QmsaHoDM)
 - **Parameters**:
   - `ref` (React.RefObject): The ref assigned to the DOM element you want to observe.
   - `options` (IntersectionObserverInit, optional): Configuration object (e.g., `rootMargin`, `threshold`).
