@@ -27,7 +27,7 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
     props.weekOffset,
     props.timeZone
   );
-  console.log("dailyHours", dailyHours, props.weekOffset);
+
 
   const memoizedHeader = useMemo(() => (
     <div className="planningCalendarHeader">

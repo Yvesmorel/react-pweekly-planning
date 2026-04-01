@@ -14,7 +14,7 @@ export const useGridContainer = (gridContaineRef: React.RefObject<any>) => {
 
         // //si le parent n'a aucun enfant on sort
         if (gridContaineRef.current.hasChildNodes() === false) return;
-        console.log(gridContaineRef.current.firstChild);
+
 
         // //la hauteur du premier enfant de la grid
         // const cardH = gridContaineRef.current.firstChild.clientHeight;

@@ -96,10 +96,7 @@ export function useContainerScroll(
             setRowSliceIndexEnd(endRowIndex);
             setTaskSliceIdexStart(startTaskIndex);
             setTaskSLiceIdexEnd(endTaskIndex);
-            console.log("rowSliceIndexStart", startRowIndex);
-            console.log("rowSliceIndexEnd", endRowIndex);
-            console.log("taskSliceIdexStart", startTaskIndex);
-            console.log("taskSLiceIdexEnd", endTaskIndex);
+
         };
 
         mainContainer.addEventListener("scroll", handleScroll);

@@ -55,7 +55,7 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
 
   const currentDailyHours = dailyHours[dayOffset];
 
-  console.log("currentDailyHours", dailyHours, currentDailyHours);
+
 
   const hash = useMemo(() => getHash(offset, group.id, dayOffset), [offset, group.id, dayOffset]);
   const cellTasks = useMemo(() => getTasks(hash[hashScope]), [getTasks, hash, hashScope, tasks]);

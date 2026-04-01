@@ -28,7 +28,7 @@ function CalendarForDay(props: CalendarTablePropsType) {
 
 
   const currentDay = weekDays[props.dayOffset || 0];
-  console.log(currentDay);
+
   const memoizedHeader = useMemo(() => (
     currentDay ? (
       <DayContainer
