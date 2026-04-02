@@ -21,7 +21,7 @@ const CalendarContext = createContext<CalendarContextType>({
 
 });
 
-const CalendarContextProvider = ({
+export const CalendarContextProvider = ({
 
   children,
 

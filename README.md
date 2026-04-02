@@ -68,7 +68,7 @@ import React, { useState } from "react";
 import { 
   Calendar, 
   CalendarTaskContextProvider 
-} from "react-pweekly-planning";
+} from "react-weekly-planning";
 
 const App = () => {
   const [date] = useState(new Date());
@@ -566,7 +566,7 @@ to create an organization that truly reflects you.
   **Example**:
   ```tsx
   import React, { useRef } from "react";
-  import { useIntersectionObserver } from "react-pweekly-planning";
+  import { useIntersectionObserver } from "react-weekly-planning";
 
   const VirtualItem = ({ children }) => {
     const ref = useRef(null);

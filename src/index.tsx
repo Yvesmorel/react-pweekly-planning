@@ -18,7 +18,7 @@ export * from './components/VirtualGroupRow'
 export * from './components/VirtualGroupRowDay'
 export * from './components/DayContainer'
 export { default as useCalendarDateState } from './hooks/useCalendarDateState'
-export * from './contexts/CalendarTaskContext'
+export * from './contexts/CalendarContext'
 export * from './hooks/useIntersectionObserver'
 
 

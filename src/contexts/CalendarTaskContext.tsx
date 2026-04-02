@@ -44,7 +44,7 @@ const CalendarTaskContext = createContext<CalendarTaskContextType>({
   hashScope: "week"
 });
 
-const CalendarTaskContextProvider = ({
+export const CalendarTaskContextProvider = ({
   children,
   hashScope
 }: CalendarTaskContextProviderPropsType) => {
