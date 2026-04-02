@@ -67,6 +67,10 @@
     "./hooks/useIntersectionObserver": {
       "types": "./dist/types/hooks/useIntersectionObserver.d.ts",
       "default": "./dist/hooks/useIntersectionObserver.js"
+    },
+    "./hooks/useCalendarDateState": {
+      "types": "./dist/types/hooks/useCalendarDateState.d.ts",
+      "default": "./dist/hooks/useCalendarDatState.js"
     }
   },
   "files": [

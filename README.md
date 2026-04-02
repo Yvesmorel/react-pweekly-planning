@@ -369,6 +369,34 @@ to create an organization that truly reflects you.
   console.log(offset); // Logs the week offset for the given date
   ```
 
+### `updateOffsetWithDateCalendarForMonth`
+
+- **Description**: Calculates the month offset from a given calendar date.
+- **Parameters**: 
+  - `calendarDate` (Date): The date to compare.
+  - `timeZone` (string, optional): The timezone to use.
+- **Returns**: The calculated month offset.
+
+  **Example**:
+  ```javascript
+  import { updateOffsetWithDateCalendarForMonth } from "react-weekly-planning";
+  const offset = updateOffsetWithDateCalendarForMonth(new Date());
+  ```
+
+### `updateOffsetWithDateCalendarForDay`
+
+- **Description**: Calculates the day offset from a given calendar date.
+- **Parameters**: 
+  - `calendarDate` (Date): The date to compare.
+  - `timeZone` (string, optional): The timezone to use.
+- **Returns**: The calculated day offset.
+
+  **Example**:
+  ```javascript
+  import { updateOffsetWithDateCalendarForDay } from "react-weekly-planning";
+  const offset = updateOffsetWithDateCalendarForDay(new Date());
+  ```
+
 ### `millisecondsToHours`
 
 - **Description**: Converts milliseconds to a formatted hour string.
@@ -415,6 +443,66 @@ to create an organization that truly reflects you.
   import { calculateWeekDifference } from "react-weekly-planning";
   const diff = calculateWeekDifference(new Date());
   console.log(diff); // Logs 0 if it's the current week
+  ```
+
+### `calculateDayDifference`
+
+- **Description**: Calculates the absolute difference in days between a selected date and the current date (both normalized to midnight).
+- **Parameters**: 
+  - `dateSelectionnee` (Date): The date to compare.
+  - `timeZone` (string, optional): The timezone to use.
+- **Returns**: The difference in days.
+
+  **Example**:
+  ```javascript
+  import { calculateDayDifference } from "react-weekly-planning";
+  const diff = calculateDayDifference(new Date());
+  console.log(diff); // Logs the day difference
+  ```
+
+### `calculateMonthDifference`
+
+- **Description**: Calculates the difference in months between a selected date and the current date.
+- **Parameters**: 
+  - `dateSelectionnee` (Date): The date to compare.
+  - `timeZone` (string, optional): The timezone to use.
+- **Returns**: The difference in months (e.g., 0, 1, -1...).
+
+  **Example**:
+  ```javascript
+  import { calculateMonthDifference } from "react-weekly-planning";
+  const diff = calculateMonthDifference(new Date());
+  console.log(diff); // Logs the month difference
+  ```
+
+### `getMonthDay`
+
+- **Description**: Returns an array containing the metadata for all days in a specified month, based on a month offset from the current date.
+- **Parameters**: 
+  - `monthOffset` (number): The number of months to offset from the current month (e.g., 0 for current, 1 for next).
+  - `timeZone` (string, optional): The timezone to use.
+- **Returns**: An array of objects, where each object contains `day`, `dayMonth`, `dayYear`, and `dayOfTheMonth`.
+
+  **Example**:
+  ```javascript
+  import { getMonthDay } from "react-weekly-planning";
+  const days = getMonthDay(0); // Current month
+  console.log(days); // Logs all days of the current month
+  ```
+
+### `getDayHourlyForMonth`
+
+- **Description**: Returns an array of day objects (start and end timestamps) for every day in a specified month, based on a month offset.
+- **Parameters**: 
+  - `monthOffset` (number): The number of months to offset from the current month.
+  - `timeZone` (string, optional): The timezone to use.
+- **Returns**: An array of objects containing `positionDay`, `day`, `start`, and `end`.
+
+  **Example**:
+  ```javascript
+  import { getDayHourlyForMonth } from "react-weekly-planning";
+  const hours = getDayHourlyForMonth(0); // Current month
+  console.log(hours); 
   ```
 
 ### `getUniqueId`
@@ -499,5 +587,33 @@ to create an organization that truly reflects you.
     );
   };
   ```
+
+### `useCalendarDateState`
+
+- **Description**: A hook that calculates and manages the foundational date state for the calendar. It generates the necessary grid data (days of the week and hourly slots) based on a reference date and offset.
+- **Parameters**:
+  - `date` (Date): The reference date to center the calendar on.
+  - `weekOffset` (number, optional): The week offset (e.g., 0 for current week, 7 for next week).
+  - `timeZone` (string, optional): The timezone context.
+- **Returns**: An object containing:
+  - `weekDays`: An array of day metadata (day name, month, year, day of month).
+  - `dailyHours`: An array of hourly slot configurations for the grid.
+
+  **Example**:
+  ```tsx
+  import { useCalendarDateState } from "react-weekly-planning";
+
+  const MyComponent = ({ date, weekOffset }) => {
+    const { weekDays, dailyHours } = useCalendarDateState(date, weekOffset);
+    
+    return (
+      <div>
+        {weekDays.map(d => <span key={d.dayOfTheMonth}>{d.day}</span>)}
+      </div>
+    );
+  };
+  ```
+
+
 
 ---

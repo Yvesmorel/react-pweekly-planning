@@ -64,6 +64,44 @@ export function getDayHourly(weekOffset: number, timeZone?: TimeZone) {
   return dailyHours;
 }
 
+/**
+ * Get daily hours for all days of a specific month.
+ * @param monthOffset - The number of months to offset from current month.
+ * @param timeZone - The optional timezone.
+ * @returns An array of day objects containing start and end timestamps.
+ */
+export function getDayHourlyForMonth(monthOffset: number, timeZone?: TimeZone) {
+  const dailyHours: {
+    positionDay: number;
+    day: Date;
+    start: number;
+    end: number;
+  }[] = [];
+
+  const currentDate = getCalendarDate(timeZone);
+  const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + monthOffset, 1);
+  const year = targetDate.getFullYear();
+  const month = targetDate.getMonth();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dayDate = new Date(year, month, i);
+    const dayStart = new Date(dayDate);
+    dayStart.setHours(1, 0, 0, 0);
+    const dayEnd = new Date(dayDate);
+    dayEnd.setHours(23, 59, 59, 99); // Adjusted for consistency
+
+    dailyHours.push({
+      positionDay: i - 1,
+      day: dayDate,
+      start: dayStart.getTime(),
+      end: dayEnd.getTime(),
+    });
+  }
+  return dailyHours;
+}
+
 // Convert milliseconds to a readable date format
 export function millisecondsToDate(milliseconds: number) {
   const date = new Date(milliseconds);
@@ -152,6 +190,50 @@ export function getWeekDays(jump: number, timeZone?: TimeZone) {
   return weekDays;
 }
 
+/**
+ * Get days of a specific month with an offset.
+ * @param monthOffset - The number of months to offset from current month.
+ * @param timeZone - The optional timezone.
+ * @returns An array of day metadata for the target month.
+ */
+export function getMonthDay(monthOffset: number, timeZone?: TimeZone) {
+  const days = ["Sun", "Mon", "Tues", "Wed", "Thur", "Frid", "Sat"];
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sept",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const currentDate = getCalendarDate(timeZone);
+
+  // Focus on the first of the month targetted by monthOffset
+  const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + monthOffset, 1);
+  const year = targetDate.getFullYear();
+  const month = targetDate.getMonth();
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  let monthDays = [];
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dayDate = new Date(year, month, d);
+    monthDays.push({
+      day: days[dayDate.getDay()],
+      dayMonth: monthNames[dayDate.getMonth()],
+      dayYear: dayDate.getFullYear(),
+      dayOfTheMonth: dayDate.getDate(),
+    });
+  }
+  return monthDays;
+}
+
 // The remaining functions follow the same structure. Ensure all comments are in English and make the functions exportable as required.
 
 /**
@@ -214,6 +296,47 @@ export function calculateWeekDifference(dateSelectionnee: Date, timeZone?: TimeZ
   const ecartJours = Math.round((dimancheSelected - dimancheActuelle) / MS_PAR_JOUR);
 
   return ecartJours; // Retournera 0, 7, -7, 14, -14...
+}
+
+/**
+ * Calculate the day difference between the selected date and the current date.
+ * @param dateSelectionnee - The selected date.
+ * @param timeZone - The optional timezone.
+ * @returns The difference in days.
+ */
+export function calculateDayDifference(dateSelectionnee: Date, timeZone?: TimeZone): number {
+  const dateActuelle = getCalendarDate(timeZone);
+
+  const utcSelected = Date.UTC(
+    typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getFullYear() : dateSelectionnee.getFullYear(),
+    typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getMonth() : dateSelectionnee.getMonth(),
+    typeof dateSelectionnee === "string" ? new Date(dateSelectionnee).getDate() : dateSelectionnee.getDate()
+  );
+  const utcActuelle = Date.UTC(
+    dateActuelle.getFullYear(),
+    dateActuelle.getMonth(),
+    dateActuelle.getDate()
+  );
+
+  const MS_PAR_JOUR = 86400000;
+  return Math.round((utcSelected - utcActuelle) / MS_PAR_JOUR);
+}
+
+/**
+ * Calculate the month difference between the selected date and the current date.
+ * @param dateSelectionnee - The selected date.
+ * @param timeZone - The optional timezone.
+ * @returns The difference in months.
+ */
+export function calculateMonthDifference(dateSelectionnee: Date, timeZone?: TimeZone): number {
+  const dateActuelle = getCalendarDate(timeZone);
+
+  const selectedDate = typeof dateSelectionnee === "string" ? new Date(dateSelectionnee) : dateSelectionnee;
+
+  const yearDiff = selectedDate.getFullYear() - dateActuelle.getFullYear();
+  const monthDiff = selectedDate.getMonth() - dateActuelle.getMonth();
+
+  return yearDiff * 12 + monthDiff;
 }
 
 /**
@@ -306,6 +429,24 @@ export function compareWeekOffset(
   return weekOffset === ecartTask;
 }
 
+export function compareMonthOffset(
+  monthOffset: number,
+  taskDate: Date,
+  timeZone?: TimeZone
+) {
+  const ecartTask = calculateMonthDifference(taskDate, timeZone)
+  return monthOffset === ecartTask;
+}
+
+export function compareDayOffset(
+  dayOffset: number,
+  taskDate: Date,
+  timeZone?: TimeZone
+) {
+  const ecartTask = calculateDayDifference(taskDate, timeZone)
+  return dayOffset === ecartTask;
+}
+
 export const sumHoursByGroups = (
   groupId: string,
   tasks: TasksType | any,
@@ -319,6 +460,44 @@ export const sumHoursByGroups = (
       if (
         task.groupId === groupId &&
         compareWeekOffset(calendarDate, weekOffset, task.taskDate, timeZone) === true
+      ) {
+        sum += task.taskEnd - task.taskStart;
+      }
+    });
+  return sum;
+};
+
+export const sumHoursByGroupsForMonth = (
+  groupId: string,
+  tasks: TasksType | any,
+  monthOffset: number,
+  timeZone?: TimeZone
+) => {
+  let sum: number = 0;
+  if (tasks)
+    tasks.forEach((task: TaskType | any) => {
+      if (
+        task.groupId === groupId &&
+        compareMonthOffset(monthOffset, task.taskDate, timeZone) === true
+      ) {
+        sum += task.taskEnd - task.taskStart;
+      }
+    });
+  return sum;
+};
+
+export const sumHoursByGroupsForDay = (
+  groupId: string,
+  tasks: TasksType | any,
+  dayOffset: number,
+  timeZone?: TimeZone
+) => {
+  let sum: number = 0;
+  if (tasks)
+    tasks.forEach((task: TaskType | any) => {
+      if (
+        task.groupId === groupId &&
+        compareDayOffset(dayOffset, task.taskDate, timeZone) === true
       ) {
         sum += task.taskEnd - task.taskStart;
       }
@@ -364,6 +543,20 @@ export const updateOffsetWithDateCalendar = (calendarDate: Date, timeZone?: Time
   }
 
   return calculateWeekDifference(calendarDate, timeZone);
+};
+
+export const updateOffsetWithDateCalendarForMonth = (calendarDate: Date, timeZone?: TimeZone) => {
+  if (typeof calendarDate === 'string') {
+    return calculateMonthDifference(new Date(calendarDate), timeZone);
+  }
+  return calculateMonthDifference(calendarDate, timeZone);
+};
+
+export const updateOffsetWithDateCalendarForDay = (calendarDate: Date, timeZone?: TimeZone) => {
+  if (typeof calendarDate === 'string') {
+    return calculateDayDifference(new Date(calendarDate), timeZone);
+  }
+  return calculateDayDifference(calendarDate, timeZone);
 };
 
 export const millisecondsToHours = (milliseconds: number) => {

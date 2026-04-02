@@ -44,9 +44,7 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
   getTask,
   dailyHours,
   hashScope,
-
   tasks,
-  sumHoursByGroupsCount,
 
 }) => {
   const ref = useRef<HTMLDivElement>(null);
