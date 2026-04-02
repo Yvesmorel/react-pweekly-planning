@@ -225,6 +225,9 @@ const TaskAdder = () => {
 
 For advanced users who want to build their own calendar UI from scratch (without using the `<Calendar />` component), the `CalendarTaskContext` provides all the necessary state and logic. This allows you to create highly personalized designs while leveraging the library's optimized task management.
 
+👉 **Example of a custom Month View implementation using this approach:**  
+[Live Demo](https://month-calendar-app.vercel.app/) | [GitHub Repository](https://github.com/Yvesmorel/month-calendar-app)
+
 ### 1. Basic Setup
 
 To build a custom calendar, wrap your components in `CalendarTaskContextProvider` and use `useCalendarTaskContext` to access the data and methods.
