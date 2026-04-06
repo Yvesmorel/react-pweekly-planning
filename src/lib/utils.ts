@@ -347,6 +347,23 @@ export function calculateMonthDifference(dateSelectionnee: Date, timeZone?: Time
  */
 
 
+/**
+ * Calculates new task properties (position, start/end times) for custom drag and drop or paste operations.
+ * 
+ * **Note:** This function relies on `window.sessionStorage` to retrieve the source task's data during the drop/paste operation.
+ * The handler responsible for starting the drag operation (`handleDrag` or `onDragStart`) **must** set the following items in `sessionStorage`:
+ * - `calendardragtaskId`: ID of the dragged task.
+ * - `calendardragtaskStart`: Original start timestamp (ms).
+ * - `calendardragtaskEnd`: Original end timestamp (ms).
+ * - `calendardragdayIndex`: Original day index.
+ * - `calendardraghash`: Original source bucket hash.
+ * 
+ * @param positionDay - The new day index target.
+ * @param dropGroupId - The group ID where the task is being dropped.
+ * @param getTask - Function to retrieve a task by its hash and ID.
+ * @param hash - The target bucket hash.
+ * @returns Object containing new timestamps and complete task data.
+ */
 export function getNewTaskForDropOrPaste(
   positionDay: number,
   dropGroupId: string,

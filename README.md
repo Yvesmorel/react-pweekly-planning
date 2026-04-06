@@ -38,11 +38,13 @@ const App = () => {
   return (
       <div style={{ padding: "20px" }}>
         <h1>My Weekly Planner</h1>
-        <Calendar 
-          date={date}
-          weekOffset={0}
-          groups={groups}
-        />
+        <CalendarTaskContextProvider>
+          <Calendar 
+            date={date}
+            weekOffset={0}
+            groups={groups}
+          />
+        </CalendarTaskContextProvider>
       </div>
   );
 };
@@ -124,7 +126,7 @@ Wrap your app to enable global task management.
 | `children` | `React.ReactNode` | Your application. |
 
 > [!NOTE]
-> `hashScope` defaults to `"week"`. The `<Calendar />` component internally uses `"week"` for its logic.
+> `hashScope` defaults to `"week"`. However, the pre-built `<Calendar />` component internally uses `"day"` for its logic to ensure granular task management across different views.
 
 ### `useCalendarTaskContext()`
 Access the task store from any nested component.
@@ -137,6 +139,13 @@ Access the task store from any nested component.
 | `deleteTask` | `(hash, id) => void` | Removes a task. |
 | `getTasks` | `(hash) => Task[]` | Retrieves tasks for a specific hash. |
 | `isValidTask`| `(task) => boolean` | Checks if a task is not expired. |
+
+> [!WARNING]
+> **Task Expiration (`taskExpiryDate`)**
+> It is crucial to define a `taskExpiryDate` (timestamp or Date object) for every task.
+> - If `taskExpiryDate` is **missing**, the task will be considered invalid and will disappear almost immediately after creation.
+> - If `taskExpiryDate` is in the **past**, the task will also be automatically removed by the internal cleaning mechanism.
+
 
 #### Example: Adding a Task
 ```tsx
@@ -706,6 +715,17 @@ export default function App() {
 
 Ce code montre comment créer un calendrier mensuel complet avec une gestion des tâches (ajout, modification, suppression) et du drag-and-drop. Il utilise `getMonthDay` et `getDayHourlyForMonth` pour générer les jours du mois.
 
+> [!IMPORTANT]
+> **Important : `getNewTaskForDropOrPaste` et `sessionStorage`**
+>
+> Pour que cette fonction utilitaire calcule correctement la position de la nouvelle tâche (notamment lors du drag-and-drop personnalisé), il est impératif de stocker les informations de la tâche source dans le `sessionStorage` au moment du `dragStart`. C'est le cas dans la fonction `handleDrag` (ou `handleDragStart`) via :
+> - `calendardragtaskId`
+> - `calendardragtaskStart`
+> - `calendardragtaskEnd`
+> - `calendardragdayIndex`
+> - `calendardraghash`
+
+
 > [!TIP]
 > **Passer d'une vue mensuelle à une vue hebdomadaire**
 >
@@ -757,9 +777,33 @@ const { weekDays, dailyHours } = useCalendarDateState(date, weekOffset);
 | `getUniqueId()` | Generates a UUID v4. |
 | `getDayHourlyForWeek(offset)`| Returns hourly slots for all days in a week. |
 | `getDayHourlyForMonth(offset)`| Returns hourly slots for all days in a month. |
-| `getNewTaskForDropOrPaste(...)` | Calculates task position for custom drag & drop. |
+| `getNewTaskForDropOrPaste(...)` | Calculates task position for custom drag & drop (requires `sessionStorage`). |
 | `getMonthDay(offset)` | Returns metadata for all days in a month. |
 | `getWeekDays(offset)` | Returns metadata for all days in a week. |
+
+> [!IMPORTANT]
+> **Important: `getNewTaskForDropOrPaste` and `sessionStorage`**
+>
+> For `getNewTaskForDropOrPaste` to function correctly, you **must** manually store the dragged task's information in `window.sessionStorage` inside your `handleDrag` (or `onDragStart`) handler. The utility retrieves these values to calculate the new task's properties.
+>
+> **Required keys to set:**
+> - `calendardragtaskId`: The ID of the task.
+> - `calendardragtaskStart`: The start timestamp.
+> - `calendardragtaskEnd`: The end timestamp.
+> - `calendardragdayIndex`: The index of the day.
+> - `calendardraghash`: The hash of the task's current bucket.
+>
+> **Example implementation in `handleDragStart`:**
+> ```javascript
+> const handleDragStart = (e, task, hash) => {
+>   window.sessionStorage.setItem("calendardragtaskId", task.id);
+>   window.sessionStorage.setItem("calendardragtaskStart", task.taskStart.toString());
+>   window.sessionStorage.setItem("calendardragtaskEnd", task.taskEnd.toString());
+>   window.sessionStorage.setItem("calendardragdayIndex", task.dayIndex.toString());
+>   window.sessionStorage.setItem("calendardraghash", hash);
+> };
+> ```
+
 
 ---
 
