@@ -186,7 +186,7 @@ import {
   getNewTaskForDropOrPaste,
   useCalendarTaskContext,
   getUniqueId,
-  updateOffsetWithDateCalendar,
+  updateOffsetWithDateCalendarForWeek,
   updateOffsetWithDateCalendarForMonth,
   useIntersectionObserver,
   checkDuplicates,
@@ -474,7 +474,7 @@ const CalendarGrid = ({ monthOffset }) => {
       taskColor: color,
     };
 
-    const dayWeekOffset = updateOffsetWithDateCalendar(selectedDayInfo.day);
+    const dayWeekOffset = updateOffsetWithDateCalendarForWeek(selectedDayInfo.day);
     const hash = getHash(dayWeekOffset, "Project Nebula", selectedDayInfo.dayIndex).day;
     const tasks = getTasks(hash);
 
@@ -513,7 +513,7 @@ const CalendarGrid = ({ monthOffset }) => {
             const isToday = day.dayOfTheMonth === today.getDate() &&
               currentMonthHourly[idx].day.getMonth() === today.getMonth() &&
               currentMonthHourly[idx].day.getFullYear() === today.getFullYear();
-            const dayWeekOffset = updateOffsetWithDateCalendar(currentMonthHourly[idx].day);
+            const dayWeekOffset = updateOffsetWithDateCalendarForWeek(currentMonthHourly[idx].day);
             const hash = getHash(dayWeekOffset, "Project Nebula", idx).day;
             const tasks = getTasks(hash);
 
