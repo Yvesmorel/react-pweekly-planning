@@ -753,7 +753,7 @@ const { weekDays, dailyHours } = useCalendarDateState(date, weekOffset);
 | Function | Description |
 |----------|-------------|
 | `getHash(offset, group, day)` | Generates bucket hashes. |
-| `millisecondsToHours(ms)` | Formats duration (e.g., "14h06"). |
+| `millisecondsToHours(ms)` | Formats string (e.g., "14h:06"). |
 | `getUniqueId()` | Generates a UUID v4. |
 | `getDayHourlyForWeek(offset)`| Returns hourly slots for all days in a week. |
 | `getDayHourlyForMonth(offset)`| Returns hourly slots for all days in a month. |
