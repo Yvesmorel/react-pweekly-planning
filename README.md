@@ -1,65 +1,22 @@
-## License
+# react-weekly-planning 🚀
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-
-## 🚀 react-weekly-planning, a flexible and customizable package for your productivity projects.
-
-## Screenshot
+A flexible and customizable package for your productivity projects.
 
 ![Planning Screenshot](https://raw.githubusercontent.com/Yvesmorel/react-pweekly-planning/main/assets/planning-screenshot.webp)
 
-[See the demo](https://react-weekly-planning-demo.vercel.app)
-
-[Demo repository](https://github.com/Yvesmorel/react-weekly-planning-demo.git)
-
-#### `weekOffset`
-
-- **Description**: This prop sets the offset for the week being displayed in the calendar.
-- **Type**: `number`
-- **Use Case**: If you want to show the previous week's calendar, you can set `weekOffset` to `-7`. For the next week, set it to `7`. For the current week, set it to `0`.
-
-  **Example**:
-  ```jsx
-  <Calendar weekOffset={-7} ... />
-  ```
-
-#### `groups`
-
-- **Description**: This prop is an array of group data to be displayed in the calendar.
-- **Type**: `GroupFeildsType[]`
-- **Use Case**: Use this prop to display different groups in the calendar. Each group can have an id, label, image URL, and other custom fields.
-The "id" field for each group is required
-  **Example**:
-  ```jsx
-  const groups = [
-    { id: '1', label: 'Group 1', imageUrl: 'url1', ... },
-    { id: '2', label: 'Group 2', imageUrl: 'url2', ... }
-  ];
-
-  <Calendar groups={groups} ... />
-  ```
-It is possible to use either Weekoffset or Date, or even both simultaneously.
-#### `date`
-
-- **Description**: This prop sets the current date to display in the calendar.
-- **Type**: `Date`
-- **Use Case**: Use this prop to set the focus date of the calendar. It helps in aligning the calendar view to a specific date.
-
-  **Example**:
-  ```jsx
-  const currentDate = new Date();
-
-  <Calendar date={currentDate} ... />
-  ```
-
-
-
-
+[See the demo](https://react-weekly-planning-demo.vercel.app) | [Demo repository](https://github.com/Yvesmorel/react-weekly-planning-demo.git)
 
 ---
 
-## Full Example for Beginners
+## 📦 Installation
+
+```bash
+npm install react-weekly-planning
+```
+
+---
+
+## 🚀 Quick Start
 
 Here is a complete, minimal example showing how to set up the `Calendar` with the `CalendarTaskContextProvider`.
 
@@ -79,7 +36,6 @@ const App = () => {
   ];
 
   return (
-    <CalendarTaskContextProvider hashScope="week">
       <div style={{ padding: "20px" }}>
         <h1>My Weekly Planner</h1>
         <Calendar 
@@ -88,7 +44,6 @@ const App = () => {
           groups={groups}
         />
       </div>
-    </CalendarTaskContextProvider>
   );
 };
 
@@ -97,526 +52,735 @@ export default App;
 
 ---
 
-## `CalendarPropsType`
+## 📅 The `<Calendar />` Component
 
-Props for the Calendar component.
+The `Calendar` component is the main building block of the library. It provides a highly configurable weekly view.
 
+### Key Props
 
-| Prop Name                    | Type                                                                                  | Description                                                                                       |
-|------------------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|
-| `weekOffset`                 | number                                                                                | Offset for the week (e.g., -7 for last week, 0 for current week, 7 for next week).                |
-| `groups`                     | GroupFeildsType[]                                                                     | Array of group data to be displayed in the calendar.                                              |
-| `className`                  | string                                                                                | Additional class names for the calendar component.                                                |
-| `style`                      | React.CSSProperties \| undefined                                                      | Additional styles for the calendar component.                                                     |
-| `date`                       | Date                                                                                  | The current date to display in the calendar.                                                      |
-| `groupRender`                | ({ currentGroup }: { currentGroup: GroupFeildsType }) => React.ReactNode              | Custom render function for a group.                                                               |
-| `dayRender`                  | ({ dayIndex, day, dayOfTheMonth, dayMonth, dayYear }: { dayIndex: number; day: string; dayOfTheMonth: number; dayMonth: string; dayYear: number; }) => React.ReactNode | Custom render function for a day.                                                                 |
-| `taskRender`                 | ({ currentTask, handleDragTask }: { currentTask: TaskFeildsType}) => React.ReactNode             | Custom render function for a task. |
-| `rowsStyle`                  | React.CSSProperties \| undefined                                                      | Additional styles for the rows.                                                                   |
-| `rowsClassName`              | string                                                                                | Additional class names for the rows.                                                              |
-| `groupsColsStyle`            | React.CSSProperties \| undefined                                                      | Additional styles for the group columns.                                                          |
-| `groupsColsClassName`        | string                                                                                | Additional class names for the group columns.                                                     |
-| `daysColsStyle`              | React.CSSProperties \| undefined                                                      | Additional styles for the day columns.                                                            |
-| `daysColsClassName`          | string                                                                                | Additional class names for the day columns.                                                       |
-| `addTaskClassName`           | string                                                                                | Additional class names for the add task button.                                                   |
-| `addTaskStyle`               | React.CSSProperties \| undefined                                                      | Additional styles for the add task button.                                                        |
-| `groupClassName`             | string                                                                                | Additional class names for the groups.                                                            |
-| `groupStyle`                 | React.CSSProperties \| undefined                                                      | Additional styles for the groups.                                                                 |
-| `dayClassName`               | string                                                                                | Additional class names for the days.                                                              |
-| `dayStyle`                   | React.CSSProperties \| undefined                                                      | Additional styles for the days.                                                                   |
-| `taskContainerStyle`         | React.CSSProperties \| undefined                                                      | Additional styles for the task container.                                                         |
-| `taskContainerClassName`     | string                                                                                | Additional class names for the task container.                                                    |
-| `groupHeadContainerStyle`    | React.CSSProperties \| undefined                                                      | Additional styles for the group head container.                                                   |
-| `groupHeadContainerClassName`| string                                                                                | Additional class names for the group head container.                                              |
-| `sumHoursContainerStyle`     | React.CSSProperties \| undefined                                                      | Additional styles for the sum hours container.                                                    |
-| `sumHoursContainerClassName` | string                                                                                | Additional class names for the sum hours container.                                               |
-| `sumHoursHeadStyle`          | React.CSSProperties \| undefined                                                      | Additional styles for the sum hours header.                                                       |
-| `sumHoursHeadClassName`      | string                                                                                | Additional class names for the sum hours header.                                                  |
-| `handleAddTask`              | handleAddTask?: (currentGroup: GroupFeildsType, dayInfo: dayInfoType) => void;          | Handler function for adding a new task.                                                           |
-| `addTaskRender`              | addTaskRender?: ({currentGroup,dayInfo}:{currentGroup: GroupFeildsType;dayInfo: dayInfoType}) => React.ReactNode;| Custom render function for adding a task.                                                         |
-| `handleDragTask`             | (event: React.DragEvent<HTMLDivElement>, currentTask: TaskFeildsType) => void         | Handler function for dragging a task.                                                             |
-| `handleDropTask`             | (event: React.DragEvent<HTMLTableDataCellElement>, taskStart: number, taskEnd: number, taskDate: Date, groupId: string, dayIndex: number, newTask: TaskFeildsType, newTasks: TasksType) => void | Handler function for dropping a task.                                                             |
-| `handleDragTaskEnd`          | (event: React.DragEvent<HTMLDivElement>) => void                                      | Handler function for ending the drag of a task.                                                   |
-| `groupsHeadRender`           | () => React.ReactNode                                                                 | Custom render function for the groups header.                                                     |
-| `sumHoursRender`             | ({ groupId, tasks, weekOffset, calendarDate, sumHoursByGroups }: { groupId: string; tasks: TasksType; weekOffset: number; calendarDate: Date; sumHoursByGroups: number; }) => React.ReactNode | Custom render function for the sum of hours.                                                      |
-| `sumHoursHeadRender`         | () => React.ReactNode                                                                 | Custom render function for the sum of hours header.                                               |
-| `handleClickTask`            | (currentTask: TaskFeildsType) => void                                                 | Handler function for clicking a task.                                                             |
-| `handleClickGroup`           | (currentGroup: GroupFeildsType) => void                                               | Handler function for clicking a group.                                                            |
+#### `date`
+- **Description**: Sets the current date to display in the calendar.
+- **Type**: `Date`
+- **Use Case**: Set the focus date of the calendar.
+```jsx
+<Calendar date={new Date()} ... />
+```
 
----
+#### `weekOffset`
+- **Description**: Sets the offset for the week being displayed.
+- **Type**: `number`
+- **Use Case**: `-7` for previous week, `7` for next week, `0` for current.
+```jsx
+<Calendar weekOffset={0} ... />
+```
 
-### ⚡ A modular approach
+#### `groups`
+- **Description**: Array of group data (e.g., developers, rooms, projects).
+- **Type**: `GroupFeildsType[]`
+- **Note**: The `id` field for each group is required.
+```jsx
+const groups = [{ id: '1', label: 'Group A' }];
+<Calendar groups={groups} ... />
+```
 
-This package is based on a simple principle:
-👉 **use only what you need.**
+### Full Prop Reference
 
-Each feature is independent:
-
-* 📅 calendar
-* ⏱ planning logic
-* 📊 data management
-* 🧩 custom extensions
-
-Use everything… or only a part.
-**The choice is yours.**
+| Prop Name | Type | Description |
+|-----------|------|-------------|
+| `date` | `Date` | The current date to display. |
+| `weekOffset` | `number` | Offset for the week. |
+| `groups` | `GroupFeildsType[]` | Array of group data. |
+| `className` | `string` | Additional class names. |
+| `style` | `React.CSSProperties` | Additional styles. |
+| `groupRender` | `({ currentGroup }) => ReactNode` | Custom render for a group. |
+| `dayRender` | `({ dayIndex, ... }) => ReactNode` | Custom render for a day. |
+| `taskRender` | `({ currentTask }) => ReactNode` | Custom render for a task. |
+| `addTaskRender` | `({currentGroup, dayInfo}) => ReactNode` | Custom render for 'Add Task' button. |
+| `handleAddTask` | `(group, dayInfo) => void` | Handler for adding a task. |
+| `handleClickTask` | `(task) => void` | Handler for clicking a task. |
+| `handleClickGroup` | `(group) => void` | Handler for clicking a group. |
+| `handleDragTask` | `(event, task) => void` | Handler for starting a drag. |
+| `handleDropTask` | `(event, ...) => void` | Handler for dropping a task. |
+| `handleDragTaskEnd` | `(event) => void` | Handler for ending a drag. |
+| `rowsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for rows. |
+| `groupsColsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for group columns. |
+| `daysColsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for day columns. |
+| `addTaskStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for Add Task button. |
+| `taskContainerStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for task containers. |
+| `sumHoursRender` | `(data) => ReactNode` | Custom render for hours summation. |
 
 ---
 
-## Task Management (`CalendarTaskContext`)
+## 🛠 Task Management (`CalendarTaskContext`)
 
-The `CalendarTaskContext` provides a powerful way to manage tasks globally or within specific sections of your app. It handles indexing, caching, and expiration automatically.
+The `CalendarTaskContext` handles indexing, caching, and expiration of tasks automatically.
 
 ### `CalendarTaskContextProvider`
-
-Wrap your application (or a specific branch) with this provider to enable task management features.
+Wrap your app to enable global task management.
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `hashScope` | `"week" \| "group" \| "day"` | Defines how tasks are bucketed and cached. |
-| `children` | `React.ReactNode` | Your application components. |
+| `hashScope` | `"week" \| "group" \| "day"` | Defines how tasks are bucketed. |
+| `children` | `React.ReactNode` | Your application. |
 
 > [!NOTE]
-> The `hashScope` is **optional** for the provider and defaults to `"week"`. It is primarily used for custom calendar implementations. When using the standard `<Calendar />` component, it internally wraps itself in a provider with `hashScope="week"`, meaning you don't need to provide one unless you are building a custom UI.
+> `hashScope` defaults to `"week"`. The `<Calendar />` component internally uses `"week"` for its logic.
 
 ### `useCalendarTaskContext()`
-
-Use this hook within any component nested under the provider to access the task store and management methods.
-
-#### Properties and Methods
+Access the task store from any nested component.
 
 | Name | Type | Description |
 |------|------|-------------|
-| `tasks` | `TasksStore` | The current state of all tasks, organized by buckets. |
-| `addTask` | `(task: Task) => void` | Adds a new task. |
-| `getTasks` | `(hash: string) => Task[]` | Retrieves all tasks for a given hash (e.g., a specific week key). |
-| `getTask` | `(hash: string, taskId: string) => Task \| undefined` | Finds a specific task by ID. |
-| `updateTask` | `(hash: string, taskId: string, updatedTask: Partial<Task>) => void` | Updates an existing task's properties. |
-| `deleteTask` | `(hash: string, taskId: string) => void` | Removes a task from the store. |
-| `isValidTask` | `(task: Task) => boolean` | Verifies if a task has not yet expired. |
-| `cleanExpiredTasks` | `() => void` | Removes all tasks that have passed their `taskExpiryDate`. |
-| `cleanExpiredTasksByHash` | `(hash: string) => void` | Removes expired tasks within a specific hash bucket. |
-| `hashScope` | `"week" \| "group" \| "day"` | The active hashing strategy. |
+| `tasks` | `TasksStore` | All tasks, organized by buckets. |
+| `addTask` | `(task) => void` | Adds a new task. |
+| `updateTask` | `(hash, id, data) => void` | Updates an existing task. |
+| `deleteTask` | `(hash, id) => void` | Removes a task. |
+| `getTasks` | `(hash) => Task[]` | Retrieves tasks for a specific hash. |
+| `isValidTask`| `(task) => boolean` | Checks if a task is not expired. |
 
 #### Example: Adding a Task
-
 ```tsx
-const TaskAdder = () => {
-  const { addTask } = useCalendarTaskContext();
-
-  const handleAdd = () => {
-    addTask({
-      taskId: "123",
-      groupId: "1",
-      taskStart: Date.now(),
-      taskEnd: Date.now() + 3600000,
-      taskDate: new Date(),
-      dayIndex: new Date().getDay(),
-      taskSummary: "New Task"
-    });
-  };
-
-  return <button onClick={handleAdd}>Quick Add Task</button>;
-};
+const { addTask } = useCalendarTaskContext();
+addTask({
+  id: "123",
+  groupId: "1",
+  taskStart: Date.now(),
+  taskEnd: Date.now() + 3600000,
+  taskSummary: "New Task"
+});
 ```
 
 ---
 
-## Custom Calendar Implementation (Modular Design)
+## 🧩 Advanced: Custom Calendar Implementation
 
-For advanced users who want to build their own calendar UI from scratch (without using the `<Calendar />` component), the `CalendarTaskContext` provides all the necessary state and logic. This allows you to create highly personalized designs while leveraging the library's optimized task management.
+### ⚡ A modular approach
+This package is based on a simple principle: **use only what you need.** Each feature (planning logic, data management, UI) is independent.
 
-👉 **Example of a custom Month View implementation using this approach:**  
-[Live Demo](https://month-calendar-app.vercel.app/) | [GitHub Repository](https://github.com/Yvesmorel/month-calendar-app)
+### Building your own UI
+For advanced users, `CalendarTaskContext` provides all the state you need to build a custom calendar (e.g., a Month view).
 
-### 1. Basic Setup
+#### Exemple d'implémentation complète (Vue Mensuelle)
 
-To build a custom calendar, wrap your components in `CalendarTaskContextProvider` and use `useCalendarTaskContext` to access the data and methods.
+Voici un exemple complet montrant comment construire votre propre vue mensuelle avec une gestion avancée des tâches et du drag-and-drop.
+
+<details>
+<summary><strong>Voir le code complet de l'implémentation (Vue Mensuelle)</strong></summary>
 
 ```tsx
-import React from 'react';
-import { 
-  CalendarTaskContextProvider, 
+import React from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  Clock,
+  Calendar as CalendarIcon,
+  Trash2,
+  Check,
+} from "lucide-react";
+import {
+  getDayHourlyForMonth,
+  getMonthDay,
+  millisecondsToHours,
+  getHash,
+  getNewTaskForDropOrPaste,
   useCalendarTaskContext,
+  getUniqueId,
   updateOffsetWithDateCalendar,
-  getHash 
-} from 'react-weekly-planning';
+  updateOffsetWithDateCalendarForMonth,
+  useIntersectionObserver,
+  checkDuplicates,
+} from "react-weekly-planning";
+import {
+  DatePicker,
+  Modal,
+  Form,
+  Input,
+  TimePicker,
+  Select,
+  message,
+  ConfigProvider,
+} from "antd";
+import dayjs from "dayjs";
+import "antd/dist/reset.css";
+import { CalendarTaskContextProvider } from "react-weekly-planning";
 
-const MyCustomCalendar = () => {
-  const { getTasks, addTask } = useCalendarTaskContext();
-  const currentDate = new Date();
-  
-  // 1. Calculate the week offset for the desired date
-  const offset = updateOffsetWithDateCalendar(currentDate);
-  
-  // 2. Generate the hash for the current view (e.g., 'week' scope)
-  const hash = getHash(offset).week;
-  
-  // 3. Retrieve tasks for that hash
-  const tasks = getTasks(hash);
+/**
+ * Calendar header component (navigation and title)
+ */
+const CalendarHeader = ({ monthOffset, onPrev, onNext, onToday, onDateChange }) => {
+  const currentMonthStr = dayjs().add(monthOffset, "month").format("MMMM YYYY");
 
   return (
-    <div className="my-custom-design">
-      <h2>My Weekly View</h2>
-      {tasks.length === 0 && <p>No tasks for this week.</p>}
-      {tasks.map(task => (
-        <div key={task.id} className="custom-task-card">
-          <h4>{task.taskSummary}</h4>
-          <p>
-            {new Date(task.taskStart).toLocaleTimeString()} - 
-            {new Date(task.taskEnd).toLocaleTimeString()}
-          </p>
+    <div className="flex flex-col gap-6 mb-8 relative ">
+      <div className="flex items-center justify-between px-2 ">
+        <h2 className="text-2xl font-black text-gray-900 capitalize tracking-tight">{currentMonthStr}</h2>
+
+        {/* Navigation controls (Prev Month, Today, Picker, Next Month) */}
+        <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-100 p-1.5 shadow-sm">
+          <button
+            onClick={onPrev}
+            className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={onToday}
+            className="px-4 text-xs font-black text-gray-500 hover:text-[#3d5a35] uppercase tracking-widest transition-colors"
+          >
+            Today
+          </button>
+
+          {/* Integrated Ant Design Month Picker */}
+
+          <button
+            onClick={onNext}
+            className="p-1.5 text-gray-400 hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-all"
+          >
+            <ChevronRight size={20} />
+          </button>
+          <DatePicker
+            picker="month"
+            onChange={onDateChange}
+            allowClear={false}
+            suffixIcon={<CalendarIcon size={16} className="text-[#3d5a35]" />}
+            className="h-11 rounded-lg border-gray-200 hover:border-[#3d5a35] focus:border-[#3d5a35] transition-all shadow-sm bg-white font-bold"
+            placeholder="Select month"
+            value={dayjs().add(monthOffset, "month")}
+          />
         </div>
-      ))}
+      </div>
     </div>
   );
 };
 
-const App = () => (
-  <CalendarTaskContextProvider hashScope="week">
-    <MyCustomCalendar />
-  </CalendarTaskContextProvider>
-);
-```
-
-### 2. Default Behavior of `<Calendar />`
-
-It's important to note that the main `<Calendar />` component uses the `"day"` hash scope by default. If you use the standard component, you are implicitly using this scope. Explicitly defining a `hashScope` on the `CalendarTaskContextProvider` is only necessary when you want to change how tasks are indexed or when building a fully custom UI as shown above.
-
-### 3. Understanding Hashes and Scopes
-
-The library uses "hashes" to bucket tasks efficiently. When calling `getTasks(hash)`, `updateTask(hash, ...)` or `deleteTask(hash, ...)`, you must provide the hash that matches your `hashScope`:
-
-- **Scope `"week"`**: Use `getHash(offset).week`.
-- **Scope `"group"`**: Use `getHash(offset, groupId).group`.
-- **Scope `"day"`**: Use `getHash(offset, groupId, dayIndex).day`.
-
-### 4. Best Practices for Custom Designs
-
-- **Manual Rendering**: Use `getTasks(hash)` to retrieve only the tasks relevant to the current view.
-- **CRUD Operations**: Use `addTask`, `updateTask`, and `deleteTask` to modify the store. The UI will re-render automatically thanks to the context.
-- **Validation**: Use `isValidTask(task)` to verify if a task has not yet expired before displaying it, or rely on `cleanExpiredTasks()` to prune the store.
-- **Performance**: Accessing tasks by hash is highly optimized. Avoid looping through the entire `tasks.buckets` manually if possible.
-
----
-
-### 🧠 Total flexibility
-
-Whether you want:
-
-* a simple planner
-* a complete productivity system
-* or a fully customized solution
-
-This package allows you to:
-
-* integrate only useful components
-* easily modify behaviors
-* build your own logic
-
-👉 **No constraints. No imposed framework.**
-
----
-
-### 💡 Designed for builders
-
-This isn't just a tool.
-It's a foundation.
-
-A system you can shape, extend, and control —
-to create an organization that truly reflects you.
-
-**Because performance starts with the freedom to build.**
-
----
-
-## Additional Functions
-
-### `getCalendarDate`
-
-- **Description**: Returns the current date.
-- **Returns**: A `Date` object representing the current time.
-
-  **Example**:
-  ```javascript
-  import { getCalendarDate } from "react-weekly-planning";
-  const now = getCalendarDate();
-  console.log(now);
-  ```
-
-### `updateCalendarDateWithOffset`
-
-- **Description**: Updates the calendar date based on the week offset.
-- **Parameters**:
-  - `offset` (number): This represents the difference in days between the current calendar date and the same date from the previous week. A shift of 7 days takes us to the following week, while a shift of -7 days takes us back to last week. `weekOffset` is different and represents the difference in days between the current date and the week we want to reach. **A shift of 14 days brings us back to the next week starting from the current date `new Date()`**.
-  **The current date `new Date()` is not necessarily the one selected in the calendar**.
-  - `calendarDate` (Date): The current calendar date.
-- **Returns**: A new `Date` object with the updated date.
-
-  **Example**:
-  ```javascript
-  const updatedDate = updateCalendarDateWithOffset(7, new Date());
-  console.log(updatedDate); // Logs the date one week ahead
-  ```
-
-### `updateOffsetWithDateCalendar`
-
-- **Description**: Calculates the week offset from a given calendar date.
-- **Parameters**:
-  - `calendarDate` (Date): The calendar date.
-- **Returns**: The calculated week offset.
-
-  **Example**:
-  ```javascript
-  import {updateOffsetWithDateCalendar} from "react-weekly-planning";
-  const offset = updateOffsetWithDateCalendar(new Date());
-  console.log(offset); // Logs the week offset for the given date
-  ```
-
-### `updateOffsetWithDateCalendarForMonth`
-
-- **Description**: Calculates the month offset from a given calendar date.
-- **Parameters**: 
-  - `calendarDate` (Date): The date to compare.
-  - `timeZone` (string, optional): The timezone to use.
-- **Returns**: The calculated month offset.
-
-  **Example**:
-  ```javascript
-  import { updateOffsetWithDateCalendarForMonth } from "react-weekly-planning";
-  const offset = updateOffsetWithDateCalendarForMonth(new Date());
-  ```
-
-### `updateOffsetWithDateCalendarForDay`
-
-- **Description**: Calculates the day offset from a given calendar date.
-- **Parameters**: 
-  - `calendarDate` (Date): The date to compare.
-  - `timeZone` (string, optional): The timezone to use.
-- **Returns**: The calculated day offset.
-
-  **Example**:
-  ```javascript
-  import { updateOffsetWithDateCalendarForDay } from "react-weekly-planning";
-  const offset = updateOffsetWithDateCalendarForDay(new Date());
-  ```
-
-### `millisecondsToHours`
-
-- **Description**: Converts milliseconds to a formatted hour string.
-- **Parameters**:
-  - `milliseconds` (number): The time duration in milliseconds.
-- **Returns**: A formatted date string.
-
-  **Example**:
-  ```javascript
-  import {millisecondsToHours} from "react-weekly-planning";
-  const formattedTime = millisecondsToHours(1716905215397);
-  console.log(formattedTime); // Logs the formatted time for 14h06
-  ```
-
-
-### `getHash`
-
-- **Description**: Generates a set of bucket hashes based on the offset, group, and day.
-- **Parameters**:
-  - `weekOffset` (number): The week offset.
-  - `groupId` (string, optional): The group ID.
-  - `dayIndex` (number, optional): The day index (0-6).
-- **Returns**: An object containing `week`, `group`, and `day` hash strings.
-
-  **Example**:
-  ```javascript
-  import { getHash } from "react-weekly-planning";
-  const hashes = getHash(0, "group-1", 2);
-  console.log(hashes.week);  // "0"
-  console.log(hashes.group); // "0/group-1"
-  console.log(hashes.day);   // "0/group-1/2"
-  ```
-
-### `calculateWeekDifference`
-
-- **Description**: Calculates the week difference in days between a selected date and the current date, normalized to Sundays.
-- **Parameters**: 
-  - `dateSelectionnee` (Date): The date to compare.
-  - `timeZone` (string, optional): The timezone to use for the comparison.
-- **Returns**: The difference in days (e.g., 0, 7, -7, 14, -14...).
-
-  **Example**:
-  ```javascript
-  import { calculateWeekDifference } from "react-weekly-planning";
-  const diff = calculateWeekDifference(new Date());
-  console.log(diff); // Logs 0 if it's the current week
-  ```
-
-### `calculateDayDifference`
-
-- **Description**: Calculates the absolute difference in days between a selected date and the current date (both normalized to midnight).
-- **Parameters**: 
-  - `dateSelectionnee` (Date): The date to compare.
-  - `timeZone` (string, optional): The timezone to use.
-- **Returns**: The difference in days.
-
-  **Example**:
-  ```javascript
-  import { calculateDayDifference } from "react-weekly-planning";
-  const diff = calculateDayDifference(new Date());
-  console.log(diff); // Logs the day difference
-  ```
-
-### `calculateMonthDifference`
-
-- **Description**: Calculates the difference in months between a selected date and the current date.
-- **Parameters**: 
-  - `dateSelectionnee` (Date): The date to compare.
-  - `timeZone` (string, optional): The timezone to use.
-- **Returns**: The difference in months (e.g., 0, 1, -1...).
-
-  **Example**:
-  ```javascript
-  import { calculateMonthDifference } from "react-weekly-planning";
-  const diff = calculateMonthDifference(new Date());
-  console.log(diff); // Logs the month difference
-  ```
-
-### `getMonthDay`
-
-- **Description**: Returns an array containing the metadata for all days in a specified month, based on a month offset from the current date.
-- **Parameters**: 
-  - `monthOffset` (number): The number of months to offset from the current month (e.g., 0 for current, 1 for next).
-  - `timeZone` (string, optional): The timezone to use.
-- **Returns**: An array of objects, where each object contains `day`, `dayMonth`, `dayYear`, and `dayOfTheMonth`.
-
-  **Example**:
-  ```javascript
-  import { getMonthDay } from "react-weekly-planning";
-  const days = getMonthDay(0); // Current month
-  console.log(days); // Logs all days of the current month
-  ```
-
-### `getDayHourlyForMonth`
-
-- **Description**: Returns an array of day objects (start and end timestamps) for every day in a specified month, based on a month offset.
-- **Parameters**: 
-  - `monthOffset` (number): The number of months to offset from the current month.
-  - `timeZone` (string, optional): The timezone to use.
-- **Returns**: An array of objects containing `positionDay`, `day`, `start`, and `end`.
-
-  **Example**:
-  ```javascript
-  import { getDayHourlyForMonth } from "react-weekly-planning";
-  const hours = getDayHourlyForMonth(0); // Current month
-  console.log(hours); 
-  ```
-
-### `getUniqueId`
-
-- **Description**: Generates a unique identifier (UUID v4).
-- **Returns**: A unique ID string.
-
-  **Example**:
-  ```javascript
-  import { getUniqueId } from "react-weekly-planning";
-  const id = getUniqueId();
-  console.log(id); // Logs a unique UUID
-  ```
-
-### `getNewTaskForDropOrPaste`
-
-- **Description**: Utility function to generate a new task correctly positioned when dropping or pasting it in a custom calendar context. It reads the dragged task information from the browser's `sessionStorage` and calculates the new start/end dates based on the drop target.
-- **Parameters**:
-  - `positionDay` (number): The index of the day where the task is dropped or pasted (0-6).
-  - `dropGroupId` (string): The ID of the group where the task is dropped or pasted.
-  - `getTask` (function): The function `(hash: string, taskId: string) => TaskFeildsType | undefined` (available from `useCalendarTaskContext`) to retrieve the original task being dragged.
-  - `hash` (string): The hash for the current view, representing the destination bucket.
-- **Returns**: An object containing `{ taskDropStart, taskDropEnd, taskDropDate, newTask }` or `undefined` if no task is currently in the session storage.
-
-  **Example**:
-  ```tsx
-  import { getNewTaskForDropOrPaste, useCalendarTaskContext } from "react-weekly-planning";
-
-  const CustomCell = ({ dayIndex, groupId, currentHash }) => {
-    const { getTask, addTask } = useCalendarTaskContext();
-
-    const handleDrop = (e) => {
-      e.preventDefault();
-      
-      const result = getNewTaskForDropOrPaste(
-        dayIndex,
-        groupId,
-        getTask,
-        currentHash
-      );
-
-      if (result && result.newTask) {
-        addTask(result.newTask);
-      }
-    };
-
-    return <div onDrop={handleDrop} onDragOver={(e) => e.preventDefault()}>Drop Here</div>;
+/**
+ * Event Pill component (Individual task block)
+ */
+const EventPill = ({ title, time, colorClass, onDragStart, onDragEnd, id, onClick }) => {
+  // Icon selector based on category (color)
+  const getIcon = () => {
+    if (colorClass.includes("red")) return <Clock size={12} className="text-red-500 opacity-60" />;
+    if (colorClass.includes("green")) return <Clock size={12} className="text-emerald-500 opacity-60" />;
+    if (colorClass.includes("blue")) return <Clock size={12} className="text-blue-500 opacity-60" />;
+    return <Clock size={12} className="text-[#3d5a35] opacity-60" />;
   };
-  ```
 
-### `useIntersectionObserver`
+  /**
+   * Generates a deterministic (but random-looking) solid background color based on task ID.
+   */
+  const getBgColor = () => {
+    const bgColors = ["bg-red-50", "bg-emerald-50", "bg-blue-50", "bg-[#3d5a35]/10", "bg-purple-50", "bg-pink-50", "bg-indigo-50", "bg-slate-50"];
+    const hash = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return bgColors[hash % bgColors.length];
+  };
 
-- **Description**: Utility hook designed to help virtualize scrolling components. It leverages the Intersection Observer API to detect when an element enters or leaves the viewport, allowing you to mount or unmount heavy DOM elements dynamically for better performance in long lists or large grids.
-  👉 **Watch the performance demo (rendering 7,000 tasks in a single week):**  
-  [![Performance Demo](https://img.youtube.com/vi/st4QmsaHoDM/0.jpg)](https://youtu.be/st4QmsaHoDM)
-- **Parameters**:
-  - `ref` (React.RefObject): The ref assigned to the DOM element you want to observe.
-  - `options` (IntersectionObserverInit, optional): Configuration object (e.g., `rootMargin`, `threshold`).
-- **Returns**: An object containing `{ entry, height }`. `entry` is the `IntersectionObserverEntry` which can be used to check `isIntersecting`. `height` provides the element's cached height when it is unmounted to maintain scroll position consistency.
+  const randomBg = getBgColor();
 
-  **Example**:
-  ```tsx
-  import React, { useRef } from "react";
-  import { useIntersectionObserver } from "react-weekly-planning";
+  return (
+    <div
+      draggable={!!onDragStart}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onClick={onClick}
+      className={`relative mb-2 rounded-lg flex overflow-hidden cursor-pointer hover:shadow-md transition-all shadow-sm group border border-gray-100/40 cardShadow ${randomBg} bg-opacity-100`}
+      style={{ minHeight: '56px' }}
+    >
+      {/* Left accent vertical bar */}
+      <div className={`w-1.5 self-stretch ${colorClass.split(' ').find(c => c.startsWith('border-l-'))?.replace('border-l-', 'bg-') || 'bg-emerald-400'}`} />
+      <div className="flex flex-col flex-1 px-3 py-2 gap-1 justify-center overflow-hidden">
+        <div className="flex items-center gap-2">
+          {getIcon()}
+          <span className="text-[10px] font-bold text-gray-500 tracking-tight whitespace-nowrap">{time}</span>
+        </div>
+        <div className="font-bold text-[13px] leading-tight text-gray-800 truncate pr-1">
+          {title}
+        </div>
+      </div>
+    </div>
+  );
+};
 
-  const VirtualItem = ({ children }) => {
-    const ref = useRef(null);
-    const { entry, height } = useIntersectionObserver(ref, {
-      rootMargin: "600px",
-      threshold: 0
+/**
+ * Render optimization via Intersection Observer (skips rendering of off-screen items)
+ */
+const VirtualItem = ({ children }) => {
+  const ref = React.useRef(null);
+  const { entry, height } = useIntersectionObserver(ref, {
+    rootMargin: "0px",
+    threshold: 0,
+  });
+
+  const isVisible = !!entry?.isIntersecting;
+
+  return (
+    <div
+      ref={ref}
+      style={{ minHeight: isVisible ? "auto" : `${height}px` }}
+    >
+      {isVisible ? children : null}
+    </div>
+  );
+};
+
+/**
+ * Main Calendar Grid component (Manages all tasks)
+ */
+const CalendarGrid = ({ monthOffset }) => {
+  // Retrieve task management tools from react-weekly-planning
+  const { addTask, getTasks, getTask, deleteTask, updateTask } = useCalendarTaskContext();
+  const today = new Date();
+
+  // UI States (Modal, Editing, Day Selection)
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [dragOverDay, setDragOverDay] = React.useState(null);
+  const [editingTask, setEditingTask] = React.useState(null);
+  const [selectedDayInfo, setSelectedDayInfo] = React.useState(null);
+  const [form] = Form.useForm();
+
+  // Day data for the current month view
+  const currentMonthDays = getMonthDay(monthOffset);
+  const currentMonthHourly = getDayHourlyForMonth(monthOffset);
+
+  /**
+   * Opens modal to CREATE a new event on a specific day.
+   */
+  const handleOpenModal = (dayIndex) => {
+    setEditingTask(null);
+    const hourlyInfo = currentMonthHourly[dayIndex];
+    setSelectedDayInfo({
+      day: hourlyInfo.day,
+      dayIndex: dayIndex,
+      start: hourlyInfo.start,
+      end: hourlyInfo.end,
     });
 
-    const isVisible = !!entry?.isIntersecting;
+    const startHour = parseFloat(millisecondsToHours(hourlyInfo.start));
+    const endHour = parseFloat(millisecondsToHours(hourlyInfo.end));
 
-    return (
-      <div 
-        ref={ref} 
-        style={{ minHeight: isVisible ? "auto" : `${height}px` }}
-      >
-        {isVisible ? children : null}
-      </div>
-    );
+    form.setFieldsValue({
+      title: "",
+      timeRange: [
+        dayjs().startOf("day").add(startHour, "hour"),
+        dayjs().startOf("day").add(endHour, "hour"),
+      ],
+      color: "bg-red-50 text-red-700 border-l-4 border-l-red-400",
+    });
+
+    setIsModalOpen(true);
   };
-  ```
 
-### `useCalendarDateState`
+  /**
+   * Opens modal to MODIFY an existing task.
+   */
+  const handleEditTask = (task, hash) => {
+    setEditingTask({ task, hash });
+    setSelectedDayInfo({
+      day: task.taskDate,
+      dayIndex: task.dayIndex,
+      start: task.taskStart,
+      end: task.taskEnd,
+    });
 
-- **Description**: A hook that calculates and manages the foundational date state for the calendar. It generates the necessary grid data (days of the week and hourly slots) based on a reference date and offset.
-- **Parameters**:
-  - `date` (Date): The reference date to center the calendar on.
-  - `weekOffset` (number, optional): The week offset (e.g., 0 for current week, 7 for next week).
-  - `timeZone` (string, optional): The timezone context.
-- **Returns**: An object containing:
-  - `weekDays`: An array of day metadata (day name, month, year, day of month).
-  - `dailyHours`: An array of hourly slot configurations for the grid.
+    form.setFieldsValue({
+      title: task.taskSummary,
+      timeRange: [dayjs(task.taskStart), dayjs(task.taskEnd)],
+      color: task.taskColor,
+    });
 
-  **Example**:
-  ```tsx
-  import { useCalendarDateState } from "react-weekly-planning";
-
-  const MyComponent = ({ date, weekOffset }) => {
-    const { weekDays, dailyHours } = useCalendarDateState(date, weekOffset);
-    
-    return (
-      <div>
-        {weekDays.map(d => <span key={d.dayOfTheMonth}>{d.day}</span>)}
-      </div>
-    );
+    setIsModalOpen(true);
   };
-  ```
 
+  /**
+   * Handles task DELETION via the modal button.
+   */
+  const handleDeleteTask = () => {
+    if (editingTask) {
+      deleteTask(editingTask.hash, editingTask.task.id);
+      setIsModalOpen(false);
+      message.success("Task deleted!");
+    }
+  };
 
+  /**
+   * Triggered when starting a task DRAG-AND-DROP.
+   */
+  const handleDragStart = (e, task, hash) => {
+    const target = e.currentTarget;
+    target.style.opacity = "0.4";
+    sessionStorage.setItem("calendardragtaskId", task.id);
+    sessionStorage.setItem("calendardragtaskStart", task.taskStart.toString());
+    sessionStorage.setItem("calendardragtaskEnd", task.taskEnd.toString());
+    sessionStorage.setItem("calendardragdayIndex", task.dayIndex.toString());
+    sessionStorage.setItem("calendardraghash", hash);
+  };
+
+  /**
+   * Resets styles and states after dragging ends.
+   */
+  const handleDragEnd = (e) => {
+    const target = e.currentTarget;
+    target.style.opacity = "1";
+    setDragOverDay(null);
+  };
+
+  /**
+   * Handles task DROP onto a new cell.
+   */
+  const handleDrop = (e, dayIndex, hash) => {
+    e.preventDefault();
+    setDragOverDay(null);
+    const result = getNewTaskForDropOrPaste(dayIndex, "Project Nebula", getTask, hash);
+    if (result && result.newTask) {
+      const tasks = getTasks(hash);
+      const isDuplicate = checkDuplicates(
+        tasks.filter((t) => t.id !== result.newTask.id),
+        result.newTask.taskStart,
+        result.newTask.taskEnd,
+        "Project Nebula"
+      );
+
+      if (isDuplicate) {
+        message.warning("A task already exists in this time slot.");
+        return;
+      }
+
+      deleteTask(result.newTask.draghash, result.newTask.id);
+      addTask({ ...result.newTask, id: getUniqueId() });
+    }
+  };
+
+  /**
+   * SAVES changes (Add or Update) after form submission.
+   */
+  const handleSaveTask = (values) => {
+    if (!selectedDayInfo) return;
+
+    const { title, timeRange, color } = values;
+    const [start, end] = timeRange;
+    const dayBasis = dayjs(selectedDayInfo.day).startOf('day');
+    const startMs = dayBasis.hour(start.hour()).minute(start.minute()).second(0).millisecond(0).valueOf();
+    const endMs = dayBasis.hour(end.hour()).minute(end.minute()).second(0).millisecond(0).valueOf();
+
+    const taskData = {
+      id: editingTask ? editingTask.task.id : getUniqueId(),
+      taskSummary: title,
+      taskStart: startMs,
+      taskEnd: endMs,
+      taskDate: selectedDayInfo.day,
+      taskExpiryDate: dayjs(selectedDayInfo.day).add(1, "day").valueOf(),
+      groupId: "Project Nebula",
+      dayIndex: selectedDayInfo.dayIndex,
+      taskColor: color,
+    };
+
+    const dayWeekOffset = updateOffsetWithDateCalendar(selectedDayInfo.day);
+    const hash = getHash(dayWeekOffset, "Project Nebula", selectedDayInfo.dayIndex).day;
+    const tasks = getTasks(hash);
+
+    const otherTasks = editingTask ? tasks.filter(t => t.id !== editingTask.task.id) : tasks;
+
+    // Check for duplicates before saving
+    if (checkDuplicates(otherTasks, startMs, endMs, "Project Nebula")) {
+      message.error("This time slot is already occupied.");
+      return;
+    }
+
+    if (editingTask) {
+      updateTask(editingTask.hash, editingTask.task.id, taskData);
+      message.success("Task updated!");
+    } else {
+      addTask(taskData);
+      message.success("Task added!");
+    }
+
+    setIsModalOpen(false);
+    form.resetFields();
+  };
+
+  const colorOptions = [
+    { label: "Work Order", value: "bg-red-50 text-red-700 border-l-4 border-l-red-400" },
+    { label: "Move-In", value: "bg-emerald-50 text-emerald-700 border-l-4 border-l-emerald-400" },
+    { label: "Move-Out", value: "bg-blue-50 text-blue-700 border-l-4 border-l-blue-400" },
+    { label: "Notes", value: "bg-emerald-50 text-emerald-700 border-l-4 border-l-emerald-400" },
+  ];
+
+  return (
+    <ConfigProvider theme={{ token: { colorPrimary: "#3d5a35", borderRadius: 8 } }}>
+      <div className="flex flex-col h-full border-2 border-gray-200/60 rounded-2xl overflow-hidden bg-white/10">
+        <div className="grid grid-cols-7 flex-1">
+          {currentMonthDays.map((day, idx) => {
+            const isToday = day.dayOfTheMonth === today.getDate() &&
+              currentMonthHourly[idx].day.getMonth() === today.getMonth() &&
+              currentMonthHourly[idx].day.getFullYear() === today.getFullYear();
+            const dayWeekOffset = updateOffsetWithDateCalendar(currentMonthHourly[idx].day);
+            const hash = getHash(dayWeekOffset, "Project Nebula", idx).day;
+            const tasks = getTasks(hash);
+
+            const isFirstRow = idx < 7;
+            const isDragOver = dragOverDay === idx;
+
+            return (
+              <div
+                key={day.dayOfTheMonth}
+                onDragOver={(e) => { e.preventDefault(); setDragOverDay(idx); }}
+                onDragLeave={() => setDragOverDay(null)}
+                onDrop={(e) => handleDrop(e, idx, hash)}
+                onClick={() => handleOpenModal(idx)}
+                className={`group relative p-3 h-full flex flex-col transition-all duration-300 border-r-2 border-b-2 border-gray-200/50 last:border-r-0 cursor-pointer
+                  ${isToday ? "bg-[#3d5a35] " : "bg-white/10 hover:bg-white/20"}
+                  ${isDragOver ? "bg-[#3d5a35]/25 scale-[1.01] z-10 shadow-inner ring-2 ring-[#3d5a35]/30 ring-inset" : ""}`}
+              >
+                {/* Day cell header (Number and day name for the first row) */}
+                <div className="flex justify-between items-start mb-2 shrink-0 pointer-events-none">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-8 h-8 flex items-center justify-center text-sm font-black rounded-lg transition-all
+                                   ${isToday ? "bg-white/20 text-white" : "text-gray-900"}`}>
+                      {day.dayOfTheMonth}
+                    </span>
+                    {isFirstRow && (
+                      <span className={`text-[10px] font-black uppercase tracking-widest ${isToday ? "text-white/80" : "text-gray-400"}`}>{day.day}</span>
+                    )}
+                  </div>
+
+                  <div className={`opacity-0 group-hover:opacity-100 p-1.5 rounded-lg transition-all ${isToday ? "text-white/80" : "text-gray-400"}`}>
+                    <Plus size={16} />
+                  </div>
+                </div>
+
+                {/* Day tasks list - with internal scrolling */}
+                <div className="flex-1 overflow-y-auto pr-1 flex flex-col gap-0.5 scrollbar-hide hover:scrollbar-default">
+                  {tasks.map((task) => {
+                    if (task.dayIndex !== idx) return null;
+                    return (
+                      <VirtualItem key={task.id}>
+                        <EventPill
+                          id={task.id}
+                          title={task.taskSummary || ""}
+                          time={`${millisecondsToHours(task.taskStart)} - ${millisecondsToHours(task.taskEnd)}`}
+                          colorClass={task.taskColor}
+                          onDragStart={(e) => handleDragStart(e, task, hash)}
+                          onDragEnd={handleDragEnd}
+                          onClick={(e) => {
+                            e?.stopPropagation();
+                            handleEditTask(task, hash);
+                          }}
+                        />
+                      </VirtualItem>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Create/Edit event modal */}
+        <Modal
+          title={
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-10 h-10 bg-[#3d5a35] rounded-xl flex items-center justify-center text-white shadow-sm">
+                <Plus size={24} strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-xl font-black text-gray-900 leading-tight">
+                  {editingTask ? "Edit" : "Create"} Event
+                </span>
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5">
+                  {selectedDayInfo && dayjs(selectedDayInfo.day).format("dddd, MMMM D")}
+                </span>
+              </div>
+            </div>
+          }
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          footer={null}
+          centered
+          width={420}
+          className="calendar-modal"
+        >
+          <Form form={form} layout="vertical" onFinish={handleSaveTask} className="mt-8">
+            <Form.Item
+              name="title"
+              label={<span className="text-xs font-black text-gray-400 uppercase tracking-widest">Title</span>}
+              rules={[{ required: true, message: "Please enter a title" }]}
+            >
+              <Input placeholder="Team Brainstorming" className="py-3 px-4 rounded-xl border-gray-200 bg-gray-50 focus:bg-white transition-all font-bold placeholder:text-gray-300" />
+            </Form.Item>
+            <Form.Item
+              name="timeRange"
+              label={<span className="text-xs font-black text-gray-400 uppercase tracking-widest">Time Range</span>}
+              rules={[{ required: true, message: "Please select a time" }]}
+            >
+              <TimePicker.RangePicker format="HH:mm" className="w-full py-3 px-4 rounded-xl border-gray-200 bg-gray-50 focus:bg-white transition-all font-bold" placeholder={["Start", "End"]} />
+            </Form.Item>
+            <Form.Item name="color" label={<span className="text-xs font-black text-gray-400 uppercase tracking-widest">Category</span>}>
+              <Select className="h-12 rounded-xl" dropdownStyle={{ borderRadius: '16px', padding: '8px' }}>
+                <Select.Option key="emerald" value="bg-emerald-50 text-emerald-700 border-l-4 border-l-emerald-400">
+                  <div className="flex items-center gap-3 py-1">
+                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                    <span className="font-bold text-gray-700">Generic Task</span>
+                  </div>
+                </Select.Option>
+                {colorOptions.map((option) => (
+                  <Select.Option key={option.value} value={option.value}>
+                    <div className="flex items-center gap-3 py-1">
+                      <div className={`w-3 h-3 rounded-full ${option.value.split(' ')[2].replace('border-l-', 'bg-')}`} />
+                      <span className="font-bold text-gray-700">{option.label}</span>
+                    </div>
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            {/* Action buttons: Delete, Cancel, Save/Update */}
+            <div className="flex gap-4 mt-12">
+              {editingTask && (
+                <button
+                  type="button"
+                  onClick={handleDeleteTask}
+                  className="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center bg-red-50 text-red-500 hover:bg-red-100 transition-all border border-transparent hover:scale-105"
+                >
+                  <Trash2 size={22} strokeWidth={2.5} />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="flex-1 h-14 rounded-2xl text-sm font-black text-gray-400 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 transition-all border border-transparent"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center bg-[#3d5a35] text-white hover:bg-[#2d4627] shadow-lg shadow-emerald-100/20 transition-all hover:-translate-y-0.5 border border-transparent"
+              >
+                <Check size={24} strokeWidth={3} />
+              </button>
+            </div>
+          </Form>
+        </Modal>
+      </div>
+    </ConfigProvider>
+  );
+};
+
+export default function App() {
+  const [monthOffset, setMonthOffset] = React.useState(0);
+  const handlePrevMonth = () => setMonthOffset((prev) => prev - 1);
+  const handleNextMonth = () => setMonthOffset((prev) => prev + 1);
+  const handleToday = () => setMonthOffset(updateOffsetWithDateCalendarForMonth(new Date()));
+  const handleDateChange = (date) => {
+    if (date) setMonthOffset(updateOffsetWithDateCalendarForMonth(date.toDate()));
+  };
+
+  return (
+    <CalendarTaskContextProvider hashScope="day">
+      <div className="min-h-screen flex flex-col font-sans selection:bg-[#3d5a35]/20 selection:text-[#3d5a35] relative bg-transparent">
+        <main className="flex-1 px-6 py-6 w-full flex flex-col max-w-full relative">
+          <div className="sticky top-0 z-50 bg-transparent py-4 -mx-6 px-10 mb-8 flex items-center overflow-visible transition-all">
+            <div className="flex-1">
+              <CalendarHeader monthOffset={monthOffset} onPrev={handlePrevMonth} onNext={handleNextMonth} onToday={handleToday} onDateChange={handleDateChange} />
+            </div>
+          </div>
+
+          {/* Nature Decoration - Floating Pot */}
+          <div className="absolute top-[50px] right-0 z-[100]">
+            <img
+              src="pot.png"
+              alt="Decoration"
+              className="w-[150px] drop-shadow-xl"
+            />
+          </div>
+
+          <div className="flex-1">
+            <CalendarGrid monthOffset={monthOffset} />
+          </div>
+        </main>
+      </div>
+    </CalendarTaskContextProvider>
+  );
+}
+```
+</details>
+
+Ce code montre comment créer un calendrier mensuel complet avec une gestion des tâches (ajout, modification, suppression) et du drag-and-drop. Il utilise `getMonthDay` et `getDayHourlyForMonth` pour générer les jours du mois.
+
+> [!TIP]
+> **Passer d'une vue mensuelle à une vue hebdomadaire**
+>
+> Pour adapter ce code pour une vue hebdomadaire, il vous suffit de remplacer les fonctions suivantes :
+> - `getMonthDay` par `getWeekDays`
+> - `getDayHourlyForMonth` par `getDayHourlyForWeek`
+> - `setMonthOffset((prev) => prev - 1)` par `setWeekOffset((prev) => prev - 7)`
+> - `updateOffsetWithDateCalendarForMonth` par `updateOffsetWithDateCalendarForWeek`
+
+👉 **Month View Example:** [Live Demo](https://month-calendar-app.vercel.app/) | [GitHub Repo](https://github.com/Yvesmorel/month-calendar-app)
+
+### Understanding Hashes and Scopes
+The library uses "hashes" to bucket tasks. Use `getHash(offset, ...)` to get the correct key:
+- **Scope `"week"`**: Use `getHash(offset).week`
+- **Scope `"group"`**: Use `getHash(offset, groupId).group`
+- **Scope `"day"`**: Use `getHash(offset, groupId, dayIndex).day`
 
 ---
+
+## 🔧 API Reference (Utilities & Hooks)
+
+### Hooks
+
+#### `useCalendarDateState`
+Calculates grid data (days and hourly slots) based on a reference date.
+```tsx
+const { weekDays, dailyHours } = useCalendarDateState(date, weekOffset);
+```
+
+### Date & Offset Utils
+
+| Function | Description |
+|----------|-------------|
+| `getCalendarDate()` | Returns current date. |
+| `updateCalendarDateWithOffset(off, date)` | Updates date based on week offset. |
+| `updateOffsetWithDateCalendarForWeek(date)` | Calculates week offset from date. |
+| `updateOffsetWithDateCalendarForMonth(date)` | Calculates month offset from date. |
+| `updateOffsetWithDateCalendarForDay(date)` | Calculates day offset from date. |
+| `calculateWeekDifference(date)` | Returns week difference in days. |
+| `calculateDayDifference(date)` | Returns absolute day difference. |
+| `calculateMonthDifference(date)` | Returns month difference. |
+
+### Task & UI Utils
+
+| Function | Description |
+|----------|-------------|
+| `getHash(offset, group, day)` | Generates bucket hashes. |
+| `millisecondsToHours(ms)` | Formats duration (e.g., "14h06"). |
+| `getUniqueId()` | Generates a UUID v4. |
+| `getDayHourlyForWeek(offset)`| Returns hourly slots for all days in a week. |
+| `getDayHourlyForMonth(offset)`| Returns hourly slots for all days in a month. |
+| `getNewTaskForDropOrPaste(...)` | Calculates task position for custom drag & drop. |
+| `getMonthDay(offset)` | Returns metadata for all days in a month. |
+| `getWeekDays(offset)` | Returns metadata for all days in a week. |
+
+---
+
+## ⚡ Performance Optimization
+
+### `useIntersectionObserver`
+Utility hook for virtualization. Detects when an element enters the viewport to mount/unmount heavy DOM elements.
+
+👉 **Performance Demo (7,000 tasks):** [Watch Video](https://youtu.be/st4QmsaHoDM)
+
+```tsx
+const { entry, height } = useIntersectionObserver(ref, { rootMargin: "600px" });
+const isVisible = !!entry?.isIntersecting;
+```
+
+---
+
+## 🧠 Design Philosophy
+This isn't just a tool; it's a foundation designed for builders. It's a system you can shape, extend, and control to create an organization that truly reflects you. **Because performance starts with the freedom to build.**
+
+---
+
+## 📄 License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

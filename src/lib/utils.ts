@@ -30,7 +30,7 @@ endDate.setDate(endDate.getDate() + (6 - currentDayOfWeek));
 endDate.setHours(23, 59, 59, 999);
 export const endDateMilliseconds = endDate.getTime();
 
-export function getDayHourly(weekOffset: number, timeZone?: TimeZone) {
+export function getDayHourlyForWeek(weekOffset: number, timeZone?: TimeZone) {
   const dailyHours: {
     positionDay: number;
     day: Date;
@@ -535,7 +535,7 @@ export const updateCalendarDateWithOffset = (
   return newDate;
 };
 
-export const updateOffsetWithDateCalendar = (calendarDate: Date, timeZone?: TimeZone) => {
+export const updateOffsetWithDateCalendarForWeek = (calendarDate: Date, timeZone?: TimeZone) => {
   if (typeof calendarDate === 'string') {
 
 
@@ -815,7 +815,7 @@ export function getHoursByday(
   const sum = tasks.reduce((currentSum: number, task: TaskFeildsType) => {
     if (
       task.dayIndex === dayIndex &&
-      weekOffset === updateOffsetWithDateCalendar(task.taskDate, timeZone)
+      weekOffset === updateOffsetWithDateCalendarForWeek(task.taskDate, timeZone)
     )
       return (
         currentSum +
@@ -835,7 +835,7 @@ export function getHoursByGroup(
   const sum = tasks.reduce((currentSum: number, task: TaskFeildsType) => {
     if (
       task.groupId === groupId &&
-      weekOffset === updateOffsetWithDateCalendar(task.taskDate, timeZone)
+      weekOffset === updateOffsetWithDateCalendarForWeek(task.taskDate, timeZone)
     )
       return (
         currentSum +
@@ -964,7 +964,7 @@ function updateTaskStartTimeAnEndTime(
   const diffDay =
     dayIndex +
     calendarOffset -
-    (taskPosition + updateOffsetWithDateCalendar(new Date(start), timeZone));
+    (taskPosition + updateOffsetWithDateCalendarForWeek(new Date(start), timeZone));
 
   const startTime = start + diffDay * DAY_IN_MILLISECONDS;
   const endTime = end + diffDay * DAY_IN_MILLISECONDS;
@@ -1004,7 +1004,7 @@ export function pastTasks(
           const newTaskStartAndEnd = updateTaskStartTimeAnEndTime(
             copiedTasktaskStart,
             copiedTasktaskEnd,
-            updateOffsetWithDateCalendar(dayInfo.day, timeZone),
+            updateOffsetWithDateCalendarForWeek(dayInfo.day, timeZone),
             dayInfo.positionDay,
             copiedTaskDayIndex,
             timeZone
@@ -1087,7 +1087,7 @@ export function duplicateTasksForPeriod(
       findPlanning.forEach((plan) => {
         const { taskStart, taskEnd, taskDate, offset, id, ...rest } = plan;
 
-        const newOffset = updateOffsetWithDateCalendar(periodEnd);
+        const newOffset = updateOffsetWithDateCalendarForWeek(periodEnd);
 
         const ecartDay = Math.round(
           (periodEnd.getTime() - periodStart.getTime()) / DAY_IN_MILLISECONDS
@@ -1150,7 +1150,7 @@ export function duplicateTaskForPeriod(
       ...rest
     } = task;
 
-    const newOffset = updateOffsetWithDateCalendar(periodEnd);
+    const newOffset = updateOffsetWithDateCalendarForWeek(periodEnd);
 
     const ecartDay = Math.round(
       (dayInMilliseconds - taskDate.getTime()) / DAY_IN_MILLISECONDS

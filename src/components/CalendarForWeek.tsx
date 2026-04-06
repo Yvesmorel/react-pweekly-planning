@@ -5,7 +5,7 @@ import DayContainer from "./DayContainer";
 import {
   getHash,
   getUniqueId,
-  updateOffsetWithDateCalendar,
+  updateOffsetWithDateCalendarForWeek,
 } from "../lib/utils";
 import { memo, useRef, useMemo } from "react";
 import useCalendarDateState from "../hooks/useCalendarDateState";
@@ -70,7 +70,7 @@ const CalendarForWeek = (props: CalendarTablePropsType) => {
     </div>
   ), [weekDays, props.rowsClassName, props.rowsStyle, props.groupsColsClassName, props.groupsColsStyle, props.groupHeadContainerClassName, props.groupHeadContainerStyle, props.groupsHeadRender, props.daysColsClassName, props.daysColsStyle, props.dayStyle, props.dayClassName, props.dayRender]);
 
-  const offset = useMemo(() => updateOffsetWithDateCalendar(props.date), [props.date]);
+  const offset = useMemo(() => updateOffsetWithDateCalendarForWeek(props.date), [props.date]);
 
   return (
     <div className="calendarForWeek" style={{ position: "relative" }} >

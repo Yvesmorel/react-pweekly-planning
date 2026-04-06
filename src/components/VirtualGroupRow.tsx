@@ -8,7 +8,7 @@ import {
   getHash,
   getNewTaskForDropOrPaste,
   getUniqueId,
-  updateOffsetWithDateCalendar,
+  updateOffsetWithDateCalendarForWeek,
 } from "../lib/utils";
 import { groupTdStyle } from "../lib/slyles";
 import { CalendarTablePropsType, GroupFeildsType, TaskType, TasksStore, TasksType, dayInfoType } from "../definitions";
@@ -55,7 +55,7 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
   });
 
   const isVisible = !!entry?.isIntersecting;
-  const offset = useMemo(() => updateOffsetWithDateCalendar(props.date), [props.date]);
+  const offset = useMemo(() => updateOffsetWithDateCalendarForWeek(props.date), [props.date]);
 
   const cellData = useMemo(() => {
     if (!isVisible) return [];

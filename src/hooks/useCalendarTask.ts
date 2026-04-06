@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { Task, TaskFeildsType, TasksStore } from "../definitions";
-import { getHash, updateOffsetWithDateCalendar } from "../lib/utils";
+import { getHash, updateOffsetWithDateCalendarForWeek } from "../lib/utils";
 
 
 
@@ -141,7 +141,7 @@ export function useCalendarTask(hashScope: "week" | "group" | "day", timeZone?: 
 
     // ➕ ADD → O(1)
     const addTask = (task: Task) => {
-        const offset = updateOffsetWithDateCalendar(task.taskDate)
+        const offset = updateOffsetWithDateCalendarForWeek(task.taskDate)
         const hash = getHash(offset, task.groupId, task.dayIndex)[hashScope]
 
         if (!tasksRef.current.buckets[hash]) {

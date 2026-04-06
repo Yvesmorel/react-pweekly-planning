@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
     calculateWeekDifference,
     getDateObjectInTimeZone,
-    getDayHourly,
+    getDayHourlyForWeek,
     getWeekDays,
     saveTasksToLocalStorage,
 } from "../lib/utils";
@@ -26,7 +26,7 @@ function useCalendarDateStateForDay(
             : calculateWeekDifference(date, timeZone));
 
         const weekDays = getWeekDays(currentWeekOffset, timeZone);
-        const dailyHours = getDayHourly(currentWeekOffset, timeZone);
+        const dailyHours = getDayHourlyForWeek(currentWeekOffset, timeZone);
         const calData = {
             dailyHours: dailyHours,
             weekDays,
