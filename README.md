@@ -21,31 +21,68 @@ npm install react-weekly-planning
 Here is a complete, minimal example showing how to set up the `Calendar` with the `CalendarTaskContextProvider`.
 
 ```tsx
-import React, { useState } from "react";
-import { 
-  Calendar, 
-  CalendarTaskContextProvider 
-} from "react-weekly-planning";
+import React from "react"
+import { Calendar, CalendarTaskContextProvider, useCalendarTaskContext } from "react-weekly-planning";
 
-const App = () => {
-  const [date] = useState(new Date());
-  
-  const groups = [
+// A sub-component to access the context with useCalendarTaskContext()
+const MyCalendarContent = () => {
+ const groups = [
     { id: "1", label: "Developer A" },
     { id: "2", label: "Developer B" }
   ];
+  
+  return (
+    <Calendar
+      groups={groups} // Array of groups
+      date={new Date()} // Today's date
+      weekOffset={0}      // Current week
+      handleDragTask={() => {}} // Crucial: must be defined to enable internal drag-and-drop
+      
+      // Simple task creation trigger
+      addTaskRender={({ currentGroup, dayInfo }) => (
+        <AddTask
+          currentGroup={currentGroup}
+          dayInfo={dayInfo}
+        />
+      )}
+    />
+  );
+};
+
+// Root component that provides the context required by useCalendarTaskContext()
+const App = () => (
+  <CalendarTaskContextProvider>
+    <MyCalendarContent />
+  </CalendarTaskContextProvider>
+);
+
+const AddTask = ({ currentGroup, dayInfo }) => {
+  const { addTask } = useCalendarTaskContext();
+
+  const handleAddTask = () => {
+    const now = Date.now();
+
+    const newTask = {
+      id: `${now}`, 
+      task: "Meeting",
+      taskStart: now,
+      taskEnd: now + (2 * 60 * 60 * 1000), // 2 hours duration
+      taskDate: dayInfo.day,
+      groupId: currentGroup.id,
+      dayIndex: dayInfo.positionDay,
+      taskExpiryDate: new Date(now + 86400000), // Expires in 24h
+    };
+
+    addTask(newTask);
+  };
 
   return (
-      <div style={{ padding: "20px" }}>
-        <h1>My Weekly Planner</h1>
-        <CalendarTaskContextProvider>
-          <Calendar 
-            date={date}
-            weekOffset={0}
-            groups={groups}
-          />
-        </CalendarTaskContextProvider>
-      </div>
+    <button
+      onClick={handleAddTask}
+      className="w-full h-full opacity-0 hover:opacity-100 bg-blue-100 transition-opacity"
+    >
+      + Add Task
+    </button>
   );
 };
 
