@@ -99,6 +99,7 @@ const VirtualGroupRowDay: React.FC<VirtualGroupRowDayProps> = ({
             onDrop={(event) => {
               if (!cellTasks) return;
               const dropInfo = getNewTaskForDropOrPaste(
+                event,
                 currentDailyHours.positionDay,
                 group.id,
                 getTask,

@@ -16,24 +16,13 @@ const TaskContainer = ({
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     if (!handleDragTask) return;
     event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", currentTask.id);
-    window.sessionStorage.setItem("calendardragtaskId", currentTask.id);
-    window.sessionStorage.setItem(
-      "calendardragtaskStart",
-      `${currentTask.taskStart}`
-    );
-    window.sessionStorage.setItem(
-      "calendardragtaskEnd",
-      `${currentTask.taskEnd}`
-    );
-    window.sessionStorage.setItem(
-      "calendardragdayIndex",
-      `${currentTask.dayIndex}`
-    );
-    window.sessionStorage.setItem(
-      "calendardraghash",
-      `${currentTask.hash}`
-    );
+    event.dataTransfer.setData("application/json", JSON.stringify({
+      id: currentTask.id,
+      taskStart: currentTask.taskStart,
+      taskEnd: currentTask.taskEnd,
+      dayIndex: currentTask.dayIndex,
+      hash: currentTask.hash
+    }));
     handleDragTask(event, currentTask);
   };
 

@@ -350,14 +350,9 @@ export function calculateMonthDifference(dateSelectionnee: Date, timeZone?: Time
 /**
  * Calculates new task properties (position, start/end times) for custom drag and drop or paste operations.
  * 
- * **Note:** This function relies on `window.sessionStorage` to retrieve the source task's data during the drop/paste operation.
- * The handler responsible for starting the drag operation (`handleDrag` or `onDragStart`) **must** set the following items in `sessionStorage`:
- * - `calendardragtaskId`: ID of the dragged task.
- * - `calendardragtaskStart`: Original start timestamp (ms).
- * - `calendardragtaskEnd`: Original end timestamp (ms).
- * - `calendardragdayIndex`: Original day index.
- * - `calendardraghash`: Original source bucket hash.
+ * **Note:** This function relies on `event.dataTransfer` (or `clipboardData`) to retrieve the source task's data.
  * 
+ * @param event - The drag or paste event.
  * @param positionDay - The new day index target.
  * @param dropGroupId - The group ID where the task is being dropped.
  * @param getTask - Function to retrieve a task by its hash and ID.
@@ -365,60 +360,85 @@ export function calculateMonthDifference(dateSelectionnee: Date, timeZone?: Time
  * @returns Object containing new timestamps and complete task data.
  */
 export function getNewTaskForDropOrPaste(
+  event: any,
   positionDay: number,
   dropGroupId: string,
   getTask: (hash: string, taskId: string) => TaskFeildsType | undefined,
   hash: string
 ) {
-  const dragtaskId = window.sessionStorage.getItem("calendardragtaskId");
-  const dragtaskStart = window.sessionStorage.getItem("calendardragtaskStart");
-  const dragtaskEnd = window.sessionStorage.getItem("calendardragtaskEnd");
-  const dragdayIndex = window.sessionStorage.getItem("calendardragdayIndex");
-  const draghash = window.sessionStorage.getItem("calendardraghash");
-  let newTask: TaskFeildsType | any;
+  try {
+    let dragtaskId, dragtaskStart, dragtaskEnd, dragdayIndex, draghash;
 
-  window.sessionStorage.clear();
+    const dataTransfer = event.dataTransfer || event.clipboardData;
+    if (dataTransfer) {
+      const rawData = dataTransfer.getData("application/json");
+
+      if (rawData) {
+        try {
+          const data = JSON.parse(rawData);
+          dragtaskId = data.id;
+          dragtaskStart = data.taskStart;
+          dragtaskEnd = data.taskEnd;
+          dragdayIndex = data.dayIndex;
+          draghash = data.hash;
+
+        } catch (e) {
+          console.error("Failed to parse drag data", e);
+        }
+      }
+    }
+
+    let newTask: TaskFeildsType | any;
 
 
-  if (!dragdayIndex || !dragtaskStart || !dragtaskEnd || !dragtaskId)
-    return;
-  const convertTaskDropStart = new Date(parseInt(dragtaskStart));
+    if (dragdayIndex === undefined || dragtaskStart === undefined || dragtaskEnd === undefined || dragtaskId === undefined)
+      return;
+    const convertTaskDropStart = new Date(parseInt(dragtaskStart));
 
 
-  if (draghash === null) return
-  const dragTask = getTask(draghash, dragtaskId)
+    if (draghash === null) return
+    const dragTask = getTask(draghash, dragtaskId)
 
 
-  if (!dragTask) return;
+    if (!dragTask) return;
 
-  const dayIndex = parseInt(dragdayIndex);
-  let ecartDaysIndex = positionDay - dayIndex;
+    const dayIndex = parseInt(dragdayIndex);
+    let ecartDaysIndex = positionDay - dayIndex;
 
-  convertTaskDropStart.setDate(convertTaskDropStart.getDate() + ecartDaysIndex);
-  const taskDropStart = convertTaskDropStart.getTime();
-  let convertTaskDropEnd = new Date(parseInt(dragtaskEnd));
-  convertTaskDropEnd.setDate(convertTaskDropEnd.getDate() + ecartDaysIndex);
-  const taskDropEnd = convertTaskDropEnd.getTime();
-  const taskDropDate = new Date(taskDropStart);
-  if (dragTask) {
-    const { taskStart, taskEnd, taskDate, groupId, dayIndex, ...rest } =
-      dragTask;
+    convertTaskDropStart.setDate(convertTaskDropStart.getDate() + ecartDaysIndex);
+    const taskDropStart = convertTaskDropStart.getTime();
+    let convertTaskDropEnd = new Date(parseInt(dragtaskEnd));
+    convertTaskDropEnd.setDate(convertTaskDropEnd.getDate() + ecartDaysIndex);
+    const taskDropEnd = convertTaskDropEnd.getTime();
+    const taskDropDate = new Date(taskDropStart);
 
-    newTask = {
+    if (dragTask) {
+      const { taskStart, taskEnd, taskDate, groupId, dayIndex, ...rest } =
+        dragTask;
 
-      taskStart: taskDropStart,
-      taskEnd: taskDropEnd,
-      taskDate: taskDropDate,
-      groupId: dropGroupId,
-      dayIndex: positionDay,
-      ...rest,
-      hash: hash,
-      draghash: draghash,
+      newTask = {
 
-    };
+        taskStart: taskDropStart,
+        taskEnd: taskDropEnd,
+        taskDate: taskDropDate,
+        groupId: dropGroupId,
+        dayIndex: positionDay,
+        ...rest,
+        hash: hash,
+        draghash: draghash,
 
+      };
+
+    }
+
+
+    return { taskDropStart, taskDropEnd, taskDropDate, newTask };
+  } catch (error) {
+    console.error("Failed to get new task for drop or paste", error);
+    return null;
   }
-  return { taskDropStart, taskDropEnd, taskDropDate, newTask };
+
+
 }
 
 export function compareWeekOffset(

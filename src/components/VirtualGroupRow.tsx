@@ -105,6 +105,7 @@ const VirtualGroupRow: React.FC<VirtualGroupRowProps> = ({
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(event) => {
                   const dropInfo = getNewTaskForDropOrPaste(
+                    event,
                     cell.positionDay,
                     group.id,
                     getTask,

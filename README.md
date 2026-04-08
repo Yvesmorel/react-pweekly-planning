@@ -1,10 +1,15 @@
 # react-weekly-planning 🚀
 
-A flexible and customizable package for your productivity projects.
+## 🧠 Design Philosophy
+"Performance starts with the freedom to build."
 
-![Planning Screenshot](https://raw.githubusercontent.com/Yvesmorel/react-pweekly-planning/main/assets/planning-screenshot.webp)
+Most calendar libraries trap you in their box. react-weekly-planning gives you the tools and gets out of your way. It's for developers who see a calendar not as a widget, but as a data visualization problem. **Because performance starts with the freedom to build.**
 
-[See the demo](https://react-weekly-planning-demo.vercel.app) | [Demo repository](https://github.com/Yvesmorel/react-weekly-planning-demo.git)
+![Month View Example](https://raw.githubusercontent.com/Yvesmorel/react-pweekly-planning/main/assets/month-calendar.png)
+
+👉 **Month View Example:** [Live Demo](https://month-calendar-app.vercel.app/) | [GitHub Repo](https://github.com/Yvesmorel/month-calendar-app)
+
+
 
 ---
 
@@ -14,190 +19,10 @@ A flexible and customizable package for your productivity projects.
 npm install react-weekly-planning
 ```
 
----
 
-## 🚀 Quick Start
 
-Here is a complete, minimal example showing how to set up the `Calendar` with the `CalendarTaskContextProvider`.
-
-```tsx
-import React from "react"
-import { Calendar, CalendarTaskContextProvider, useCalendarTaskContext } from "react-weekly-planning";
-
-// A sub-component to access the context with useCalendarTaskContext()
-const MyCalendarContent = () => {
- const groups = [
-    { id: "1", label: "Developer A" },
-    { id: "2", label: "Developer B" }
-  ];
-  
-  return (
-    <Calendar
-      groups={groups} // Array of groups
-      date={new Date()} // Today's date
-      weekOffset={0}      // Current week
-      handleDragTask={() => {}} // Crucial: must be defined to enable internal drag-and-drop
-      
-      // Simple task creation trigger
-      addTaskRender={({ currentGroup, dayInfo }) => (
-        <AddTask
-          currentGroup={currentGroup}
-          dayInfo={dayInfo}
-        />
-      )}
-    />
-  );
-};
-
-// Root component that provides the context required by useCalendarTaskContext()
-const App = () => (
-  <CalendarTaskContextProvider>
-    <MyCalendarContent />
-  </CalendarTaskContextProvider>
-);
-
-const AddTask = ({ currentGroup, dayInfo }) => {
-  const { addTask } = useCalendarTaskContext();
-
-  const handleAddTask = () => {
-    const now = Date.now();
-
-    const newTask = {
-      id: `${now}`, 
-      task: "Meeting",
-      taskStart: now,
-      taskEnd: now + (2 * 60 * 60 * 1000), // 2 hours duration
-      taskDate: dayInfo.day,
-      groupId: currentGroup.id,
-      dayIndex: dayInfo.positionDay,
-      taskExpiryDate: new Date(now + 86400000), // Expires in 24h
-    };
-
-    addTask(newTask);
-  };
-
-  return (
-    <button
-      onClick={handleAddTask}
-      className="w-full h-full opacity-0 hover:opacity-100 bg-blue-100 transition-opacity"
-    >
-      + Add Task
-    </button>
-  );
-};
-
-export default App;
-```
 
 ---
-
-## 📅 The `<Calendar />` Component
-
-The `Calendar` component is the main building block of the library. It provides a highly configurable weekly view.
-
-### Key Props
-
-#### `date`
-- **Description**: Sets the current date to display in the calendar.
-- **Type**: `Date`
-- **Use Case**: Set the focus date of the calendar.
-```jsx
-<Calendar date={new Date()} ... />
-```
-
-#### `weekOffset`
-- **Description**: Sets the offset for the week being displayed.
-- **Type**: `number`
-- **Use Case**: `-7` for previous week, `7` for next week, `0` for current.
-```jsx
-<Calendar weekOffset={0} ... />
-```
-
-#### `groups`
-- **Description**: Array of group data (e.g., developers, rooms, projects).
-- **Type**: `GroupFeildsType[]`
-- **Note**: The `id` field for each group is required.
-```jsx
-const groups = [{ id: '1', label: 'Group A' }];
-<Calendar groups={groups} ... />
-```
-
-### Full Prop Reference
-
-| Prop Name | Type | Description |
-|-----------|------|-------------|
-| `date` | `Date` | The current date to display. |
-| `weekOffset` | `number` | Offset for the week. |
-| `groups` | `GroupFeildsType[]` | Array of group data. |
-| `className` | `string` | Additional class names. |
-| `style` | `React.CSSProperties` | Additional styles. |
-| `groupRender` | `({ currentGroup }) => ReactNode` | Custom render for a group. |
-| `dayRender` | `({ dayIndex, ... }) => ReactNode` | Custom render for a day. |
-| `taskRender` | `({ currentTask }) => ReactNode` | Custom render for a task. |
-| `addTaskRender` | `({currentGroup, dayInfo}) => ReactNode` | Custom render for 'Add Task' button. |
-| `handleAddTask` | `(group, dayInfo) => void` | Handler for adding a task. |
-| `handleClickTask` | `(task) => void` | Handler for clicking a task. |
-| `handleClickGroup` | `(group) => void` | Handler for clicking a group. |
-| `handleDragTask` | `(event, task) => void` | Handler for starting a drag. |
-| `handleDropTask` | `(event, ...) => void` | Handler for dropping a task. |
-| `handleDragTaskEnd` | `(event) => void` | Handler for ending a drag. |
-| `rowsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for rows. |
-| `groupsColsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for group columns. |
-| `daysColsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for day columns. |
-| `addTaskStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for Add Task button. |
-| `taskContainerStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for task containers. |
-| `sumHoursRender` | `(data) => ReactNode` | Custom render for hours summation. |
-
----
-
-## 🛠 Task Management (`CalendarTaskContext`)
-
-The `CalendarTaskContext` handles indexing, caching, and expiration of tasks automatically.
-
-### `CalendarTaskContextProvider`
-Wrap your app to enable global task management.
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `hashScope` | `"week" \| "group" \| "day"` | Defines how tasks are bucketed. |
-| `children` | `React.ReactNode` | Your application. |
-
-> [!NOTE]
-> `hashScope` defaults to `"week"`. However, the pre-built `<Calendar />` component internally uses `"day"` for its logic to ensure granular task management across different views.
-
-### `useCalendarTaskContext()`
-Access the task store from any nested component.
-
-| Name | Type | Description |
-|------|------|-------------|
-| `tasks` | `TasksStore` | All tasks, organized by buckets. |
-| `addTask` | `(task) => void` | Adds a new task. |
-| `updateTask` | `(hash, id, data) => void` | Updates an existing task. |
-| `deleteTask` | `(hash, id) => void` | Removes a task. |
-| `getTasks` | `(hash) => Task[]` | Retrieves tasks for a specific hash. |
-| `isValidTask`| `(task) => boolean` | Checks if a task is not expired. |
-
-> [!WARNING]
-> **Task Expiration (`taskExpiryDate`)**
-> It is crucial to define a `taskExpiryDate` (timestamp or Date object) for every task.
-> - If `taskExpiryDate` is **missing**, the task will be considered invalid and will disappear almost immediately after creation.
-> - If `taskExpiryDate` is in the **past**, the task will also be automatically removed by the internal cleaning mechanism.
-
-
-#### Example: Adding a Task
-```tsx
-const { addTask } = useCalendarTaskContext();
-addTask({
-  id: "123",
-  groupId: "1",
-  taskStart: Date.now(),
-  taskEnd: Date.now() + 3600000,
-  taskSummary: "New Task"
-});
-```
-
----
-
 ## 🧩 Advanced: Custom Calendar Implementation
 
 ### ⚡ A modular approach
@@ -454,11 +279,15 @@ const CalendarGrid = ({ monthOffset }) => {
   const handleDragStart = (e, task, hash) => {
     const target = e.currentTarget;
     target.style.opacity = "0.4";
-    sessionStorage.setItem("calendardragtaskId", task.id);
-    sessionStorage.setItem("calendardragtaskStart", task.taskStart.toString());
-    sessionStorage.setItem("calendardragtaskEnd", task.taskEnd.toString());
-    sessionStorage.setItem("calendardragdayIndex", task.dayIndex.toString());
-    sessionStorage.setItem("calendardraghash", hash);
+
+    // Set task data in dataTransfer (JSON format)
+    e.dataTransfer.setData("application/json", JSON.stringify({
+      id: task.id,
+      taskStart: task.taskStart,
+      taskEnd: task.taskEnd,
+      dayIndex: task.dayIndex,
+      hash: hash
+    }));
   };
 
   /**
@@ -476,7 +305,8 @@ const CalendarGrid = ({ monthOffset }) => {
   const handleDrop = (e, dayIndex, hash) => {
     e.preventDefault();
     setDragOverDay(null);
-    const result = getNewTaskForDropOrPaste(dayIndex, "Project Nebula", getTask, hash);
+    // Pass the event to getNewTaskForDropOrPaste
+    const result = getNewTaskForDropOrPaste(e, dayIndex, "Project Nebula", getTask, hash);
     if (result && result.newTask) {
       const tasks = getTasks(hash);
       const isDuplicate = checkDuplicates(
@@ -753,14 +583,10 @@ export default function App() {
 Ce code montre comment créer un calendrier mensuel complet avec une gestion des tâches (ajout, modification, suppression) et du drag-and-drop. Il utilise `getMonthDay` et `getDayHourlyForMonth` pour générer les jours du mois.
 
 > [!IMPORTANT]
-> **Important : `getNewTaskForDropOrPaste` et `sessionStorage`**
+> **Important : `getNewTaskForDropOrPaste` et `dataTransfer`**
 >
-> Pour que cette fonction utilitaire calcule correctement la position de la nouvelle tâche (notamment lors du drag-and-drop personnalisé), il est impératif de stocker les informations de la tâche source dans le `sessionStorage` au moment du `dragStart`. C'est le cas dans la fonction `handleDrag` (ou `handleDragStart`) via :
-> - `calendardragtaskId`
-> - `calendardragtaskStart`
-> - `calendardragtaskEnd`
-> - `calendardragdayIndex`
-> - `calendardraghash`
+> Pour que cette fonction utilitaire calcule correctement la position de la nouvelle tâche (notamment lors du drag-and-drop personnalisé), il est impératif de stocker les informations de la tâche source dans le `dataTransfer` (au format JSON string) au moment du `dragStart`. C'est le cas dans la fonction `handleDrag` (ou `handleDragStart`) via :
+> `e.dataTransfer.setData("application/json", JSON.stringify({ id, taskStart, taskEnd, dayIndex, hash }))`
 
 
 > [!TIP]
@@ -779,6 +605,19 @@ The library uses "hashes" to bucket tasks. Use `getHash(offset, ...)` to get the
 - **Scope `"week"`**: Use `getHash(offset).week`
 - **Scope `"group"`**: Use `getHash(offset, groupId).group`
 - **Scope `"day"`**: Use `getHash(offset, groupId, dayIndex).day`
+
+---
+## ⚡ Performance Optimization
+
+### `useIntersectionObserver`
+Utility hook for virtualization. Detects when an element enters the viewport to mount/unmount heavy DOM elements.
+
+👉 **Performance Demo (7,000 tasks):** [Watch Video](https://youtu.be/st4QmsaHoDM)
+
+```tsx
+const { entry, height } = useIntersectionObserver(ref, { rootMargin: "600px" });
+const isVisible = !!entry?.isIntersecting;
+```
 
 ---
 
@@ -814,52 +653,228 @@ const { weekDays, dailyHours } = useCalendarDateState(date, weekOffset);
 | `getUniqueId()` | Generates a UUID v4. |
 | `getDayHourlyForWeek(offset)`| Returns hourly slots for all days in a week. |
 | `getDayHourlyForMonth(offset)`| Returns hourly slots for all days in a month. |
-| `getNewTaskForDropOrPaste(...)` | Calculates task position for custom drag & drop (requires `sessionStorage`). |
+| `getNewTaskForDropOrPaste(...)` | Calculates task position for custom drag & drop (requires the `event`). |
 | `getMonthDay(offset)` | Returns metadata for all days in a month. |
 | `getWeekDays(offset)` | Returns metadata for all days in a week. |
 
 > [!IMPORTANT]
-> **Important: `getNewTaskForDropOrPaste` and `sessionStorage`**
+> **Important: `getNewTaskForDropOrPaste` and `dataTransfer`**
 >
-> For `getNewTaskForDropOrPaste` to function correctly, you **must** manually store the dragged task's information in `window.sessionStorage` inside your `handleDrag` (or `onDragStart`) handler. The utility retrieves these values to calculate the new task's properties.
+> For `getNewTaskForDropOrPaste` to function correctly, you **must** manually store the dragged task's information (as a JSON string) in the event's `dataTransfer` (or `clipboardData`) inside your `handleDrag` (or `onDragStart`) handler. The utility retrieves these values to calculate the new task's properties.
 >
-> **Required keys to set:**
-> - `calendardragtaskId`: The ID of the task.
-> - `calendardragtaskStart`: The start timestamp.
-> - `calendardragtaskEnd`: The end timestamp.
-> - `calendardragdayIndex`: The index of the day.
-> - `calendardraghash`: The hash of the task's current bucket.
+> **Required keys in JSON object:**
+> - `id`: The ID of the task.
+> - `taskStart`: The start timestamp.
+> - `taskEnd`: The end timestamp.
+> - `dayIndex`: The index of the day.
+> - `hash`: The hash of the task's current bucket.
 >
 > **Example implementation in `handleDragStart`:**
 > ```javascript
 > const handleDragStart = (e, task, hash) => {
->   window.sessionStorage.setItem("calendardragtaskId", task.id);
->   window.sessionStorage.setItem("calendardragtaskStart", task.taskStart.toString());
->   window.sessionStorage.setItem("calendardragtaskEnd", task.taskEnd.toString());
->   window.sessionStorage.setItem("calendardragdayIndex", task.dayIndex.toString());
->   window.sessionStorage.setItem("calendardraghash", hash);
+>   e.dataTransfer.setData("application/json", JSON.stringify({
+>     id: task.id,
+>     taskStart: task.taskStart,
+>     taskEnd: task.taskEnd,
+>     dayIndex: task.dayIndex,
+>     hash: hash
+>   }));
+> };
+> ```
+>
+> **Example implementation in `handleDrop`:**
+> ```javascript
+> const handleDrop = (e, dayIndex, hash) => {
+>   e.preventDefault();
+>   const result = getNewTaskForDropOrPaste(e, dayIndex, groupId, getTask, hash);
+>   // ...
 > };
 > ```
 
-
 ---
 
-## ⚡ Performance Optimization
 
-### `useIntersectionObserver`
-Utility hook for virtualization. Detects when an element enters the viewport to mount/unmount heavy DOM elements.
 
-👉 **Performance Demo (7,000 tasks):** [Watch Video](https://youtu.be/st4QmsaHoDM)
+## 🛠 Task Management (`CalendarTaskContext`)
 
+The `CalendarTaskContext` handles indexing, caching, and expiration of tasks automatically.
+
+### `CalendarTaskContextProvider`
+Wrap your app to enable global task management.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `hashScope` | `"week" \| "group" \| "day"` | Defines how tasks are bucketed. |
+| `children` | `React.ReactNode` | Your application. |
+
+> [!NOTE]
+> `hashScope` defaults to `"week"`. However, the pre-built `<Calendar />` component internally uses `"day"` for its logic to ensure granular task management across different views.
+
+### `useCalendarTaskContext()`
+Access the task store from any nested component.
+
+| Name | Type | Description |
+|------|------|-------------|
+| `tasks` | `TasksStore` | All tasks, organized by buckets. |
+| `addTask` | `(task) => void` | Adds a new task. |
+| `updateTask` | `(hash, id, data) => void` | Updates an existing task. |
+| `deleteTask` | `(hash, id) => void` | Removes a task. |
+| `getTasks` | `(hash) => Task[]` | Retrieves tasks for a specific hash. |
+| `isValidTask`| `(task) => boolean` | Checks if a task is not expired. |
+
+> [!WARNING]
+> **Task Expiration (`taskExpiryDate`)**
+> It is crucial to define a `taskExpiryDate` (timestamp or Date object) for every task.
+> - If `taskExpiryDate` is **missing**, the task will be considered invalid and will disappear almost immediately after creation.
+> - If `taskExpiryDate` is in the **past**, the task will also be automatically removed by the internal cleaning mechanism.
+
+
+#### Example: Adding a Task
 ```tsx
-const { entry, height } = useIntersectionObserver(ref, { rootMargin: "600px" });
-const isVisible = !!entry?.isIntersecting;
+const { addTask } = useCalendarTaskContext();
+addTask({
+  id: "123",
+  groupId: "1",
+  taskStart: Date.now(),
+  taskEnd: Date.now() + 3600000,
+  taskSummary: "New Task"
+});
 ```
 
 ---
 
-## 🧠 Design Philosophy
-This isn't just a tool; it's a foundation designed for builders. It's a system you can shape, extend, and control to create an organization that truly reflects you. **Because performance starts with the freedom to build.**
+## 📅 The `<Calendar />` Component
+
+The `Calendar` component is the main building block of the library. It provides a highly configurable weekly view.
+
+👉 **Weekly View Example:** [Live Demo](https://react-weekly-planning-demo.vercel.app) | [Demo Repository](https://github.com/Yvesmorel/react-weekly-planning-demo.git)
+### Key Props
+
+#### `date`
+- **Description**: Sets the current date to display in the calendar.
+- **Type**: `Date`
+- **Use Case**: Set the focus date of the calendar.
+```jsx
+<Calendar date={new Date()} ... />
+```
+
+#### `weekOffset`
+- **Description**: Sets the offset for the week being displayed.
+- **Type**: `number`
+- **Use Case**: `-7` for previous week, `7` for next week, `0` for current.
+```jsx
+<Calendar weekOffset={0} ... />
+```
+
+#### `groups`
+- **Description**: Array of group data (e.g., developers, rooms, projects).
+- **Type**: `GroupFeildsType[]`
+- **Note**: The `id` field for each group is required.
+```jsx
+const groups = [{ id: '1', label: 'Group A' }];
+<Calendar groups={groups} ... />
+```
+
+### Full Prop Reference
+
+| Prop Name | Type | Description |
+|-----------|------|-------------|
+| `date` | `Date` | The current date to display. |
+| `weekOffset` | `number` | Offset for the week. |
+| `groups` | `GroupFeildsType[]` | Array of group data. |
+| `className` | `string` | Additional class names. |
+| `style` | `React.CSSProperties` | Additional styles. |
+| `groupRender` | `({ currentGroup }) => ReactNode` | Custom render for a group. |
+| `dayRender` | `({ dayIndex, ... }) => ReactNode` | Custom render for a day. |
+| `taskRender` | `({ currentTask }) => ReactNode` | Custom render for a task. |
+| `addTaskRender` | `({currentGroup, dayInfo}) => ReactNode` | Custom render for 'Add Task' button. |
+| `handleAddTask` | `(group, dayInfo) => void` | Handler for adding a task. |
+| `handleClickTask` | `(task) => void` | Handler for clicking a task. |
+| `handleClickGroup` | `(group) => void` | Handler for clicking a group. |
+| `handleDragTask` | `(event, task) => void` | Handler for starting a drag. |
+| `handleDropTask` | `(event, ...) => void` | Handler for dropping a task. |
+| `handleDragTaskEnd` | `(event) => void` | Handler for ending a drag. |
+| `rowsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for rows. |
+| `groupsColsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for group columns. |
+| `daysColsStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for day columns. |
+| `addTaskStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for Add Task button. |
+| `taskContainerStyle` / `className` | `CSSProperties` / `string` | Styles/Classes for task containers. |
+| `sumHoursRender` | `(data) => ReactNode` | Custom render for hours summation. |
+
+---
+
+## 🚀 Quick Start
+
+Here is a complete, minimal example showing how to set up the `Calendar` with the `CalendarTaskContextProvider`.
+
+```tsx
+import React from "react"
+import { Calendar, CalendarTaskContextProvider, useCalendarTaskContext } from "react-weekly-planning";
+
+// A sub-component to access the context with useCalendarTaskContext()
+const MyCalendarContent = () => {
+ const groups = [
+    { id: "1", label: "Developer A" },
+    { id: "2", label: "Developer B" }
+  ];
+  
+  return (
+    <Calendar
+      groups={groups} // Array of groups
+      date={new Date()} // Today's date
+      weekOffset={0}      // Current week
+      handleDragTask={() => {}} // Crucial: must be defined to enable internal drag-and-drop
+      
+      // Simple task creation trigger
+      addTaskRender={({ currentGroup, dayInfo }) => (
+        <AddTask
+          currentGroup={currentGroup}
+          dayInfo={dayInfo}
+        />
+      )}
+    />
+  );
+};
+
+// Root component that provides the context required by useCalendarTaskContext()
+const App = () => (
+  <CalendarTaskContextProvider>
+    <MyCalendarContent />
+  </CalendarTaskContextProvider>
+);
+
+const AddTask = ({ currentGroup, dayInfo }) => {
+  const { addTask } = useCalendarTaskContext();
+
+  const handleAddTask = () => {
+    const now = Date.now();
+
+    const newTask = {
+      id: `${now}`, 
+      task: "Meeting",
+      taskStart: now,
+      taskEnd: now + (2 * 60 * 60 * 1000), // 2 hours duration
+      taskDate: dayInfo.day,
+      groupId: currentGroup.id,
+      dayIndex: dayInfo.positionDay,
+      taskExpiryDate: new Date(now + 86400000), // Expires in 24h
+    };
+
+    addTask(newTask);
+  };
+
+  return (
+    <button
+      onClick={handleAddTask}
+      className="w-full h-full opacity-0 hover:opacity-100 bg-blue-100 transition-opacity"
+    >
+      + Add Task
+    </button>
+  );
+};
+
+export default App;
+```
 
 ---
 
