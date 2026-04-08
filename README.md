@@ -31,12 +31,12 @@ This package is based on a simple principle: **use only what you need.** Each fe
 ### Building your own UI
 For advanced users, `CalendarTaskContext` provides all the state you need to build a custom calendar (e.g., a Month view).
 
-#### Exemple d'implémentation complète (Vue Mensuelle)
+#### Complete Implementation Example (Month View)
 
-Voici un exemple complet montrant comment construire votre propre vue mensuelle avec une gestion avancée des tâches et du drag-and-drop.
+Here is a complete example showing how to build your own month view with advanced task management and drag-and-drop.
 
 <details>
-<summary><strong>Voir le code complet de l'implémentation (Vue Mensuelle)</strong></summary>
+<summary><strong>See the complete implementation code (Month View)</strong></summary>
 
 ```tsx
 import React from "react";
@@ -580,23 +580,23 @@ export default function App() {
 ```
 </details>
 
-Ce code montre comment créer un calendrier mensuel complet avec une gestion des tâches (ajout, modification, suppression) et du drag-and-drop. Il utilise `getMonthDay` et `getDayHourlyForMonth` pour générer les jours du mois.
+This code demonstrates how to create a full monthly calendar with task management (add, edit, delete) and drag-and-drop. It uses `getMonthDay` and `getDayHourlyForMonth` to generate the days of the month.
 
 > [!IMPORTANT]
-> **Important : `getNewTaskForDropOrPaste` et `dataTransfer`**
+> **Important: `getNewTaskForDropOrPaste` and `dataTransfer`**
 >
-> Pour que cette fonction utilitaire calcule correctement la position de la nouvelle tâche (notamment lors du drag-and-drop personnalisé), il est impératif de stocker les informations de la tâche source dans le `dataTransfer` (au format JSON string) au moment du `dragStart`. C'est le cas dans la fonction `handleDrag` (ou `handleDragStart`) via :
+> For this utility function to correctly calculate the position of the new task (especially during custom drag-and-drop), it is imperative to store the source task's information in `dataTransfer` (as a JSON string) at the time of `dragStart`. This is shown in the `handleDrag` (or `handleDragStart`) function via:
 > `e.dataTransfer.setData("application/json", JSON.stringify({ id, taskStart, taskEnd, dayIndex, hash }))`
 
 
 > [!TIP]
-> **Passer d'une vue mensuelle à une vue hebdomadaire**
+> **Switching from a monthly view to a weekly view**
 >
-> Pour adapter ce code pour une vue hebdomadaire, il vous suffit de remplacer les fonctions suivantes :
-> - `getMonthDay` par `getWeekDays`
-> - `getDayHourlyForMonth` par `getDayHourlyForWeek`
-> - `setMonthOffset((prev) => prev - 1)` par `setWeekOffset((prev) => prev - 7)`
-> - `updateOffsetWithDateCalendarForMonth` par `updateOffsetWithDateCalendarForWeek`
+> To adapt this code for a weekly view, you simply need to replace the following functions:
+> - `getMonthDay` with `getWeekDays`
+> - `getDayHourlyForMonth` with `getDayHourlyForWeek`
+> - `setMonthOffset((prev) => prev - 1)` with `setWeekOffset((prev) => prev - 7)`
+> - `updateOffsetWithDateCalendarForMonth` with `updateOffsetWithDateCalendarForWeek`
 
 👉 **Month View Example:** [Live Demo](https://month-calendar-app.vercel.app/) | [GitHub Repo](https://github.com/Yvesmorel/month-calendar-app)
 
